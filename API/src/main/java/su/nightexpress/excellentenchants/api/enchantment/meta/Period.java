@@ -1,9 +1,11 @@
 package su.nightexpress.excellentenchants.api.enchantment.meta;
 
 import org.bukkit.entity.LivingEntity;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.nightcore.util.TimeUtil;
 
+@NullMarked
 public class Period {
 
     private final long interval;
@@ -12,7 +14,6 @@ public class Period {
         this.interval = interval;
     }
 
-    @NotNull
     public static Period ofSeconds(int seconds) {
         return new Period(seconds);
     }
@@ -21,7 +22,7 @@ public class Period {
         return this.interval;
     }
 
-    public boolean isTriggerTime(@NotNull LivingEntity entity) {
+    public boolean isTriggerTime(LivingEntity entity) {
         int secondsLived = (int) TimeUtil.ticksToSeconds(entity.getTicksLived());
 
         return secondsLived % this.interval == 0;

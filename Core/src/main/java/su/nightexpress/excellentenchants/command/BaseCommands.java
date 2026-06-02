@@ -6,7 +6,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
@@ -24,15 +25,16 @@ import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.util.*;
 import su.nightexpress.nightcore.util.bridge.RegistryType;
 
+@NullMarked
 public class BaseCommands {
 
     private final EnchantsPlugin plugin;
 
-    public BaseCommands(@NotNull EnchantsPlugin plugin) {
+    public BaseCommands(EnchantsPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public void load(@NotNull HubNodeBuilder builder) {
+    public void load(HubNodeBuilder builder) {
         builder.branch(Commands.literal("reload")
             .description(CoreLang.COMMAND_RELOAD_DESC)
             .permission(Perms.COMMAND_RELOAD)
@@ -101,8 +103,10 @@ public class BaseCommands {
                 .permission(Perms.COMMAND_GIVE_FUEL)
                 .withArguments(
                     CommandArguments.customEnchantArgument(CommandArguments.ENCHANT)
-                        .suggestions((reader, context) -> EnchantRegistry.getRegistered().stream().filter(CustomEnchantment::isChargeable).map(CustomEnchantment::getId).toList()),
-                    Arguments.integer(CommandArguments.AMOUNT, 1).suggestions((rader, context) -> Lists.newList("1", "8", "16", "32", "64")).optional(),
+                        .suggestions((reader, context) -> EnchantRegistry.getRegistered().stream().filter(
+                            CustomEnchantment::isChargeable).map(CustomEnchantment::getId).toList()),
+                    Arguments.integer(CommandArguments.AMOUNT, 1).suggestions((rader, context) -> Lists.newList("1",
+                        "8", "16", "32", "64")).optional(),
                     Arguments.player(CommandArguments.PLAYER).optional()
                 )
                 .executes(this::giveFuel)
@@ -110,7 +114,7 @@ public class BaseCommands {
         }
     }
 
-    private int getLevel(@NotNull Enchantment enchantment, @NotNull ParsedArguments arguments) {
+    private int getLevel(Enchantment enchantment, ParsedArguments arguments) {
         int level = arguments.getInt(CommandArguments.LEVEL, -1);
         if (level <= 0) {
             level = EnchantsUtils.randomLevel(enchantment);
@@ -118,13 +122,14 @@ public class BaseCommands {
         return level;
     }
 
-    private boolean giveEnchantBook(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+    private boolean giveEnchantBook(CommandContext context, ParsedArguments arguments) {
         if (!context.isPlayer() && !arguments.contains(CommandArguments.PLAYER)) {
             context.printUsage();
             return false;
         }
 
-        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(
+            CommandArguments.PLAYER) : context.getPlayerOrThrow();
 
         boolean charged = context.hasFlag(CommandArguments.FLAG_CHARGED);
         Enchantment enchantment = arguments.getEnchantment(CommandArguments.ENCHANT);
@@ -133,23 +138,25 @@ public class BaseCommands {
         return this.giveBook(context.getSender(), player, enchantment, level, charged);
     }
 
-    private boolean giveRandomBook(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+    private boolean giveRandomBook(CommandContext context, ParsedArguments arguments) {
         if (!context.isPlayer() && !arguments.contains(CommandArguments.PLAYER)) {
             context.printUsage();
             return false;
         }
 
-        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(
+            CommandArguments.PLAYER) : context.getPlayerOrThrow();
 
         boolean custom = context.hasFlag(CommandArguments.FLAG_CUSTOM);
         boolean charged = context.hasFlag(CommandArguments.FLAG_CHARGED);
-        Enchantment enchantment = Randomizer.pick(custom ? EnchantRegistry.getRegisteredBukkit() : BukkitThing.getAll(RegistryType.ENCHANTMENT));
+        Enchantment enchantment = Randomizer.pick(custom ? EnchantRegistry.getRegisteredBukkit() : BukkitThing.getAll(
+            RegistryType.ENCHANTMENT));
         int level = EnchantsUtils.randomLevel(enchantment);
 
         return this.giveBook(context.getSender(), player, enchantment, level, charged);
     }
 
-    private boolean giveBook(@NotNull CommandSender sender, @NotNull Player player, @NotNull Enchantment enchantment, int level, boolean charged) {
+    private boolean giveBook(CommandSender sender, Player player, Enchantment enchantment, int level, boolean charged) {
         ItemStack itemStack = new ItemStack(Material.ENCHANTED_BOOK);
         if (charged) {
             EnchantsUtils.restoreCharges(itemStack, enchantment, level);
@@ -167,13 +174,14 @@ public class BaseCommands {
         return true;
     }
 
-    private boolean enchantItem(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+    private boolean enchantItem(CommandContext context, ParsedArguments arguments) {
         if (!context.isPlayer() && !arguments.contains(CommandArguments.PLAYER)) {
             context.printUsage();
             return false;
         }
 
-        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(
+            CommandArguments.PLAYER) : context.getPlayerOrThrow();
         EquipmentSlot slot = arguments.getOr(CommandArguments.SLOT, EquipmentSlot.class, EquipmentSlot.HAND);
 
         ItemStack itemStack = EntityUtil.getItemInSlot(player, slot);
@@ -192,23 +200,25 @@ public class BaseCommands {
             EnchantsUtils.restoreCharges(itemStack, enchantment, level);
         }
 
-        context.send(context.getSender() == player ? Lang.COMMAND_ENCHANT_DONE_SELF : Lang.COMMAND_ENCHANT_DONE_OTHERS, replacer -> replacer
-            .replace(EnchantsPlaceholders.forPlayer(player))
-            .replace(EnchantsPlaceholders.GENERIC_ITEM, ItemUtil.getNameSerialized(itemStack))
-            .replace(EnchantsPlaceholders.GENERIC_ENCHANT, LangUtil.getSerializedName(enchantment))
-            .replace(EnchantsPlaceholders.GENERIC_LEVEL, NumberUtil.toRoman(level))
+        context.send(context.getSender() == player ? Lang.COMMAND_ENCHANT_DONE_SELF : Lang.COMMAND_ENCHANT_DONE_OTHERS,
+            replacer -> replacer
+                .replace(EnchantsPlaceholders.forPlayer(player))
+                .replace(EnchantsPlaceholders.GENERIC_ITEM, ItemUtil.getNameSerialized(itemStack))
+                .replace(EnchantsPlaceholders.GENERIC_ENCHANT, LangUtil.getSerializedName(enchantment))
+                .replace(EnchantsPlaceholders.GENERIC_LEVEL, NumberUtil.toRoman(level))
         );
 
         return true;
     }
 
-    private boolean disenchantItem(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+    private boolean disenchantItem(CommandContext context, ParsedArguments arguments) {
         if (!context.isPlayer() && !arguments.contains(CommandArguments.PLAYER)) {
             context.printUsage();
             return false;
         }
 
-        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(
+            CommandArguments.PLAYER) : context.getPlayerOrThrow();
         EquipmentSlot slot = arguments.getOr(CommandArguments.SLOT, EquipmentSlot.class, EquipmentSlot.HAND);
 
         ItemStack itemStack = EntityUtil.getItemInSlot(player, slot);
@@ -220,27 +230,31 @@ public class BaseCommands {
         Enchantment enchantment = arguments.getEnchantment(CommandArguments.ENCHANT);
         EnchantsUtils.remove(itemStack, enchantment);
 
-        context.send(context.getSender() == player ? Lang.COMMAND_DISENCHANT_DONE_SELF : Lang.COMMAND_DISENCHANT_DONE_OTHERS, replacer -> replacer
-            .replace(EnchantsPlaceholders.forPlayer(player))
-            .replace(EnchantsPlaceholders.GENERIC_ITEM, ItemUtil.getNameSerialized(itemStack))
-            .replace(EnchantsPlaceholders.GENERIC_ENCHANT, LangUtil.getSerializedName(enchantment))
+        context.send(context
+            .getSender() == player ? Lang.COMMAND_DISENCHANT_DONE_SELF : Lang.COMMAND_DISENCHANT_DONE_OTHERS,
+            replacer -> replacer
+                .replace(EnchantsPlaceholders.forPlayer(player))
+                .replace(EnchantsPlaceholders.GENERIC_ITEM, ItemUtil.getNameSerialized(itemStack))
+                .replace(EnchantsPlaceholders.GENERIC_ENCHANT, LangUtil.getSerializedName(enchantment))
         );
 
         return true;
     }
 
-    private boolean giveFuel(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+    private boolean giveFuel(CommandContext context, ParsedArguments arguments) {
         if (!context.isPlayer() && !arguments.contains(CommandArguments.PLAYER)) {
             context.printUsage();
             return false;
         }
 
-        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(
+            CommandArguments.PLAYER) : context.getPlayerOrThrow();
         CustomEnchantment enchantment = arguments.get(CommandArguments.ENCHANT, CustomEnchantment.class);
         int amount = arguments.getInt(CommandArguments.AMOUNT, 1);
 
         if (!enchantment.isChargeable()) {
-            context.send(Lang.CHARGES_FUEL_BAD_ENCHANTMENT, replacer -> replacer.replace(EnchantsPlaceholders.GENERIC_NAME, enchantment.getDisplayName()));
+            context.send(Lang.CHARGES_FUEL_BAD_ENCHANTMENT, replacer -> replacer.replace(
+                EnchantsPlaceholders.GENERIC_NAME, enchantment.getDisplayName()));
             return false;
         }
 
@@ -258,17 +272,19 @@ public class BaseCommands {
         return true;
     }
 
-    private boolean openList(@NotNull CommandContext context, @NotNull ParsedArguments arguments) {
+    private boolean openList(CommandContext context, ParsedArguments arguments) {
         if (!context.isPlayer() && !arguments.contains(CommandArguments.PLAYER)) {
             context.printUsage();
             return false;
         }
 
-        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(CommandArguments.PLAYER) : context.getPlayerOrThrow();
+        Player player = arguments.contains(CommandArguments.PLAYER) ? arguments.getPlayer(
+            CommandArguments.PLAYER) : context.getPlayerOrThrow();
         this.plugin.getEnchantManager().openEnchantsMenu(player);
 
         if (player != context.getSender()) {
-            context.send(Lang.COMMAND_LIST_DONE_OTHERS, replacer -> replacer.replace(EnchantsPlaceholders.forPlayer(player)));
+            context.send(Lang.COMMAND_LIST_DONE_OTHERS, replacer -> replacer.replace(EnchantsPlaceholders.forPlayer(
+                player)));
         }
         return true;
     }

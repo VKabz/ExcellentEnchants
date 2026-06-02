@@ -6,7 +6,8 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
@@ -29,6 +30,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+@NullMarked
 public abstract class GameEnchantment implements CustomEnchantment {
 
     protected final EnchantsPlugin plugin;
@@ -51,7 +53,7 @@ public abstract class GameEnchantment implements CustomEnchantment {
     private boolean visualEffects;
     private boolean chargeable;
 
-    public GameEnchantment(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    protected GameEnchantment(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         this.plugin = plugin;
         this.manager = manager;
         this.file = file;
@@ -75,7 +77,7 @@ public abstract class GameEnchantment implements CustomEnchantment {
         });
     }
 
-    private void loadSettings(@NotNull FileConfig config) {
+    private void loadSettings(FileConfig config) {
         this.hiddenFromList = ConfigValue.create("Settings.Hide_From_List",
             false,
             "Sets whether or not this enchantment will be hidden from Enchants GUI."
@@ -103,21 +105,22 @@ public abstract class GameEnchantment implements CustomEnchantment {
         });
     }
 
-    protected abstract void loadAdditional(@NotNull FileConfig config);
+    protected abstract void loadAdditional(FileConfig config);
 
-    protected <T> void addComponent(@NotNull EnchantComponent<T> type, @NotNull T data) {
+    protected <T> void addComponent(EnchantComponent<T> type, T data) {
         this.componentLoaders.putIfAbsent(type, config -> type.read(config, data));
     }
 
-    public <T> boolean hasComponent(@NotNull EnchantComponent<T> type) {
+    public <T> boolean hasComponent(EnchantComponent<T> type) {
         return this.componentDatas.containsKey(type);
     }
 
     @SuppressWarnings("unchecked")
-    @NotNull
-    public <T> T getComponent(@NotNull EnchantComponent<T> type) {
+
+    public <T> T getComponent(EnchantComponent<T> type) {
         Optional<?> optional = this.componentDatas.get(type);
-        return (T) optional.orElseThrow(() -> new IllegalStateException("Enchantment doesn't have the " + type.getName() + " component."));
+        return (T) optional.orElseThrow(() -> new IllegalStateException("Enchantment doesn't have the " + type
+            .getName() + " component."));
     }
 
     @Override
@@ -125,91 +128,91 @@ public abstract class GameEnchantment implements CustomEnchantment {
         return this.getComponent(EnchantComponent.PROBABILITY).checkTriggerChance(level);
     }
 
-    public boolean addPotionEffect(@NotNull LivingEntity target, int level) {
+    public boolean addPotionEffect(LivingEntity target, int level) {
         return this.getComponent(EnchantComponent.POTION_EFFECT).addEffect(target, level, this.visualEffects);
     }
 
-    public boolean addPotionEffect(@NotNull Arrow arrow, int level) {
+    public boolean addPotionEffect(Arrow arrow, int level) {
         return this.getComponent(EnchantComponent.POTION_EFFECT).addEffect(arrow, level, this.visualEffects);
     }
 
     @Override
-    public boolean isTriggerTime(@NotNull LivingEntity entity) {
+    public boolean isTriggerTime(LivingEntity entity) {
         return this.getComponent(EnchantComponent.PERIODIC).isTriggerTime(entity);
     }
 
     @Override
-    @NotNull
+
     public UnaryOperator<String> replacePlaceholders(int level) {
         return this.placeholders.replacer(level);
     }
 
-    protected void addPlaceholder(@NotNull String key, @NotNull Function<Integer, String> replacer) {
+    protected void addPlaceholder(String key, Function<Integer, String> replacer) {
         this.placeholders.add(key, replacer);
     }
 
-    @NotNull
+
     @Override
     public String getId() {
         return this.id;
     }
 
     @Override
-    @NotNull
+
     public NamespacedKey getKey() {
         return this.enchantment.getKey();
     }
 
     @Override
-    @NotNull
+
     public Enchantment getBukkitEnchantment() {
         return this.enchantment;
     }
 
-    @NotNull
+
     @Override
     public EnchantDefinition getDefinition() {
         return this.definition;
     }
 
-    @NotNull
+
     @Override
     public EnchantDistribution getDistribution() {
         return this.distribution;
     }
 
-    @NotNull
+
     @Override
     public Charges getCharges() {
         return this.getComponent(EnchantComponent.CHARGES);
     }
 
-    @NotNull
+
     public String getDisplayName() {
         return this.definition.getDisplayName();
     }
 
     @Override
-    @NotNull
+
     public List<String> getDescription() {
         return this.definition.getDescription();
     }
 
     @Override
-    @NotNull
+
     public List<String> getDescription(int level) {
         List<String> description = new ArrayList<>(this.getDescription());
         description.replaceAll(this.replacePlaceholders(level));
         return description;
     }
 
-    @NotNull
+
     @Override
     public ItemSet getPrimaryItems() {
         return this.definition.getPrimaryItemSet();
     }
 
-    @NotNull
+
     @Override
     public ItemSet getSupportedItems() {
         return this.definition.getSupportedItemSet();
@@ -236,7 +239,7 @@ public abstract class GameEnchantment implements CustomEnchantment {
     }
 
     @Override
-    public boolean isChargesFuel(@NotNull ItemStack item) {
+    public boolean isChargesFuel(ItemStack item) {
         if (!this.isChargeable()) return false;
 
         ItemStack fuel = this.getFuel();
@@ -248,10 +251,11 @@ public abstract class GameEnchantment implements CustomEnchantment {
     }
 
     @Override
-    @NotNull
+
     public ItemStack getFuel() {
         Charges charges = this.getCharges();
-        return (charges.isCustomFuelEnabled() ? charges.getCustomFuelItem() : Config.CHARGES_FUEL_ITEM.get()).getItemStack();
+        return (charges.isCustomFuelEnabled() ? charges.getCustomFuelItem() : Config.CHARGES_FUEL_ITEM.get())
+            .getItemStack();
     }
 
     @Override
@@ -260,12 +264,12 @@ public abstract class GameEnchantment implements CustomEnchantment {
     }
 
     @Override
-    public boolean isOutOfCharges(@NotNull ItemStack item) {
+    public boolean isOutOfCharges(ItemStack item) {
         return this.isChargeable() && this.getCharges(item) == 0;
     }
 
     @Override
-    public boolean isFullOfCharges(@NotNull ItemStack item) {
+    public boolean isFullOfCharges(ItemStack item) {
         if (!this.isChargeable()) return false;
 
         int level = EnchantsUtils.getLevel(item, this.getBukkitEnchantment());
@@ -275,18 +279,18 @@ public abstract class GameEnchantment implements CustomEnchantment {
     }
 
     @Override
-    public int getCharges(@NotNull ItemStack item) {
+    public int getCharges(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         return meta == null ? 0 : this.getCharges(meta);
     }
 
     @Override
-    public int getCharges(@NotNull ItemMeta meta) {
+    public int getCharges(ItemMeta meta) {
         return this.isChargeable() ? PDCUtil.getInt(meta, this.chargesKey).orElse(0) : -1;
     }
 
     @Override
-    public void setCharges(@NotNull ItemStack item, int level, int amount) {
+    public void setCharges(ItemStack item, int level, int amount) {
         if (!this.isChargeable()) return;
 
         int max = this.getMaxCharges(level);
@@ -295,12 +299,12 @@ public abstract class GameEnchantment implements CustomEnchantment {
     }
 
     @Override
-    public void restoreCharges(@NotNull ItemStack item, int level) {
+    public void restoreCharges(ItemStack item, int level) {
         this.setCharges(item, level, this.getMaxCharges(level));
     }
 
     @Override
-    public void fuelCharges(@NotNull ItemStack item, int level) {
+    public void fuelCharges(ItemStack item, int level) {
         if (!this.isChargeable()) return;
 
         int recharge = this.getCharges().getRechargeAmount();
@@ -312,7 +316,7 @@ public abstract class GameEnchantment implements CustomEnchantment {
     }
 
     @Override
-    public void consumeCharges(@NotNull ItemStack item, int level) {
+    public void consumeCharges(ItemStack item, int level) {
         if (!this.isChargeable()) return;
 
         int charges = this.getCharges(item);

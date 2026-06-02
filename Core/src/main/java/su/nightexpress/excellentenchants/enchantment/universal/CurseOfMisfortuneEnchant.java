@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -20,17 +21,18 @@ import su.nightexpress.nightcore.config.FileConfig;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class CurseOfMisfortuneEnchant extends GameEnchantment implements MiningEnchant, KillEnchant {
 
     private boolean dropXP;
 
-    public CurseOfMisfortuneEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public CurseOfMisfortuneEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 7));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.dropXP = ConfigValue.create("CurseOfMisfortune.Drop_XP",
             false,
             "Controls whether XP should drop."
@@ -42,26 +44,26 @@ public class CurseOfMisfortuneEnchant extends GameEnchantment implements MiningE
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getBreakPriority() {
         return EnchantPriority.HIGHEST;
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getKillPriority() {
         return EnchantPriority.HIGHEST;
     }
 
     @Override
-    public boolean onBreak(@NotNull BlockBreakEvent event, @NotNull LivingEntity player, @NotNull ItemStack item, int level) {
+    public boolean onBreak(BlockBreakEvent event, LivingEntity player, ItemStack item, int level) {
         event.setDropItems(false);
         if (!this.dropXP) event.setExpToDrop(0);
         return true;
     }
 
     @Override
-    public boolean onKill(@NotNull EntityDeathEvent event, @NotNull LivingEntity entity, @NotNull Player killer, @NotNull ItemStack weapon, int level) {
+    public boolean onKill(EntityDeathEvent event, LivingEntity entity, Player killer, ItemStack weapon, int level) {
         event.getDrops().clear();
         if (!this.dropXP) event.setDroppedExp(0);
         return true;

@@ -4,7 +4,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.CookingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -19,11 +20,12 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
+@NullMarked
 public class SurvivalistEnchant extends GameEnchantment implements FishingEnchant {
 
     private final Set<CookingRecipe<?>> cookingRecipes;
 
-    public SurvivalistEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SurvivalistEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
 
@@ -31,7 +33,7 @@ public class SurvivalistEnchant extends GameEnchantment implements FishingEnchan
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.cookingRecipes.clear();
         this.plugin.getServer().recipeIterator().forEachRemaining(recipe -> {
             if (recipe instanceof CookingRecipe<?> cookingRecipe && !cookingRecipe.getResult().getType().isAir()) {
@@ -40,20 +42,21 @@ public class SurvivalistEnchant extends GameEnchantment implements FishingEnchan
         });
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getFishingPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onFishing(@NotNull PlayerFishEvent event, @NotNull ItemStack item, int level) {
+    public boolean onFishing(PlayerFishEvent event, ItemStack item, int level) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return false;
         if (!(event.getCaught() instanceof Item drop)) return false;
 
         ItemStack stack = drop.getItemStack();
 
-        CookingRecipe<?> recipe = this.cookingRecipes.stream().filter(rec -> rec.getInputChoice().test(stack)).findFirst().orElse(null);
+        CookingRecipe<?> recipe = this.cookingRecipes.stream().filter(rec -> rec.getInputChoice().test(stack))
+            .findFirst().orElse(null);
         if (recipe == null) return false;
 
         ItemStack cooked = recipe.getResult();

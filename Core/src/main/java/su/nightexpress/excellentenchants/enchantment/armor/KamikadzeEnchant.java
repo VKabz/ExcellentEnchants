@@ -6,7 +6,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -23,24 +24,26 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class KamikadzeEnchant extends GameEnchantment implements DeathEnchant, ResurrectEnchant {
 
     private Modifier power;
     private boolean  onResurrect;
 
-    public KamikadzeEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public KamikadzeEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 3));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.onResurrect = ConfigValue.create("Kamikadze.Apply_On_Resurrect",
             true,
             "Sets whether or not enchantment will trigger on resurrect (when a totem is used)."
         ).read(config);
 
-        this.power = Modifier.load(config, "Kamikadze.Explosion_Power", Modifier.addictive(1).perLevel(1).capacity(5), "Explosion power.");
+        this.power = Modifier.load(config, "Kamikadze.Explosion_Power", Modifier.addictive(1).perLevel(1).capacity(5),
+            "Explosion power.");
     }
 
     public boolean isOnResurrect() {
@@ -51,7 +54,7 @@ public class KamikadzeEnchant extends GameEnchantment implements DeathEnchant, R
         return this.power.getValue(level);
     }
 
-    public boolean createExplosion(@NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean createExplosion(LivingEntity entity, ItemStack item, int level) {
         Location location = entity.getLocation();
         Location eye = entity.getEyeLocation();
         float power = (float) this.getExplosionPower(level);
@@ -70,24 +73,24 @@ public class KamikadzeEnchant extends GameEnchantment implements DeathEnchant, R
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getDeathPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getResurrectPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onDeath(@NotNull EntityDeathEvent event, @NotNull LivingEntity entity, ItemStack item, int level) {
+    public boolean onDeath(EntityDeathEvent event, LivingEntity entity, ItemStack item, int level) {
         return this.createExplosion(entity, item, level);
     }
 
     @Override
-    public boolean onResurrect(@NotNull EntityResurrectEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onResurrect(EntityResurrectEvent event, LivingEntity entity, ItemStack item, int level) {
         return this.onResurrect && this.createExplosion(entity, item, level);
     }
 }

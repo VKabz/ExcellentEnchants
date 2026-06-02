@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -17,25 +18,26 @@ import su.nightexpress.nightcore.config.FileConfig;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class AutoReelEnchant extends GameEnchantment implements FishingEnchant {
 
-    public AutoReelEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public AutoReelEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getFishingPriority() {
         return EnchantPriority.MONITOR;
     }
 
     @Override
-    public boolean onFishing(@NotNull PlayerFishEvent event, @NotNull ItemStack itemStack, int level) {
+    public boolean onFishing(PlayerFishEvent event, ItemStack itemStack, int level) {
         if (event.getState() != PlayerFishEvent.State.BITE) return false;
 
         Player player = event.getPlayer();

@@ -1,33 +1,34 @@
 package su.nightexpress.excellentenchants.bridge;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Set;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public interface ItemTagLookup {
 
-    @NotNull Set<String> getBreakable();
+    Set<String> getBreakable();
 
-    @NotNull Set<String> getHelmets();
+    Set<String> getHelmets();
 
-    @NotNull Set<String> getChestplates();
+    Set<String> getChestplates();
 
-    @NotNull Set<String> getLeggings();
+    Set<String> getLeggings();
 
-    @NotNull Set<String> getBoots();
+    Set<String> getBoots();
 
-    @NotNull Set<String> getSwords();
+    Set<String> getSwords();
 
-    @NotNull
+
     default Set<String> getSpears() {
         return Set.of();
     }
 
-    @NotNull Set<String> getAxes();
+    Set<String> getAxes();
 
-    @NotNull Set<String> getHoes();
+    Set<String> getHoes();
 
-    @NotNull Set<String> getPickaxes();
+    Set<String> getPickaxes();
 
-    @NotNull Set<String> getShovels();
+    Set<String> getShovels();
 }

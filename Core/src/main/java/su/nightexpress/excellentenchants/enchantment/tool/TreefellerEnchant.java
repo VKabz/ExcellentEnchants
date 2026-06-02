@@ -8,7 +8,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -27,27 +28,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@NullMarked
 public class TreefellerEnchant extends GameEnchantment implements MiningEnchant {
 
-    private static final BlockFace[] BLOCK_SIDES = {
-        BlockFace.UP, BlockFace.DOWN,
-        BlockFace.EAST,
-        BlockFace.WEST,
-        BlockFace.SOUTH,
-        BlockFace.NORTH,
-        BlockFace.NORTH_EAST, BlockFace.NORTH_WEST,
-        BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST
+    private static final BlockFace[] BLOCK_SIDES = {BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST
     };
 
     private Modifier blocksLimit;
     private boolean  disableOnCrouch;
 
-    public TreefellerEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public TreefellerEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.disableOnCrouch = ConfigValue.create("Treefeller.Disable_On_Crouch",
             true,
             "Controls whether enchantment effect can be bypassed by crouching."
@@ -58,13 +53,14 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
             "Max. blocks to lookup for tree logs (including leaves).");
     }
 
-    @NotNull
-    private Set<Block> getRelatives(@NotNull Block block) {
-        return Stream.of(BLOCK_SIDES).map(block::getRelative).filter(b -> isLogOrLeaves(b.getType())).collect(Collectors.toSet());
+
+    private Set<Block> getRelatives(Block block) {
+        return Stream.of(BLOCK_SIDES).map(block::getRelative).filter(b -> isLogOrLeaves(b.getType())).collect(Collectors
+            .toSet());
     }
 
-    @NotNull
-    private Set<Block> getLogsAndLeaves(@NotNull Block source, int limit) {
+
+    private Set<Block> getLogsAndLeaves(Block source, int limit) {
         Set<Block> full = new HashSet<>();
         Set<Block> lookupBlocks = Lists.newSet(source);
 
@@ -72,7 +68,7 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
         return full;
     }
 
-    private boolean addConnections(@NotNull Set<Block> full, @NotNull Set<Block> lookupBlocks, int limit) {
+    private boolean addConnections(Set<Block> full, Set<Block> lookupBlocks, int limit) {
         if (full.size() >= limit) return false;
         if (!full.addAll(lookupBlocks)) return false;
 
@@ -92,19 +88,19 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
         return this.addConnections(full, connected, limit);
     }
 
-    private static boolean isLogOrLeaves(@NotNull Material material) {
+    private static boolean isLogOrLeaves(Material material) {
         return isLog(material) || isLeaves(material);
     }
 
-    private static boolean isLog(@NotNull Material material) {
+    private static boolean isLog(Material material) {
         return Tag.LOGS.isTagged(material);
     }
 
-    private static boolean isLeaves(@NotNull Material material) {
+    private static boolean isLeaves(Material material) {
         return Tag.LEAVES.isTagged(material);
     }
 
-    private void chopTree(@NotNull Player player, @NotNull Block source, @NotNull ItemStack tool, int level) {
+    private void chopTree(Player player, Block source, ItemStack tool, int level) {
         Set<Block> logsToBreak = this.getLogsAndLeaves(source, this.blocksLimit.getIntValue(level));
 
         logsToBreak.remove(source);
@@ -118,13 +114,13 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getBreakPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onBreak(@NotNull BlockBreakEvent event, @NotNull LivingEntity entity, @NotNull ItemStack tool, int level) {
+    public boolean onBreak(BlockBreakEvent event, LivingEntity entity, ItemStack tool, int level) {
         if (!(entity instanceof Player player)) return false;
         if (EnchantsUtils.isBusy()) return false;
         if (this.disableOnCrouch && player.isSneaking()) return false;

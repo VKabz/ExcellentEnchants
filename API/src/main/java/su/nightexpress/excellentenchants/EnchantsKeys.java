@@ -1,10 +1,13 @@
 package su.nightexpress.excellentenchants;
 
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.excellentenchants.api.EnchantKeyFactory;
 
 public class EnchantsKeys {
+
+    private EnchantsKeys() {
+    }
 
     public static final String NAMESPACE = "excellentenchants";
 
@@ -57,8 +60,8 @@ public class EnchantsKeys {
         keyFactory = NamespacedKey::minecraft;
     }
 
-    @NotNull
-    public static NamespacedKey create(@NotNull String value) {
+
+    public static NamespacedKey create(String value) {
         return keyFactory.create(value);
     }
 }

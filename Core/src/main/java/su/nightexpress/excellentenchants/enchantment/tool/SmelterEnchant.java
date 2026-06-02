@@ -12,7 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.inventory.FurnaceRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -37,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@NullMarked
 public class SmelterEnchant extends GameEnchantment implements BlockDropEnchant {
 
     private NightSound sound;
@@ -45,7 +47,7 @@ public class SmelterEnchant extends GameEnchantment implements BlockDropEnchant 
     private final Set<Material>      blacklistedInputs;
     private final Set<FurnaceRecipe> recipes;
 
-    public SmelterEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SmelterEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(15, 5));
 
@@ -54,13 +56,14 @@ public class SmelterEnchant extends GameEnchantment implements BlockDropEnchant 
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.disableOnCrouch = ConfigValue.create("Smelter.Disable_On_Crouch",
             true,
             "Sets whether or not enchantment will have no effect when crouching."
         ).read(config);
 
-        this.sound = ConfigValue.create("Smelter.Sound", VanillaSound.of(Sound.BLOCK_LAVA_EXTINGUISH), "Sound to play on smelting.").read(config);
+        this.sound = ConfigValue.create("Smelter.Sound", VanillaSound.of(Sound.BLOCK_LAVA_EXTINGUISH),
+            "Sound to play on smelting.").read(config);
 
         this.recipes.clear();
         this.blacklistedInputs.clear();
@@ -79,20 +82,20 @@ public class SmelterEnchant extends GameEnchantment implements BlockDropEnchant 
         });
     }
 
-//    @Override
-//    public void clear() {
-//        this.recipes.clear();
-//        this.exemptedItems.clear();
-//    }
+    //    @Override
+    //    public void clear() {
+    //        this.recipes.clear();
+    //        this.exemptedItems.clear();
+    //    }
 
     @Override
-    @NotNull
+
     public EnchantPriority getDropPriority() {
         return EnchantPriority.LOW;
     }
 
     @Override
-    public boolean onDrop(@NotNull BlockDropItemEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onDrop(BlockDropItemEvent event, LivingEntity entity, ItemStack item, int level) {
         if (this.disableOnCrouch && entity instanceof Player player && player.isSneaking()) return false;
 
         BlockState state = event.getBlockState();
@@ -103,7 +106,8 @@ public class SmelterEnchant extends GameEnchantment implements BlockDropEnchant 
             ItemStack dropStack = drop.getItemStack();
             if (this.blacklistedInputs.contains(dropStack.getType())) return false;
 
-            FurnaceRecipe recipe = this.recipes.stream().filter(rec -> rec.getInputChoice().test(dropStack)).findFirst().orElse(null);
+            FurnaceRecipe recipe = this.recipes.stream().filter(rec -> rec.getInputChoice().test(dropStack)).findFirst()
+                .orElse(null);
             if (recipe == null) return false;
 
             // Copy amount of the origin drop item. Fixes Fortune compatibility and overall original drop amount.

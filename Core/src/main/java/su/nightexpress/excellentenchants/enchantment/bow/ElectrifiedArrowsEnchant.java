@@ -10,7 +10,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -29,11 +30,12 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class ElectrifiedArrowsEnchant extends GameEnchantment implements ArrowEnchant {
 
     private Modifier damageAmount;
 
-    public ElectrifiedArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public ElectrifiedArrowsEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
 
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 5));
@@ -41,7 +43,7 @@ public class ElectrifiedArrowsEnchant extends GameEnchantment implements ArrowEn
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.damageAmount = Modifier.load(config, "Electrified.DamageAmount",
             Modifier.addictive(1.25).perLevel(0.25).capacity(1000D),
             "Sets additional damage caused by enchantment's effect."
@@ -54,7 +56,7 @@ public class ElectrifiedArrowsEnchant extends GameEnchantment implements ArrowEn
         return this.damageAmount.getValue(level);
     }
 
-    private void summonLightning(@NotNull Block block) {
+    private void summonLightning(Block block) {
         Location location = block.getLocation();
         block.getWorld().strikeLightningEffect(location);
 
@@ -66,18 +68,18 @@ public class ElectrifiedArrowsEnchant extends GameEnchantment implements ArrowEn
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         return true;
     }
 
     @Override
-    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow arrow, int level) {
+    public void onHit(ProjectileHitEvent event, LivingEntity shooter, Arrow arrow, int level) {
         if (event.getHitEntity() != null || event.getHitBlock() == null) return;
 
         Block block = event.getHitBlock();
@@ -85,7 +87,8 @@ public class ElectrifiedArrowsEnchant extends GameEnchantment implements ArrowEn
     }
 
     @Override
-    public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
+    public void onDamage(EntityDamageByEntityEvent event, LivingEntity shooter, LivingEntity victim, Arrow arrow,
+                         int level) {
         this.summonLightning(victim.getLocation().getBlock().getRelative(BlockFace.DOWN));
         event.setDamage(event.getDamage() + this.getDamage(level));
     }

@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
@@ -22,6 +23,7 @@ import su.nightexpress.nightcore.util.placeholder.PlaceholderContext;
 
 import java.util.*;
 
+@NullMarked
 public class TooltipManager extends AbstractManager<EnchantsPlugin> implements TooltipController {
 
     private final TooltipSettings             settings;
@@ -30,7 +32,7 @@ public class TooltipManager extends AbstractManager<EnchantsPlugin> implements T
 
     private TooltipHandler handler;
 
-    public TooltipManager(@NotNull EnchantsPlugin plugin) {
+    public TooltipManager(EnchantsPlugin plugin) {
         super(plugin);
         this.settings = new TooltipSettings();
         this.factoryMap = new LinkedHashMap<>();
@@ -72,8 +74,9 @@ public class TooltipManager extends AbstractManager<EnchantsPlugin> implements T
         }
 
         if (this.handler == null) {
-            this.plugin.error("No compatible enchantment tooltip provider found. Please install one of the following plugins for the feature to work: [%s]"
-                .formatted(String.join(", ", this.factoryMap.keySet()))
+            this.plugin.error(
+                "No compatible enchantment tooltip provider found. Please install one of the following plugins for the feature to work: [%s]"
+                    .formatted(String.join(", ", this.factoryMap.keySet()))
             );
         }
     }
@@ -84,38 +87,39 @@ public class TooltipManager extends AbstractManager<EnchantsPlugin> implements T
     }
 
     @Override
-    public void runInStopList(@NotNull Player player, @NotNull Runnable runnable) {
+    public void runInStopList(Player player, Runnable runnable) {
         this.addToUpdateStopList(player);
         runnable.run();
         this.removeFromUpdateStopList(player);
     }
 
     @Override
-    public void addToUpdateStopList(@NotNull Player player) {
+    public void addToUpdateStopList(Player player) {
         this.updateStopList.add(player.getUniqueId());
     }
 
     @Override
-    public void removeFromUpdateStopList(@NotNull Player player) {
+    public void removeFromUpdateStopList(Player player) {
         this.updateStopList.remove(player.getUniqueId());
     }
 
     @Override
-    public boolean isReadyForTooltipUpdate(@NotNull Player player) {
+    public boolean isReadyForTooltipUpdate(Player player) {
         return !this.updateStopList.contains(player.getUniqueId()) && player.getGameMode() != GameMode.CREATIVE;
     }
 
     @Override
-    public boolean isEnchantTooltipAllowed(@NotNull ItemStack item) {
+    public boolean isEnchantTooltipAllowed(ItemStack item) {
         if (this.settings.isForBooksOnly()) {
             return EnchantsUtils.isEnchantedBook(item);
         }
         return true;
     }
 
-    @NotNull
-    private String getDescription(@NotNull CustomEnchantment enchantment, int level, int charges) {
-        String format = enchantment.isChargeable() ? this.settings.getTooltipFormatWithCharges() : this.settings.getTooltipFormat();
+
+    private String getDescription(CustomEnchantment enchantment, int level, int charges) {
+        String format = enchantment.isChargeable() ? this.settings.getTooltipFormatWithCharges() : this.settings
+            .getTooltipFormat();
 
         PlaceholderContext context = PlaceholderContext.builder()
             .with(EnchantsPlaceholders.GENERIC_DESCRIPTION, () -> String.join("\n", enchantment.getDescription(level)))
@@ -135,8 +139,8 @@ public class TooltipManager extends AbstractManager<EnchantsPlugin> implements T
     }
 
     @Override
-    @NotNull
-    public ItemStack addDescription(@NotNull ItemStack itemStack) {
+
+    public ItemStack addDescription(ItemStack itemStack) {
         if (itemStack.getType().isAir() || !this.isEnchantTooltipAllowed(itemStack)) return itemStack;
 
         ItemStack copy = new ItemStack(itemStack);

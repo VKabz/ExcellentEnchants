@@ -12,7 +12,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.spawner.Spawner;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -33,26 +34,28 @@ import su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers;
 import java.nio.file.Path;
 import java.util.HashSet;
 
+@NullMarked
 public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant, BlockEnchant {
 
     private String spawnerName;
 
-    public SilkSpawnerEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SilkSpawnerEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 25));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.spawnerName = ConfigValue.create("SilkSpawner.Name",
-            TagWrappers.GREEN.wrap(LangUtil.getSerializedName(Material.SPAWNER) + " " + TagWrappers.GRAY.wrap("(" + TagWrappers.WHITE.wrap(EnchantsPlaceholders.GENERIC_TYPE) + ")")),
+            TagWrappers.GREEN.wrap(LangUtil.getSerializedName(Material.SPAWNER) + " " + TagWrappers.GRAY.wrap("(" +
+                TagWrappers.WHITE.wrap(EnchantsPlaceholders.GENERIC_TYPE) + ")")),
             "Spawner item display name.",
             "Use '" + EnchantsPlaceholders.GENERIC_TYPE + "' for the mob name."
         ).read(config);
     }
 
-    @NotNull
-    public ItemStack getSpawner(@NotNull CreatureSpawner spawnerBlock) {
+
+    public ItemStack getSpawner(CreatureSpawner spawnerBlock) {
         ItemStack itemSpawner = new ItemStack(Material.SPAWNER);
         BlockStateMeta stateMeta = (BlockStateMeta) itemSpawner.getItemMeta();
         if (stateMeta == null || spawnerBlock.getSpawnedType() == null) return itemSpawner;
@@ -63,7 +66,8 @@ public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant
         spawnerItem.update(true);
 
         stateMeta.setBlockState(spawnerItem);
-        ItemUtil.setCustomName(stateMeta, this.spawnerName.replace(EnchantsPlaceholders.GENERIC_TYPE, LangUtil.getSerializedName(spawnerBlock.getSpawnedType())));
+        ItemUtil.setCustomName(stateMeta, this.spawnerName.replace(EnchantsPlaceholders.GENERIC_TYPE, LangUtil
+            .getSerializedName(spawnerBlock.getSpawnedType())));
         itemSpawner.setItemMeta(stateMeta);
 
         this.manager.setBlockEnchant(itemSpawner, this);
@@ -71,7 +75,7 @@ public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getBreakPriority() {
         return EnchantPriority.LOW;
     }
@@ -82,7 +86,7 @@ public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant
     }
 
     @Override
-    public boolean onBreak(@NotNull BlockBreakEvent event, @NotNull LivingEntity player, @NotNull ItemStack item, int level) {
+    public boolean onBreak(BlockBreakEvent event, LivingEntity player, ItemStack item, int level) {
         Block block = event.getBlock();
         if (!(block.getState() instanceof CreatureSpawner spawner)) return false;
 
@@ -98,7 +102,7 @@ public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant
     }
 
     @Override
-    public void onPlace(@NotNull BlockPlaceEvent event, @NotNull Player player, @NotNull Block block, @NotNull ItemStack itemStack) {
+    public void onPlace(BlockPlaceEvent event, Player player, Block block, ItemStack itemStack) {
         if (block.getType() != Material.SPAWNER) return;
         if (!(itemStack.getItemMeta() instanceof BlockStateMeta stateMeta)) return;
 
@@ -109,7 +113,7 @@ public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant
         spawnerBlock.update(true);
     }
 
-    private void transferSettings(@NotNull Spawner from, @NotNull Spawner to) {
+    private void transferSettings(Spawner from, Spawner to) {
         to.setPotentialSpawns(new HashSet<>());
 
         if (from.getPotentialSpawns().isEmpty()) {

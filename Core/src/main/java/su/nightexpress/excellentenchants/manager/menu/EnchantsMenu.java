@@ -6,7 +6,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsFiles;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
@@ -34,6 +35,7 @@ import java.util.stream.IntStream;
 import static su.nightexpress.excellentenchants.EnchantsPlaceholders.*;
 import static su.nightexpress.nightcore.util.text.tag.Tags.*;
 
+@NullMarked
 public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBased, Filled<CustomEnchantment> {
 
     private static final String FILE_NAME = "enchants.yml";
@@ -50,7 +52,7 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
     private List<String> enchantLoreCharges;
     private int[]        enchantSlots;
 
-    public EnchantsMenu(@NotNull EnchantsPlugin plugin) {
+    public EnchantsMenu(EnchantsPlugin plugin) {
         super(plugin, MenuType.GENERIC_9X4, BLACK.wrap("Custom Enchantments"));
         this.levelKey = new NamespacedKey(plugin, "list_display_level");
 
@@ -58,18 +60,18 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
     }
 
     @Override
-    protected void onPrepare(@NotNull MenuViewer viewer, @NotNull InventoryView view) {
+    protected void onPrepare(MenuViewer viewer, InventoryView view) {
         this.autoFill(viewer);
     }
 
     @Override
-    protected void onReady(@NotNull MenuViewer viewer, @NotNull Inventory inventory) {
+    protected void onReady(MenuViewer viewer, Inventory inventory) {
 
     }
 
     @Override
-    @NotNull
-    public MenuFiller<CustomEnchantment> createFiller(@NotNull MenuViewer viewer) {
+
+    public MenuFiller<CustomEnchantment> createFiller(MenuViewer viewer) {
         var autoFill = MenuFiller.builder(this);
 
         autoFill.setSlots(this.enchantSlots);
@@ -98,8 +100,8 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
         return autoFill.build();
     }
 
-    @NotNull
-    private NightItem buildEnchantIcon(@NotNull CustomEnchantment enchant, int level) {
+
+    private NightItem buildEnchantIcon(CustomEnchantment enchant, int level) {
         List<String> conflicts = new ArrayList<>();
         if (enchant.getDefinition().hasConflicts()) {
             for (String line : this.enchantLoreConflicts) {
@@ -107,7 +109,8 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
                     enchant.getDefinition().getExclusiveSet().stream()
                         .map(NightKey::key)
                         .map(NightKey::toBukkit)
-                        .map(key -> BukkitThing.getByKey(RegistryType.ENCHANTMENT, key)).filter(Objects::nonNull).map(LangUtil::getSerializedName)
+                        .map(key -> BukkitThing.getByKey(RegistryType.ENCHANTMENT, key)).filter(Objects::nonNull).map(
+                            LangUtil::getSerializedName)
                         .forEach(conf -> conflicts.add(line.replace(GENERIC_NAME, conf)));
                     continue;
                 }
@@ -131,7 +134,7 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
     }
 
     @Override
-    public void loadConfiguration(@NotNull FileConfig config, @NotNull MenuLoader loader) {
+    public void loadConfiguration(FileConfig config, MenuLoader loader) {
         this.enchantIcon = ConfigValue.create("Enchantment.Icon", new NightItem(Material.ENCHANTED_BOOK)).read(config);
 
         this.enchantName = ConfigValue.create("Enchantment.Name",
@@ -145,7 +148,8 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
                 EMPTY_IF_ABOVE,
                 LIGHT_YELLOW.wrap(BOLD.wrap("Info:")),
                 LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Applies to: ") + ENCHANTMENT_FIT_ITEM_TYPES),
-                LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Levels: ") + ENCHANTMENT_LEVEL_MIN + LIGHT_GRAY.wrap(" - ") + ENCHANTMENT_LEVEL_MAX),
+                LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Levels: ") + ENCHANTMENT_LEVEL_MIN + LIGHT_GRAY.wrap(" - ") +
+                    ENCHANTMENT_LEVEL_MAX),
                 EMPTY_IF_BELOW,
                 CHARGES,
                 EMPTY_IF_BELOW,
@@ -160,7 +164,8 @@ public class EnchantsMenu extends NormalMenu<EnchantsPlugin> implements ConfigBa
 
         this.enchantLoreCharges = ConfigValue.create("Enchantment.Lore.Charges",
             Lists.newList(
-                LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Charges: ") + GENERIC_AMOUNT + "⚡" + LIGHT_GRAY.wrap(" (" + WHITE.wrap(GENERIC_ITEM) + ")"))
+                LIGHT_YELLOW.wrap("▪ " + LIGHT_GRAY.wrap("Charges: ") + GENERIC_AMOUNT + "⚡" + LIGHT_GRAY.wrap(" (" +
+                    WHITE.wrap(GENERIC_ITEM) + ")"))
             )).read(config);
 
         this.enchantSlots = ConfigValue.create("Enchantment.Slots", IntStream.range(0, 27).toArray()).read(config);

@@ -3,16 +3,19 @@ package su.nightexpress.excellentenchants.api.enchantment.type;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.damage.DamageBonus;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 
+@NullMarked
 public interface ProtectionEnchant extends CustomEnchantment {
 
-    boolean onProtection(@NotNull EntityDamageEvent event, @NotNull DamageBonus damageBonus, @NotNull LivingEntity entity, @NotNull ItemStack itemStack, int level);
+    boolean onProtection(EntityDamageEvent event, DamageBonus damageBonus, LivingEntity entity, ItemStack itemStack,
+                         int level);
 
-    @NotNull DamageBonus getDamageBonus();
+    DamageBonus getDamageBonus();
 
-    @NotNull EnchantPriority getProtectionPriority();
+    EnchantPriority getProtectionPriority();
 }

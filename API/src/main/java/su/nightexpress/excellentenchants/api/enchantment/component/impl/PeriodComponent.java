@@ -1,23 +1,24 @@
 package su.nightexpress.excellentenchants.api.enchantment.component.impl;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Period;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.TimeUtil;
 
+@NullMarked
 public class PeriodComponent implements EnchantComponent<Period> {
 
     @Override
-    @NotNull
     public String getName() {
         return "periodic";
     }
 
     @Override
-    @NotNull
-    public Period read(@NotNull FileConfig config, @NotNull Period defaultValue) {
+    public Period read(FileConfig config, Period defaultValue) {
         if (config.contains("Period.Tick_Interval")) {
             long oldValue = config.getLong("Period.Tick_Interval");
             config.set("Period.Interval", (int) Math.max(1, TimeUtil.ticksToSeconds(oldValue)));

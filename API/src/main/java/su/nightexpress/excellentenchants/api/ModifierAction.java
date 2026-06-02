@@ -1,9 +1,11 @@
 package su.nightexpress.excellentenchants.api;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiFunction;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public enum ModifierAction {
 
     ADD(Double::sum),
@@ -11,7 +13,7 @@ public enum ModifierAction {
 
     private final BiFunction<Double, Double, Double> function;
 
-    ModifierAction(@NotNull BiFunction<Double, Double, Double> function) {
+    ModifierAction(BiFunction<Double, Double, Double> function) {
         this.function = function;
     }
 

@@ -7,7 +7,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -23,28 +24,30 @@ import su.nightexpress.nightcore.config.FileConfig;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class PoisonedArrowsEnchant extends GameEnchantment implements BowEnchant {
 
-    public PoisonedArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public PoisonedArrowsEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.ITEM_SLIME));
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(8, 3));
-        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.POISON, Modifier.addictive(3).perLevel(1).capacity(10)));
+        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.POISON, Modifier
+            .addictive(3).perLevel(1).capacity(10)));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         if (!(event.getProjectile() instanceof Arrow arrow)) return false;
 
         arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);

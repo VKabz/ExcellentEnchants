@@ -6,7 +6,8 @@ import org.bukkit.entity.Drowned;
 import org.bukkit.entity.FishHook;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -21,26 +22,27 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class CurseOfDrownedEnchant extends GameEnchantment implements FishingEnchant {
 
-    public CurseOfDrownedEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public CurseOfDrownedEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(5, 5));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getFishingPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onFishing(@NotNull PlayerFishEvent event, @NotNull ItemStack item, int level) {
+    public boolean onFishing(PlayerFishEvent event, ItemStack item, int level) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return false;
 
         FishHook hook = event.getHook();

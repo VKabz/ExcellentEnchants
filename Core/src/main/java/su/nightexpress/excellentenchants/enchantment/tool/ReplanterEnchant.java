@@ -13,7 +13,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -31,6 +32,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public class ReplanterEnchant extends GameEnchantment implements InteractEnchant, MiningEnchant {
 
     private boolean replantOnRightClick;
@@ -48,13 +50,13 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
         CROP_MAP.put(Material.NETHER_WART, Material.NETHER_WART);
     }
 
-    public ReplanterEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public ReplanterEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.replantOnRightClick = ConfigValue.create("Replanter.On_Right_Click",
             true,
             "When 'true', player will be able to replant crops when right-clicking farmland blocks."
@@ -74,7 +76,7 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
         return replantOnRightClick;
     }
 
-    private boolean takeSeeds(@NotNull Player player, @NotNull Material material) {
+    private boolean takeSeeds(Player player, Material material) {
         int slot = player.getInventory().first(material);
         if (slot < 0) return false;
 
@@ -85,20 +87,20 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
         return true;
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getInteractPriority() {
         return EnchantPriority.HIGHEST;
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getBreakPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onInteract(@NotNull PlayerInteractEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onInteract(PlayerInteractEvent event, LivingEntity entity, ItemStack item, int level) {
         if (!(entity instanceof Player player)) return false;
         if (!this.isReplantOnRightClick()) return false;
 
@@ -122,10 +124,12 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
         // Get the first crops from player's inventory and plant them.
         for (var entry : CROP_MAP.entrySet()) {
             Material seed = entry.getKey();
-            if (seed == Material.NETHER_WART && blockGround.getType() == Material.SOUL_SAND
-                || seed != Material.NETHER_WART && blockGround.getType() == Material.FARMLAND) {
+            if (seed == Material.NETHER_WART && blockGround
+                .getType() == Material.SOUL_SAND || seed != Material.NETHER_WART && blockGround
+                    .getType() == Material.FARMLAND) {
                 if (this.takeSeeds(player, seed)) {
-                    VanillaSound.of(seed == Material.NETHER_WART ? Sound.ITEM_NETHER_WART_PLANT : Sound.ITEM_CROP_PLANT).play(player);
+                    VanillaSound.of(seed == Material.NETHER_WART ? Sound.ITEM_NETHER_WART_PLANT : Sound.ITEM_CROP_PLANT)
+                        .play(player);
                     player.swingMainHand();
                     blockPlant.setType(entry.getValue());
                     break;
@@ -136,7 +140,7 @@ public class ReplanterEnchant extends GameEnchantment implements InteractEnchant
     }
 
     @Override
-    public boolean onBreak(@NotNull BlockBreakEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onBreak(BlockBreakEvent event, LivingEntity entity, ItemStack item, int level) {
         if (!(entity instanceof Player player)) return false;
         if (!this.isReplantOnPlantBreak()) return false;
 

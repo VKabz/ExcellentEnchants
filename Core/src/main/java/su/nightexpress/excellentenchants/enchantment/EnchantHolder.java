@@ -3,8 +3,8 @@ package su.nightexpress.excellentenchants.enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 import su.nightexpress.nightcore.util.LowerCase;
@@ -12,6 +12,7 @@ import su.nightexpress.nightcore.util.LowerCase;
 import java.util.*;
 import java.util.function.Function;
 
+@NullMarked
 public class EnchantHolder<T extends CustomEnchantment> {
 
     private final Class<T>                     type;
@@ -21,7 +22,7 @@ public class EnchantHolder<T extends CustomEnchantment> {
 
     private final Map<UUID, Map<EquipmentSlot, EnchantedItem<T>>> cachedEnchants;
 
-    private EnchantHolder(@NotNull Class<T> type, @NotNull Function<T, EnchantPriority> priority, boolean cacheable) {
+    private EnchantHolder(Class<T> type, Function<T, EnchantPriority> priority, boolean cacheable) {
         this.type = type;
         this.priority = priority;
         this.cacheable = cacheable;
@@ -30,13 +31,15 @@ public class EnchantHolder<T extends CustomEnchantment> {
         this.cachedEnchants = new HashMap<>();
     }
 
-    @NotNull
-    public static <T extends CustomEnchantment> EnchantHolder<T> withNoCache(@NotNull Class<T> type, @NotNull Function<T, EnchantPriority> priority) {
+
+    public static <T extends CustomEnchantment> EnchantHolder<T> withNoCache(Class<T> type,
+                                                                             Function<T, EnchantPriority> priority) {
         return new EnchantHolder<>(type, priority, false);
     }
 
-    @NotNull
-    public static <T extends CustomEnchantment> EnchantHolder<T> cached(@NotNull Class<T> type, @NotNull Function<T, EnchantPriority> priority) {
+
+    public static <T extends CustomEnchantment> EnchantHolder<T> cached(Class<T> type,
+                                                                        Function<T, EnchantPriority> priority) {
         return new EnchantHolder<>(type, priority, true);
     }
 
@@ -48,7 +51,7 @@ public class EnchantHolder<T extends CustomEnchantment> {
         return this.enchants.isEmpty();
     }
 
-    public boolean accept(@NotNull CustomEnchantment enchantment) {
+    public boolean accept(CustomEnchantment enchantment) {
         T enchant = this.adapt(enchantment);
         if (enchant == null) return false;
 
@@ -56,17 +59,18 @@ public class EnchantHolder<T extends CustomEnchantment> {
         return true;
     }
 
-    @NotNull
-    public Map<EquipmentSlot, EnchantedItem<T>> getCached(@NotNull LivingEntity entity) {
+
+    public Map<EquipmentSlot, EnchantedItem<T>> getCached(LivingEntity entity) {
         return this.cachedEnchants.getOrDefault(entity.getUniqueId(), Collections.emptyMap());
     }
 
     @Nullable
-    public EnchantedItem<T> getCached(@NotNull LivingEntity entity, @NotNull EquipmentSlot slot) {
+    public EnchantedItem<T> getCached(LivingEntity entity, EquipmentSlot slot) {
         return this.getCached(entity).get(slot);
     }
 
-    public void updateCache(@NotNull LivingEntity entity, @NotNull EquipmentSlot slot, @NotNull ItemStack itemStack, @NotNull Map<CustomEnchantment, Integer> allEnchants) {
+    public void updateCache(LivingEntity entity, EquipmentSlot slot, ItemStack itemStack,
+                            Map<CustomEnchantment, Integer> allEnchants) {
         if (allEnchants.isEmpty()) {
             this.removeCache(entity, slot);
             return;
@@ -88,14 +92,15 @@ public class EnchantHolder<T extends CustomEnchantment> {
             return;
         }
 
-        this.cachedEnchants.computeIfAbsent(entity.getUniqueId(), k -> new HashMap<>()).put(slot, new EnchantedItem<>(itemStack, adaptedEnchants));
+        this.cachedEnchants.computeIfAbsent(entity.getUniqueId(), k -> new HashMap<>()).put(slot,
+            new EnchantedItem<>(itemStack, adaptedEnchants));
     }
 
-    public void removeCache(@NotNull LivingEntity entity, @NotNull EquipmentSlot slot) {
+    public void removeCache(LivingEntity entity, EquipmentSlot slot) {
         this.getCached(entity).remove(slot);
     }
 
-    public void clearCache(@NotNull LivingEntity entity) {
+    public void clearCache(LivingEntity entity) {
         this.cachedEnchants.remove(entity.getUniqueId());
     }
 
@@ -103,27 +108,27 @@ public class EnchantHolder<T extends CustomEnchantment> {
         return this.cacheable;
     }
 
-    @NotNull
-    public EnchantPriority getPriority(@NotNull T enchant) {
+
+    public EnchantPriority getPriority(T enchant) {
         return this.priority.apply(enchant);
     }
 
-    @NotNull
+
     public Set<T> getEnchants() {
         return new HashSet<>(this.enchants.values());
     }
 
     @Nullable
-    public T getEnchant(@NotNull String id) {
+    public T getEnchant(String id) {
         return this.enchants.get(LowerCase.INTERNAL.apply(id));
     }
 
     @Nullable
-    private T adapt(@NotNull CustomEnchantment enchantment) {
+    private T adapt(CustomEnchantment enchantment) {
         return this.type.isAssignableFrom(enchantment.getClass()) ? this.type.cast(enchantment) : null;
     }
 
-    public boolean contains(@NotNull CustomEnchantment enchantment) {
+    public boolean contains(CustomEnchantment enchantment) {
         return this.enchants.containsKey(enchantment.getId());
     }
 }

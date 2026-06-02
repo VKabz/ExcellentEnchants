@@ -2,22 +2,24 @@ package su.nightexpress.excellentenchants.manager.block;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.nightcore.util.EntityUtil;
 import su.nightexpress.nightcore.util.LocationUtil;
 import su.nightexpress.nightcore.util.TimeUtil;
 import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
+@NullMarked
 public class TickedBlock {
 
     private final Location location;
     private final Material originalType;
-    private final long lifeTime;
-    private final int  sourceId;
+    private final long     lifeTime;
+    private final int      sourceId;
 
     private long livedTicks;
 
-    public TickedBlock(@NotNull Location location, @NotNull Material originalType, int seconds) {
+    public TickedBlock(Location location, Material originalType, int seconds) {
         this.location = location;
         this.originalType = originalType;
         this.lifeTime = TimeUtil.secondsToTicks(seconds);
@@ -44,8 +46,8 @@ public class TickedBlock {
         this.livedTicks++;
 
         if (this.isDead()) {
-            Location location = LocationUtil.setCenter3D(this.location);
-            UniParticle.blockCrack(this.location.getBlock().getType()).play(location, 0.5, 0.7, 0.5, 0.03, 30);
+            Location centered = LocationUtil.setCenter3D(this.location);
+            UniParticle.blockCrack(this.location.getBlock().getType()).play(centered, 0.5, 0.7, 0.5, 0.03, 30);
             this.sendDamageInfo(0F);
             this.restore();
             return;

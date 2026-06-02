@@ -5,7 +5,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -21,22 +22,24 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class SniperEnchant extends GameEnchantment implements BowEnchant {
 
     private Modifier speedModifier;
 
-    public SniperEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SniperEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.speedModifier = Modifier.load(config, "Sniper.Speed_Modifier",
             Modifier.addictive(1).perLevel(0.2).capacity(3D),
             "Projectile's speed modifier.");
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getSpeedModifier(level) * 100D));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getSpeedModifier(
+            level) * 100D));
     }
 
     public double getSpeedModifier(int level) {
@@ -44,13 +47,13 @@ public class SniperEnchant extends GameEnchantment implements BowEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         double modifier = this.getSpeedModifier(level);
 
         Entity entity = event.getProjectile();

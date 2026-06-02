@@ -21,7 +21,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.api.damage.DamageBonus;
@@ -38,13 +39,14 @@ import su.nightexpress.nightcore.util.EntityUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public class EnchantListener extends AbstractListener<EnchantsPlugin> {
 
     private static final EquipmentSlot[] ARMOR_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.OFF_HAND};
 
     private final EnchantManager manager;
 
-    public EnchantListener(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager) {
+    public EnchantListener(EnchantsPlugin plugin, EnchantManager manager) {
         super(plugin);
         this.manager = manager;
     }
@@ -53,21 +55,31 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
 
-        this.manager.handleInSlot(player, EquipmentSlot.HAND, EnchantRegistry.MINING, (item, enchant, level) -> enchant.onBreak(event, player, item, level));
+        this.manager.handleInSlot(player, EquipmentSlot.HAND, EnchantRegistry.MINING, (item, enchant, level) -> enchant
+            .onBreak(event, player, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockDrop(BlockDropItemEvent event) {
         Player player = event.getPlayer();
 
-        this.manager.handleInSlot(player, EquipmentSlot.HAND, EnchantRegistry.BLOCK_DROP, (item, enchant, level) -> enchant.onDrop(event, player, item, level));
+        this.manager.handleInSlot(player, EquipmentSlot.HAND, EnchantRegistry.BLOCK_DROP, (item, enchant,
+                                                                                           level) -> enchant.onDrop(
+                                                                                               event, player, item,
+                                                                                               level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockChange(EntityChangeBlockEvent event) {
         if (!(event.getEntity() instanceof LivingEntity entity)) return;
 
-        this.manager.handleInSlots(entity, EntityUtil.EQUIPMENT_SLOTS, EnchantRegistry.BLOCK_CHANGE, (item, enchant, level) -> enchant.onBlockChange(event, entity, item, level));
+        this.manager.handleInSlots(entity, EntityUtil.EQUIPMENT_SLOTS, EnchantRegistry.BLOCK_CHANGE, (item, enchant,
+                                                                                                      level) -> enchant
+                                                                                                          .onBlockChange(
+                                                                                                              event,
+                                                                                                              entity,
+                                                                                                              item,
+                                                                                                              level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -103,7 +115,7 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         });
     }
 
-    private void addArrowEffects(@NotNull AbstractArrow arrow, @NotNull CustomEnchantment enchant, int level) {
+    private void addArrowEffects(AbstractArrow arrow, CustomEnchantment enchant, int level) {
         EnchantsUtils.addArrowEnchant(arrow, enchant, level);
 
         if (enchant.hasVisualEffects() && enchant.hasComponent(EnchantComponent.ARROW)) {
@@ -199,14 +211,18 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         else if (directDamager instanceof LivingEntity damager) {
             if (source.getDamageType() == DamageType.THORNS) return;
 
-            this.manager.handleInSlot(damager, EquipmentSlot.HAND, EnchantRegistry.ATTACK, (item, enchant, level) -> enchant.onAttack(event, damager, victim, item, level));
+            this.manager.handleInSlot(damager, EquipmentSlot.HAND, EnchantRegistry.ATTACK, (item, enchant,
+                                                                                            level) -> enchant.onAttack(
+                                                                                                event, damager, victim,
+                                                                                                item, level));
         }
 
         if (source.getCausingEntity() instanceof LivingEntity damager) {
             if (source.getDamageType() == DamageType.THORNS) return;
             if (damager == victim) return;
 
-            this.manager.handleInSlots(victim, ARMOR_SLOTS, EnchantRegistry.DEFEND, (item, enchant, level) -> enchant.onProtect(event, damager, victim, item, level));
+            this.manager.handleInSlots(victim, ARMOR_SLOTS, EnchantRegistry.DEFEND, (item, enchant, level) -> enchant
+                .onProtect(event, damager, victim, item, level));
         }
     }
 
@@ -217,21 +233,27 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
 
         if (event instanceof PlayerDeathEvent deathEvent) {
             Player player = deathEvent.getPlayer();
-            this.manager.handleInventoryEnchants(player, EnchantRegistry.INVENTORY, (item, enchant, level) -> enchant.onDeath(deathEvent, player, item, level));
+            this.manager.handleInventoryEnchants(player, EnchantRegistry.INVENTORY, (item, enchant, level) -> enchant
+                .onDeath(deathEvent, player, item, level));
         }
 
         if (killer != null) {
-            this.manager.handleInSlot(killer, EquipmentSlot.HAND, EnchantRegistry.KILL, (item, enchant, level) -> enchant.onKill(event, entity, killer, item, level));
+            this.manager.handleInSlot(killer, EquipmentSlot.HAND, EnchantRegistry.KILL, (item, enchant,
+                                                                                         level) -> enchant.onKill(event,
+                                                                                             entity, killer, item,
+                                                                                             level));
         }
 
-        this.manager.handleInSlots(entity, ARMOR_SLOTS, EnchantRegistry.DEATH, (item, enchant, level) -> enchant.onDeath(event, entity, item, level));
+        this.manager.handleInSlots(entity, ARMOR_SLOTS, EnchantRegistry.DEATH, (item, enchant, level) -> enchant
+            .onDeath(event, entity, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onResurrect(EntityResurrectEvent event) {
         LivingEntity entity = event.getEntity();
 
-        this.manager.handleInSlots(entity, ARMOR_SLOTS, EnchantRegistry.RESURRECT, (item, enchant, level) -> enchant.onResurrect(event, entity, item, level));
+        this.manager.handleInSlots(entity, ARMOR_SLOTS, EnchantRegistry.RESURRECT, (item, enchant, level) -> enchant
+            .onResurrect(event, entity, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -243,7 +265,8 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         }
         if (slot == null) return;
 
-        this.manager.handleInSlot(player, slot, EnchantRegistry.FISHING, (item, enchant, level) -> enchant.onFishing(event, item, level));
+        this.manager.handleInSlot(player, slot, EnchantRegistry.FISHING, (item, enchant, level) -> enchant.onFishing(
+            event, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -255,7 +278,8 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         Location to = event.getTo();
         if (from.getX() == to.getX() && from.getY() == to.getY() && from.getZ() == to.getZ()) return;
 
-        this.manager.handleInSlots(player, ARMOR_SLOTS, EnchantRegistry.MOVE, (item, enchant, level) -> enchant.onMove(event, player, item, level));
+        this.manager.handleInSlots(player, ARMOR_SLOTS, EnchantRegistry.MOVE, (item, enchant, level) -> enchant.onMove(
+            event, player, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -268,7 +292,8 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         }
         if (slot == null) return;
 
-        this.manager.handleInSlot(player, slot, EnchantRegistry.INTERACT, (item, enchant, level) -> enchant.onInteract(event, player, item, level));
+        this.manager.handleInSlot(player, slot, EnchantRegistry.INTERACT, (item, enchant, level) -> enchant.onInteract(
+            event, player, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -276,7 +301,8 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         Player player = event.getPlayer();
         ItemStack itemStack = event.getItem();
 
-        this.manager.handleItemEnchants(player, itemStack, EnchantRegistry.DURABILITY, (item, enchant, level) -> enchant.onItemDamage(event, player, item, level));
+        this.manager.handleItemEnchants(player, itemStack, EnchantRegistry.DURABILITY, (item, enchant, level) -> enchant
+            .onItemDamage(event, player, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -285,7 +311,8 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         ItemStack itemStack = event.getCurrentItem();
         if (itemStack == null || itemStack.getType().isAir()) return;
 
-        this.manager.handleItemEnchants(player, itemStack, EnchantRegistry.CONTAINER, (item, enchant, level) -> enchant.onClick(event, player, item, level));
+        this.manager.handleItemEnchants(player, itemStack, EnchantRegistry.CONTAINER, (item, enchant, level) -> enchant
+            .onClick(event, player, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)

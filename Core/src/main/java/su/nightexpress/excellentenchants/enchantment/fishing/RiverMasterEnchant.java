@@ -3,7 +3,8 @@ package su.nightexpress.excellentenchants.enchantment.fishing;
 import org.bukkit.entity.FishHook;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -15,16 +16,17 @@ import su.nightexpress.nightcore.config.FileConfig;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class RiverMasterEnchant extends GameEnchantment implements FishingEnchant {
 
     private Modifier distanceMod;
 
-    public RiverMasterEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public RiverMasterEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.distanceMod = Modifier.load(config, "RiverMaster.Distance_Modifier",
             Modifier.addictive(1).perLevel(0.25).capacity(3D),
             "Multiplies the casted fish hook's velocity by specified value.",
@@ -37,13 +39,13 @@ public class RiverMasterEnchant extends GameEnchantment implements FishingEnchan
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getFishingPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onFishing(@NotNull PlayerFishEvent event, @NotNull ItemStack item, int level) {
+    public boolean onFishing(PlayerFishEvent event, ItemStack item, int level) {
         if (event.getState() != PlayerFishEvent.State.FISHING) return false;
 
         FishHook hook = event.getHook();

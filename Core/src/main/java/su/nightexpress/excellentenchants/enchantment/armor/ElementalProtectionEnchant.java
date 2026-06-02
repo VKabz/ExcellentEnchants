@@ -5,7 +5,8 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -24,6 +25,7 @@ import su.nightexpress.nightcore.util.NumberUtil;
 import java.nio.file.Path;
 import java.util.Set;
 
+@NullMarked
 public class ElementalProtectionEnchant extends GameEnchantment implements ProtectionEnchant {
 
     private static final Set<DamageType> DAMAGE_CAUSES = Lists.newSet(
@@ -37,12 +39,13 @@ public class ElementalProtectionEnchant extends GameEnchantment implements Prote
     private double   capacity;
     private boolean  multiplier;
 
-    public ElementalProtectionEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public ElementalProtectionEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file,
+                                      EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.amount = Modifier.load(config, "Protection.Amount",
             Modifier.addictive(0).perLevel(5).capacity(25),
             "Protection amount given by enchantment."
@@ -58,7 +61,8 @@ public class ElementalProtectionEnchant extends GameEnchantment implements Prote
             "Controls if protection amount is in percent."
         ).read(config);
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getProtectionAmount(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getProtectionAmount(
+            level)));
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_MAX, level -> NumberUtil.format(this.getCapacity()));
     }
 
@@ -75,19 +79,20 @@ public class ElementalProtectionEnchant extends GameEnchantment implements Prote
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getProtectionPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    @NotNull
+
     public DamageBonus getDamageBonus() {
         return new DamageBonus(this.multiplier ? DamageBonusType.MULTIPLIER : DamageBonusType.NORMAL);
     }
 
     @Override
-    public boolean onProtection(@NotNull EntityDamageEvent event, @NotNull DamageBonus damageBonus, @NotNull LivingEntity entity, @NotNull ItemStack itemStack, int level) {
+    public boolean onProtection(EntityDamageEvent event, DamageBonus damageBonus, LivingEntity entity,
+                                ItemStack itemStack, int level) {
         DamageSource source = event.getDamageSource();
         DamageType type = source.getDamageType();
         if (!DAMAGE_CAUSES.contains(type)) return false;

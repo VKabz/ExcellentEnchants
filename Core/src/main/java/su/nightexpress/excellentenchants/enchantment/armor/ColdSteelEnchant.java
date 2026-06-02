@@ -4,7 +4,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -19,27 +20,30 @@ import su.nightexpress.nightcore.config.FileConfig;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class ColdSteelEnchant extends GameEnchantment implements DefendEnchant {
 
-    public ColdSteelEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public ColdSteelEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(10, 5));
-        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.MINING_FATIGUE, Modifier.addictive(4).perLevel(1).capacity(10)));
+        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.MINING_FATIGUE,
+            Modifier.addictive(4).perLevel(1).capacity(10)));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getProtectPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onProtect(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onProtect(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                             ItemStack weapon, int level) {
         return this.addPotionEffect(damager, level);
     }
 }

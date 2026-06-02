@@ -1,6 +1,8 @@
 package su.nightexpress.excellentenchants.api.enchantment.component.impl;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.Modifier;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -9,17 +11,18 @@ import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.bukkit.NightItem;
 
+@NullMarked
 public class ChargesComponent implements EnchantComponent<Charges> {
 
     @Override
-    @NotNull
+
     public String getName() {
         return "charges";
     }
 
     @Override
-    @NotNull
-    public Charges read(@NotNull FileConfig config, @NotNull Charges defaultValue) {
+
+    public Charges read(FileConfig config, Charges defaultValue) {
         Modifier maxAmount = Modifier.load(config, "Charges.Max_Amount",
             defaultValue.getMaxAmount(),
             "Maximum amount of charges for the enchantment."

@@ -10,7 +10,8 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -29,18 +30,19 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class VampiricArrowsEnchant extends GameEnchantment implements ArrowEnchant {
 
     private Modifier healAmount;
 
-    public VampiricArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public VampiricArrowsEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.ARROW, new ArrowEffects(UniParticle.redstone(Color.RED, 1F)));
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(20, 5));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.healAmount = Modifier.load(config, "Vampire.Heal_Amount",
             Modifier.addictive(1).perLevel(0.5).capacity(5),
             "Amount of hearts to be restore."
@@ -54,23 +56,24 @@ public class VampiricArrowsEnchant extends GameEnchantment implements ArrowEncha
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.HIGHEST;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         return event.getProjectile() instanceof Arrow;
     }
 
     @Override
-    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow arrow, int level) {
+    public void onHit(ProjectileHitEvent event, LivingEntity shooter, Arrow arrow, int level) {
 
     }
 
     @Override
-    public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
+    public void onDamage(EntityDamageByEntityEvent event, LivingEntity shooter, LivingEntity victim, Arrow arrow,
+                         int level) {
         if (shooter.isDead() || shooter.getHealth() <= 0D) return;
 
         double healAmount = this.getHealAmount(level);

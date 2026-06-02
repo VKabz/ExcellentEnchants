@@ -5,7 +5,8 @@ import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -20,26 +21,28 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class DoubleStrikeEnchant extends GameEnchantment implements AttackEnchant {
 
-    public DoubleStrikeEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public DoubleStrikeEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(1, 2));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.LOW;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         event.setDamage(event.getDamage() * 2D);
 
         if (this.hasVisualEffects()) {

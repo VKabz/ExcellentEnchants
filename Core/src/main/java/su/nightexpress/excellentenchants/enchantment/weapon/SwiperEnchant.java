@@ -4,7 +4,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -20,17 +21,18 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class SwiperEnchant extends GameEnchantment implements AttackEnchant {
 
     private Modifier xpAmount;
 
-    public SwiperEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SwiperEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(6, 2));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.xpAmount = Modifier.load(config, "Swiper.XP_Amount",
             Modifier.addictive(0).perLevel(1).capacity(10),
             "Amount of XP to be stolen on hit.");
@@ -43,13 +45,14 @@ public class SwiperEnchant extends GameEnchantment implements AttackEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         if (!(damager instanceof Player attacker)) return false;
         if (!(victim instanceof Player defender)) return false;
         if (defender.getTotalExperience() == 0) return false;

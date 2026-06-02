@@ -1,13 +1,16 @@
 package su.nightexpress.excellentenchants;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.manager.EnchantManager;
 
+@NullMarked
 public class EnchantsAPI {
 
     private static EnchantsPlugin plugin;
 
-    static void load(@NotNull EnchantsPlugin plugin) {
+    static void load(EnchantsPlugin plugin) {
         EnchantsAPI.plugin = plugin;
     }
 
@@ -15,20 +18,20 @@ public class EnchantsAPI {
         plugin = null;
     }
 
-    @NotNull
+
     public static EnchantsPlugin getPlugin() {
         if (plugin == null) throw new IllegalStateException("API is not initialized!");
 
         return plugin;
     }
 
-    @NotNull
+
     public static EnchantManager getEnchantManager() {
         return getPlugin().getEnchantManager();
     }
 
-//    @NotNull
-//    public static EnchantNMS getInternals() {
-//        return getPlugin().getEnchantNMS();
-//    }
+    //    
+    //    public static EnchantNMS getInternals() {
+    //        return getPlugin().getEnchantNMS();
+    //    }
 }

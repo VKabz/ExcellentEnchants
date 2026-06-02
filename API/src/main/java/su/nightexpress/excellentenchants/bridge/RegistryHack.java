@@ -1,20 +1,22 @@
 package su.nightexpress.excellentenchants.bridge;
 
 import org.bukkit.enchantments.Enchantment;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 import su.nightexpress.excellentenchants.api.item.ItemSet;
 
+@NullMarked
 public interface RegistryHack {
 
     void unfreezeRegistry();
 
     void freezeRegistry();
 
-    void addExclusives(@NotNull CustomEnchantment enchantment);
+    void addExclusives(CustomEnchantment enchantment);
 
-    void createItemsSet(@NotNull ItemSet itemSet);
+    void createItemsSet(ItemSet itemSet);
 
-    @Nullable Enchantment registerEnchantment(@NotNull EnchantCatalogEntry entry, @NotNull DistributionSettings settings);
+    @Nullable
+    Enchantment registerEnchantment(EnchantCatalogEntry entry, DistributionSettings settings);
 }

@@ -5,7 +5,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -23,6 +24,7 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 import java.nio.file.Path;
 import java.util.Set;
 
+@NullMarked
 public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackEnchant {
 
     private static final Set<EntityType> ENTITY_TYPES = Lists.newSet(
@@ -36,12 +38,12 @@ public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackE
     private boolean  multiplier;
     private Modifier damageMod;
 
-    public BaneOfNetherspawnEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public BaneOfNetherspawnEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.multiplier = ConfigValue.create("BaneOfNetherspawn.Damage.Multiplier",
             false,
             "When 'true' multiplies the damage. When 'false' sums plain values."
@@ -52,7 +54,8 @@ public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackE
             "Amount of additional damage."
         );
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DAMAGE, level -> NumberUtil.format(this.getDamageAmount(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DAMAGE, level -> NumberUtil.format(this.getDamageAmount(
+            level)));
     }
 
     public double getDamageAmount(int level) {
@@ -60,13 +63,14 @@ public class BaneOfNetherspawnEnchant extends GameEnchantment implements AttackE
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.LOW;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         if (!ENTITY_TYPES.contains(victim.getType())) return false;
 
         double damageEvent = event.getDamage();

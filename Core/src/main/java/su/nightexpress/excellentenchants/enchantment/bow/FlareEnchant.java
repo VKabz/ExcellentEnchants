@@ -14,7 +14,8 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -31,33 +32,35 @@ import su.nightexpress.nightcore.util.bukkit.NightItem;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class FlareEnchant extends GameEnchantment implements ArrowEnchant {
 
-    public FlareEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public FlareEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.ELECTRIC_SPARK));
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
-        this.addComponent(EnchantComponent.CHARGES, Charges.custom(Modifier.addictive(50), 1, 1, NightItem.fromType(Material.TORCH)));
+        this.addComponent(EnchantComponent.CHARGES, Charges.custom(Modifier.addictive(50), 1, 1, NightItem.fromType(
+            Material.TORCH)));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.HIGH;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         return event.getProjectile() instanceof Arrow;
     }
 
     @Override
-    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow projectile, int level) {
+    public void onHit(ProjectileHitEvent event, LivingEntity shooter, Arrow projectile, int level) {
         Block block = event.getHitBlock();
         if (block == null) return;
 
@@ -68,7 +71,8 @@ public class FlareEnchant extends GameEnchantment implements ArrowEnchant {
         if (!relative.getType().isAir()) return;
 
         if (projectile.getShooter() instanceof Player player) {
-            BlockPlaceEvent placeEvent = new BlockPlaceEvent(relative, relative.getState(), block, new ItemStack(Material.TORCH),  player,true, EquipmentSlot.HAND);
+            BlockPlaceEvent placeEvent = new BlockPlaceEvent(relative, relative
+                .getState(), block, new ItemStack(Material.TORCH), player, true, EquipmentSlot.HAND);
             plugin.getPluginManager().callEvent(placeEvent);
             if (placeEvent.isCancelled() || !placeEvent.canBuild()) return;
         }
@@ -86,7 +90,8 @@ public class FlareEnchant extends GameEnchantment implements ArrowEnchant {
     }
 
     @Override
-    public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
+    public void onDamage(EntityDamageByEntityEvent event, LivingEntity shooter, LivingEntity victim, Arrow arrow,
+                         int level) {
 
     }
 }

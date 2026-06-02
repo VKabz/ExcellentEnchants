@@ -1,7 +1,8 @@
 package su.nightexpress.excellentenchants.enchantment;
 
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsFiles;
 import su.nightexpress.excellentenchants.EnchantsKeys;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
@@ -36,41 +37,37 @@ import java.util.stream.Stream;
 import static su.nightexpress.excellentenchants.EnchantsPlaceholders.*;
 import static su.nightexpress.excellentenchants.enchantment.EnchantCatalog.Weight.*;
 
+@NullMarked
 public enum EnchantCatalog implements EnchantCatalogEntry {
 
     COLD_STEEL(() -> EnchantDefinition.builder("Cold Steel", 3)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on attacker.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on attacker.")
         .weight(UNCOMMON)
         .supportedItems(ItemSetDefaults.CHESTPLATE_ELYTRA)
         .primaryItems(ItemSetDefaults.CHESTPLATE)
-        .build(),
-        () -> EnchantDistribution.regular(TradeType.SNOW_COMMON),
-        ColdSteelEnchant::new
+        .build(), () -> EnchantDistribution.regular(TradeType.SNOW_COMMON), ColdSteelEnchant::new
     ),
     DARKNESS_CLOAK(() -> EnchantDefinition.builder("Darkness Cloak", 3)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on attacker.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on attacker.")
         .weight(UNCOMMON)
         .supportedItems(ItemSetDefaults.CHESTPLATE_ELYTRA)
         .primaryItems(ItemSetDefaults.CHESTPLATE)
-        .build(),
-        () -> EnchantDistribution.regular(TradeType.SAVANNA_COMMON),
-        DarknessCloakEnchant::new
+        .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_COMMON), DarknessCloakEnchant::new
     ),
     DRAGON_HEART(() -> EnchantDefinition.builder("Dragon Heart", 5)
         .description("Grants permanent " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " effect.")
         .weight(RARE)
         .supportedItems(ItemSetDefaults.CHESTPLATE_ELYTRA)
         .primaryItems(ItemSetDefaults.CHESTPLATE)
-        .build(),
-        () -> EnchantDistribution.regular(TradeType.JUNGLE_SPECIAL),
-        DragonHeartEnchant::new
+        .build(), () -> EnchantDistribution.regular(TradeType.JUNGLE_SPECIAL), DragonHeartEnchant::new
     ),
     ELEMENTAL_PROTECTION(() -> EnchantDefinition.builder("Elemental Protection", 4)
         .description("Reduces potion and elemental damage by " + GENERIC_AMOUNT + "%.")
         .weight(COMMON)
         .items(ItemSetDefaults.ARMOR)
-        .build(),
-        () -> EnchantDistribution.regular(TradeType.SWAMP_COMMON), ElementalProtectionEnchant::new
+        .build(), () -> EnchantDistribution.regular(TradeType.SWAMP_COMMON), ElementalProtectionEnchant::new
     ),
     FIRE_SHIELD(() -> EnchantDefinition.builder("Fire Shield", 4)
         .description(TRIGGER_CHANCE + "% chance to ignite attackers for " + GENERIC_DURATION + "s.")
@@ -87,14 +84,16 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.treasure(TradeType.DESERT_SPECIAL), FlameWalkerEnchant::new
     ),
     HARDENED(() -> EnchantDefinition.builder("Hardened", 2)
-        .description(TRIGGER_CHANCE + "% chance to get " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) when damaged.")
+        .description(TRIGGER_CHANCE + "% chance to get " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) when damaged.")
         .weight(UNCOMMON)
         .supportedItems(ItemSetDefaults.CHESTPLATE_ELYTRA)
         .primaryItems(ItemSetDefaults.CHESTPLATE)
         .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_COMMON), HardenedEnchant::new
     ),
     ICE_SHIELD(() -> EnchantDefinition.builder("Ice Shield", 3)
-        .description(TRIGGER_CHANCE + "% chance to freeze and apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on attacker.")
+        .description(TRIGGER_CHANCE + "% chance to freeze and apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on attacker.")
         .weight(COMMON)
         .supportedItems(ItemSetDefaults.CHESTPLATE_ELYTRA)
         .primaryItems(ItemSetDefaults.CHESTPLATE)
@@ -104,9 +103,7 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .description("You can safely jump on turtle eggs, farmlands and big dripleaf.")
         .weight(COMMON)
         .items(ItemSetDefaults.BOOTS)
-        .build(),
-        () -> EnchantDistribution.regular(TradeType.SNOW_COMMON),
-        LightweightEnchant::new
+        .build(), () -> EnchantDistribution.regular(TradeType.SNOW_COMMON), LightweightEnchant::new
     ),
     JUMPING(() -> EnchantDefinition.builder("Jumping", 2)
         .description("Grants permanent " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " effect.")
@@ -187,28 +184,32 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.treasure(TradeType.DESERT_COMMON), GhastEnchant::new
     ),
     CONFUSING_ARROWS(() -> EnchantDefinition.builder("Confusing Arrows", 3)
-        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.)")
+        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.)")
         .weight(COMMON)
         .items(ItemSetDefaults.BOW_CROSSBOW)
         .exclusives(ENDER_BOW.getKey(), GHAST.getKey(), BOMBER.getKey())
         .build(), () -> EnchantDistribution.regular(TradeType.SWAMP_COMMON), ConfusingArrowsEnchant::new
     ),
     DARKNESS_ARROWS(() -> EnchantDefinition.builder("Darkness Arrows", 3)
-        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.)")
+        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.)")
         .weight(COMMON)
         .items(ItemSetDefaults.BOW_CROSSBOW)
         .exclusives(ENDER_BOW.getKey(), GHAST.getKey(), BOMBER.getKey())
         .build(), () -> EnchantDistribution.regular(TradeType.SNOW_COMMON), DarknessArrowsEnchant::new
     ),
     DRAGONFIRE_ARROWS(() -> EnchantDefinition.builder("Dragonfire Arrows", 3)
-        .description(TRIGGER_CHANCE + "% chance for arrow to have Dragonfire Effect (R=" + GENERIC_RADIUS + ", " + GENERIC_DURATION + "s).")
+        .description(TRIGGER_CHANCE + "% chance for arrow to have Dragonfire Effect (R=" + GENERIC_RADIUS + ", " +
+            GENERIC_DURATION + "s).")
         .weight(RARE)
         .items(ItemSetDefaults.BOW_CROSSBOW)
         .exclusives(ENDER_BOW.getKey(), GHAST.getKey(), BOMBER.getKey())
         .build(), () -> EnchantDistribution.regular(TradeType.SWAMP_SPECIAL), DragonfireArrowsEnchant::new
     ),
     ELECTRIFIED_ARROWS(() -> EnchantDefinition.builder("Electrified Arrows", 3)
-        .description(TRIGGER_CHANCE + "% chance for an arrow to strike lightning with " + GENERIC_DAMAGE + "❤ extra damage.")
+        .description(TRIGGER_CHANCE + "% chance for an arrow to strike lightning with " + GENERIC_DAMAGE +
+            "❤ extra damage.")
         .weight(UNCOMMON)
         .items(ItemSetDefaults.BOW_CROSSBOW)
         .exclusives(ENDER_BOW.getKey(), GHAST.getKey(), BOMBER.getKey())
@@ -229,7 +230,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.treasure(TradeType.SNOW_COMMON), FlareEnchant::new
     ),
     HOVER(() -> EnchantDefinition.builder("Hover", 3)
-        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.)")
+        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.)")
         .weight(COMMON)
         .items(ItemSetDefaults.BOW_CROSSBOW)
         .exclusives(ENDER_BOW.getKey(), GHAST.getKey(), BOMBER.getKey())
@@ -243,7 +245,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_COMMON), LingeringEnchant::new
     ),
     POISONED_ARROWS(() -> EnchantDefinition.builder("Poisoned Arrows", 3)
-        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.)")
+        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.)")
         .weight(UNCOMMON)
         .items(ItemSetDefaults.BOW_CROSSBOW)
         .exclusives(ENDER_BOW.getKey(), GHAST.getKey(), BOMBER.getKey())
@@ -263,7 +266,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.regular(TradeType.SWAMP_SPECIAL), VampiricArrowsEnchant::new
     ),
     WITHERED_ARROWS(() -> EnchantDefinition.builder("Withered Arrows", 3)
-        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.)")
+        .description(TRIGGER_CHANCE + "% chance for arrow to have " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.)")
         .weight(UNCOMMON)
         .items(ItemSetDefaults.BOW_CROSSBOW)
         .exclusives(ENDER_BOW.getKey(), GHAST.getKey(), BOMBER.getKey())
@@ -435,14 +439,16 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_COMMON), BaneOfNetherspawnEnchant::new
     ),
     BLINDNESS(() -> EnchantDefinition.builder("Blindness", 2)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on hit.")
         .weight(COMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
         .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_COMMON), BlindnessEnchant::new
     ),
     CONFUSION(() -> EnchantDefinition.builder("Confusion", 2)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on hit.")
         .weight(COMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
@@ -463,7 +469,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.treasure(TradeType.DESERT_SPECIAL), CurseOfDeathEnchant::new, true
     ),
     CUTTER(() -> EnchantDefinition.builder("Cutter", 3)
-        .description(TRIGGER_CHANCE + "% chance to throw away enemy''s armor and damage it for " + GENERIC_DAMAGE + "%.")
+        .description(TRIGGER_CHANCE + "% chance to throw away enemy''s armor and damage it for " + GENERIC_DAMAGE +
+            "%.")
         .weight(RARE)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
@@ -484,14 +491,16 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_COMMON), DoubleStrikeEnchant::new
     ),
     EXHAUST(() -> EnchantDefinition.builder("Exhaust", 4)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on hit.")
         .weight(COMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
         .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_COMMON), ExhaustEnchant::new
     ),
     ICE_ASPECT(() -> EnchantDefinition.builder("Ice Aspect", 3)
-        .description("Freezes and applies " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description("Freezes and applies " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION +
+            "s.) on hit.")
         .weight(COMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
@@ -511,14 +520,16 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.regular(TradeType.JUNGLE_COMMON), NimbleEnchant::new
     ),
     PARALYZE(() -> EnchantDefinition.builder("Paralyze", 5)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on hit.")
         .weight(UNCOMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
         .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_COMMON), ParalyzeEnchant::new
     ),
     RAGE(() -> EnchantDefinition.builder("Rage", 2)
-        .description(TRIGGER_CHANCE + "% chance to get " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description(TRIGGER_CHANCE + "% chance to get " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on hit.")
         .weight(UNCOMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
@@ -567,7 +578,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_COMMON), VampireEnchant::new
     ),
     VENOM(() -> EnchantDefinition.builder("Venom", 2)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on hit.")
         .weight(COMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
@@ -588,7 +600,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.regular(TradeType.DESERT_COMMON), WisdomEnchant::new
     ),
     WITHER(() -> EnchantDefinition.builder("Wither", 2)
-        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" + EFFECT_DURATION + "s.) on hit.")
+        .description(TRIGGER_CHANCE + "% chance to apply " + EFFECT_TYPE + " " + EFFECT_AMPLIFIER + " (" +
+            EFFECT_DURATION + "s.) on hit.")
         .weight(UNCOMMON)
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
@@ -596,7 +609,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
     ),
     ;
 
-    public static void loadAll(@NotNull Path dataDir, @NotNull ItemSetRegistry itemSetRegistry, @NotNull BiConsumer<EnchantCatalog, IllegalStateException> onError) {
+    public static void loadAll(Path dataDir, ItemSetRegistry itemSetRegistry,
+                               BiConsumer<EnchantCatalog, IllegalStateException> onError) {
         Path enchantsDir = Path.of(dataDir.toString(), EnchantsFiles.DIR_ENCHANTS);
         Path disabledDir = Path.of(enchantsDir.toString(), EnchantsFiles.DIR_DISABLED);
 
@@ -609,7 +623,8 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
             }
         }
 
-        Set<String> disabledEnchants = FileUtil.findYamlFiles(disabledDir.toString()).stream().map(FileUtil::getNameWithoutExtension).collect(Collectors.toSet());
+        Set<String> disabledEnchants = FileUtil.findYamlFiles(disabledDir.toString()).stream().map(
+            FileUtil::getNameWithoutExtension).collect(Collectors.toSet());
 
         for (EnchantCatalog value : values()) {
             if (disabledEnchants.contains(value.getId())) {
@@ -627,17 +642,17 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         }
     }
 
-    @NotNull
+
     public static Stream<EnchantCatalog> stream() {
         return Stream.of(values());
     }
 
-    @NotNull
+
     public static Stream<EnchantCatalog> enabled() {
         return stream().filter(EnchantCatalog::isEnabled);
     }
 
-    /*public static boolean isPresentAndEnabled(@NotNull String enchantId) {
+    /*public static boolean isPresentAndEnabled(String enchantId) {
         return Enums.parse(enchantId, EnchantCatalog.class).filter(EnchantCatalog::isEnabled).isPresent();
     }*/
 
@@ -653,22 +668,22 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
     private EnchantDistribution distribution;
     private boolean             disabled;
 
-    EnchantCatalog(@NotNull Supplier<EnchantDefinition> initDefinition,
-                   @NotNull Supplier<EnchantDistribution> initDistribution,
-                   @NotNull EnchantFactory<?> factory) {
+    EnchantCatalog(Supplier<EnchantDefinition> initDefinition,
+                   Supplier<EnchantDistribution> initDistribution,
+                   EnchantFactory<?> factory) {
         this(initDefinition, initDistribution, factory, false);
     }
 
-    EnchantCatalog(@NotNull Supplier<EnchantDefinition> initDefinition,
-                   @NotNull Supplier<EnchantDistribution> initDistribution,
-                   @NotNull EnchantFactory<?> factory,
+    EnchantCatalog(Supplier<EnchantDefinition> initDefinition,
+                   Supplier<EnchantDistribution> initDistribution,
+                   EnchantFactory<?> factory,
                    boolean curse) {
         this(initDefinition, initDistribution, factory, curse, false);
     }
 
-    EnchantCatalog(@NotNull Supplier<EnchantDefinition> initDefinition,
-                   @NotNull Supplier<EnchantDistribution> initDistribution,
-                   @NotNull EnchantFactory<?> factory,
+    EnchantCatalog(Supplier<EnchantDefinition> initDefinition,
+                   Supplier<EnchantDistribution> initDistribution,
+                   EnchantFactory<?> factory,
                    boolean curse,
                    boolean paperOnly) {
         this.id = LowerCase.INTERNAL.apply(this.name());
@@ -679,8 +694,9 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         this.factory = factory;
     }
 
-    public void load(@NotNull Path enchantsDir, @NotNull ItemSetRegistry itemSetRegistry) throws IllegalStateException {
-        if (this.paperOnly && Version.isSpigot()) throw new IllegalStateException("The enchantment is available for PaperMC only");
+    public void load(Path enchantsDir, ItemSetRegistry itemSetRegistry) throws IllegalStateException {
+        if (this.paperOnly && Version.isSpigot())
+            throw new IllegalStateException("The enchantment is available for PaperMC only");
 
         Path file = Path.of(enchantsDir.toString(), FileConfig.withExtension(this.id));
         boolean exists = Files.exists(file);
@@ -700,25 +716,26 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         config.saveChanges();
     }
 
-    @NotNull
-    public CustomEnchantment createEnchantment(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+
+    public CustomEnchantment createEnchantment(EnchantsPlugin plugin, EnchantManager manager, Path file,
+                                               EnchantContext context) {
         return this.factory.create(plugin, manager, file, context);
     }
 
     @Override
-    @NotNull
+
     public String getId() {
         return this.id;
     }
 
     @Override
-    @NotNull
+
     public NamespacedKey getKey() {
         return EnchantsKeys.create(this.id);
     }
 
     @Override
-    @NotNull
+
     public EnchantDefinition getDefinition() {
         if (this.definition == null) throw new IllegalStateException("Definition is not yet initialized");
 
@@ -726,7 +743,7 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
     }
 
     @Override
-    @NotNull
+
     public EnchantDistribution getDistribution() {
         if (this.distribution == null) throw new IllegalStateException("Distribution is not yet initialized");
 

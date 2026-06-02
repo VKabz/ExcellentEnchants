@@ -15,8 +15,8 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -34,19 +34,20 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnchant {
 
     private Modifier duration;
     private Modifier radius;
 
-    public DragonfireArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public DragonfireArrowsEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.DRAGON_BREATH));
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 3));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.duration = Modifier.load(config, "Dragonfire.Duration",
             Modifier.addictive(40).perLevel(20).capacity(60 * 20),
             "Dragonfire cloud effect duration (in ticks). 20 ticks = 1 second."
@@ -57,7 +58,8 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
             "Dragonfire cloud effect radius."
         );
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DURATION, level -> NumberUtil.format(this.getFireDuration(level) / 20D));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DURATION, level -> NumberUtil.format(this.getFireDuration(
+            level) / 20D));
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getFireRadius(level)));
     }
 
@@ -70,30 +72,32 @@ public class DragonfireArrowsEnchant extends GameEnchantment implements ArrowEnc
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         return true;
     }
 
     @Override
-    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow arrow, int level) {
+    public void onHit(ProjectileHitEvent event, LivingEntity shooter, Arrow arrow, int level) {
         if (event.getHitEntity() != null) return;
 
-        this.createCloud(shooter, arrow.getLocation(), event.getHitEntity(), event.getHitBlock(), event.getHitBlockFace(), level);
+        this.createCloud(shooter, arrow.getLocation(), event.getHitEntity(), event.getHitBlock(), event
+            .getHitBlockFace(), level);
     }
 
     @Override
-    public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
+    public void onDamage(EntityDamageByEntityEvent event, LivingEntity shooter, LivingEntity victim, Arrow arrow,
+                         int level) {
         this.createCloud(shooter, victim.getLocation(), victim, null, null, level);
     }
 
-    private void createCloud(@NotNull ProjectileSource shooter,
-                             @NotNull Location location,
+    private void createCloud(ProjectileSource shooter,
+                             Location location,
                              @Nullable Entity hitEntity,
                              @Nullable Block hitBlock,
                              @Nullable BlockFace hitFace,

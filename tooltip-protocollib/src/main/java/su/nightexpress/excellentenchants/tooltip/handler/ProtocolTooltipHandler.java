@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
+
 import org.jspecify.annotations.NonNull;
 import su.nightexpress.excellentenchants.api.tooltip.TooltipController;
 import su.nightexpress.excellentenchants.api.tooltip.TooltipHandler;
@@ -24,7 +24,7 @@ public class ProtocolTooltipHandler implements TooltipHandler {
 
     private Listener listener;
 
-    public ProtocolTooltipHandler(@NotNull JavaPlugin plugin, @NotNull TooltipController controller) {
+    public ProtocolTooltipHandler(JavaPlugin plugin, TooltipController controller) {
         this.plugin = plugin;
         this.controller = controller;
     }
@@ -47,12 +47,7 @@ public class ProtocolTooltipHandler implements TooltipHandler {
 
     private static class Listener extends PacketAdapter {
 
-        private static final PacketType[] PACKET_TYPES = {
-            PacketType.Play.Server.SET_SLOT,
-            PacketType.Play.Server.WINDOW_ITEMS,
-            PacketType.Play.Server.SET_PLAYER_INVENTORY,
-            PacketType.Play.Server.SET_CURSOR_ITEM,
-            PacketType.Play.Server.OPEN_WINDOW_MERCHANT
+        private static final PacketType[] PACKET_TYPES = {PacketType.Play.Server.SET_SLOT, PacketType.Play.Server.WINDOW_ITEMS, PacketType.Play.Server.SET_PLAYER_INVENTORY, PacketType.Play.Server.SET_CURSOR_ITEM, PacketType.Play.Server.OPEN_WINDOW_MERCHANT
         };
 
         private final TooltipController controller;
@@ -75,7 +70,7 @@ public class ProtocolTooltipHandler implements TooltipHandler {
             this.handlePacketSending(event);
         }
 
-        private void handlePacketSending(@NotNull PacketEvent event) {
+        private void handlePacketSending(PacketEvent event) {
             PacketContainer packet = event.getPacket();
             Player player = event.getPlayer();
 
@@ -99,7 +94,9 @@ public class ProtocolTooltipHandler implements TooltipHandler {
                 packet.getMerchantRecipeLists().read(0).forEach(old -> {
                     ItemStack result = this.controller.addDescription(old.getResult());
 
-                    MerchantRecipe recipe = new MerchantRecipe(result, old.getUses(), old.getMaxUses(), old.hasExperienceReward(), old.getVillagerExperience(), old.getPriceMultiplier(), old.getDemand(), old.getSpecialPrice());
+                    MerchantRecipe recipe = new MerchantRecipe(result, old.getUses(), old.getMaxUses(), old
+                        .hasExperienceReward(), old.getVillagerExperience(), old.getPriceMultiplier(), old
+                            .getDemand(), old.getSpecialPrice());
                     recipe.setIngredients(old.getIngredients());
                     list.add(recipe);
                 });

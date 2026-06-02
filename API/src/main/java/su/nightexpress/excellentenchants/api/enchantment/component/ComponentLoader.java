@@ -1,9 +1,12 @@
 package su.nightexpress.excellentenchants.api.enchantment.component;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.nightcore.config.FileConfig;
 
+@NullMarked
 public interface ComponentLoader<T> {
 
-    @NotNull T load(@NotNull FileConfig config);
+    T load(FileConfig config);
 }

@@ -13,8 +13,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.projectiles.ProjectileSource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -30,47 +30,50 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
+@NullMarked
 public class LingeringEnchant extends GameEnchantment implements ArrowEnchant {
 
-    public LingeringEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public LingeringEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(5, 5));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         return true;
     }
 
     @Override
-    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow arrow, int level) {
+    public void onHit(ProjectileHitEvent event, LivingEntity shooter, Arrow arrow, int level) {
         if (event.getHitEntity() != null) return;
 
-        this.createCloud(arrow, shooter, arrow.getLocation(), event.getHitEntity(), event.getHitBlock(), event.getHitBlockFace());
+        this.createCloud(arrow, shooter, arrow.getLocation(), event.getHitEntity(), event.getHitBlock(), event
+            .getHitBlockFace());
     }
 
     @Override
-    public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
+    public void onDamage(EntityDamageByEntityEvent event, LivingEntity shooter, LivingEntity victim, Arrow arrow,
+                         int level) {
 
     }
 
-    private void createCloud(@NotNull Arrow arrow,
-                                @NotNull ProjectileSource shooter,
-                                @NotNull Location location,
-                                @Nullable Entity hitEntity,
-                                @Nullable Block hitBlock,
-                                @Nullable BlockFace hitFace) {
+    private void createCloud(Arrow arrow,
+                             ProjectileSource shooter,
+                             Location location,
+                             @Nullable Entity hitEntity,
+                             @Nullable Block hitBlock,
+                             @Nullable BlockFace hitFace) {
 
         Set<PotionEffect> effects = new HashSet<>();
         if (arrow.hasCustomEffects()) {
@@ -100,7 +103,7 @@ public class LingeringEnchant extends GameEnchantment implements ArrowEnchant {
         cloud.setRadius(3F); // 3.0
         cloud.setRadiusOnUse(-0.5F);
         cloud.setDuration(600); // 600
-        cloud.setRadiusPerTick(-cloud.getRadius() / (float)cloud.getDuration());
+        cloud.setRadiusPerTick(-cloud.getRadius() / (float) cloud.getDuration());
         cloud.setBasePotionType(arrow.getBasePotionType());
         effects.forEach(potionEffect -> cloud.addCustomEffect(potionEffect, false));
 

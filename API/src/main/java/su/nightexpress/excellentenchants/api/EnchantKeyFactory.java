@@ -1,10 +1,12 @@
 package su.nightexpress.excellentenchants.api;
 
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 
 @FunctionalInterface
+@NullMarked
 public interface EnchantKeyFactory {
 
-    @NotNull NamespacedKey create(@NotNull String value);
+    NamespacedKey create(String value);
 }

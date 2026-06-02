@@ -2,7 +2,8 @@ package su.nightexpress.excellentenchants.enchantment.fishing;
 
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -16,16 +17,17 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class SeasonedAnglerEnchant extends GameEnchantment implements FishingEnchant {
 
     private Modifier xpModifier;
 
-    public SeasonedAnglerEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SeasonedAnglerEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.xpModifier = Modifier.load(config, "SeasonedAngler.XP_Modifier",
             Modifier.addictive(0).perLevel(50).capacity(300),
             "Amount (in percent) of additional XP from fishing.");
@@ -38,13 +40,13 @@ public class SeasonedAnglerEnchant extends GameEnchantment implements FishingEnc
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getFishingPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onFishing(@NotNull PlayerFishEvent event, @NotNull ItemStack item, int level) {
+    public boolean onFishing(PlayerFishEvent event, ItemStack item, int level) {
         if (event.getState() != PlayerFishEvent.State.CAUGHT_FISH) return false;
         if (event.getExpToDrop() == 0) return false;
 

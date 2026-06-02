@@ -3,7 +3,8 @@ package su.nightexpress.excellentenchants.enchantment.armor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -19,36 +20,39 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class StoppingForceEnchant extends GameEnchantment implements DefendEnchant {
 
     private Modifier knockbackReduction;
 
-    public StoppingForceEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public StoppingForceEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.knockbackReduction = Modifier.load(config, "Knockback.Reduction",
             Modifier.addictive(0.3).perLevel(0.2).capacity(1D),
             "Sets the knockback multiplier when taking damage.", "Lower value = less knockback.");
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getKnockbackReduction(level) * 100));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getKnockbackReduction(
+            level) * 100));
     }
 
     public double getKnockbackReduction(int level) {
         return this.knockbackReduction.getValue(level);
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getProtectPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onProtect(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onProtect(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                             ItemStack weapon, int level) {
         double reduction = 1D - Math.max(0, this.getKnockbackReduction(level));
 
         this.plugin.runTask(() -> {

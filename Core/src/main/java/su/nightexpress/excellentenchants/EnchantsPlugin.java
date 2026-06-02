@@ -1,7 +1,7 @@
 package su.nightexpress.excellentenchants;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.bridge.spigot.SpigotEnchantsBootstrap;
 import su.nightexpress.excellentenchants.command.BaseCommands;
 import su.nightexpress.excellentenchants.config.Config;
@@ -22,7 +22,7 @@ public class EnchantsPlugin extends NightPlugin {
     private EnchantManager enchantManager;
 
     @Override
-    @NotNull
+
     protected PluginDetails getDefaultDetails() {
         return PluginDetails.create("Enchants", new String[]{"eenchants", "excellentenchants"})
             .setConfigClass(Config.class)
@@ -98,7 +98,7 @@ public class EnchantsPlugin extends NightPlugin {
         }
     }
 
-    @NotNull
+
     public EnchantManager getEnchantManager() {
         return this.enchantManager;
     }

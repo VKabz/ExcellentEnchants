@@ -7,7 +7,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -26,18 +27,19 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class FireShieldEnchant extends GameEnchantment implements DefendEnchant {
 
     private Modifier fireDuration;
-    private boolean addFireImmune;
+    private boolean  addFireImmune;
 
-    public FireShieldEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public FireShieldEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(4, 2));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.fireDuration = Modifier.load(config, "FireShield.Duration",
             Modifier.addictive(4).perLevel(1).capacity(10),
             "Sets the fire duration (in seconds)."
@@ -48,10 +50,11 @@ public class FireShieldEnchant extends GameEnchantment implements DefendEnchant 
             "Controls whether Fire Resistance effect should be added to the enchantment's wearer."
         ).read(config);
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DURATION, level -> NumberUtil.format(this.getFireDuration(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DURATION, level -> NumberUtil.format(this.getFireDuration(
+            level)));
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getProtectPriority() {
         return EnchantPriority.NORMAL;
@@ -62,7 +65,8 @@ public class FireShieldEnchant extends GameEnchantment implements DefendEnchant 
     }
 
     @Override
-    public boolean onProtect(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onProtect(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                             ItemStack weapon, int level) {
         int fireTicks = (int) (this.getFireDuration(level) * 20);
 
         if (this.addFireImmune) {

@@ -10,7 +10,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -28,21 +29,22 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnchant {
 
-    private boolean fireSpread;
-    private boolean damageItems;
-    private boolean damageBlocks;
+    private boolean  fireSpread;
+    private boolean  damageItems;
+    private boolean  damageBlocks;
     private Modifier power;
 
-    public ExplosiveArrowsEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public ExplosiveArrowsEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.ARROW, ArrowEffects.basic(Particle.SMOKE));
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(3, 2));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.fireSpread = ConfigValue.create("Explosion.Fire_Spread",
             true,
             "Controls whether explosion set nearby blocks on fire.").read(config);
@@ -75,32 +77,34 @@ public class ExplosiveArrowsEnchant extends GameEnchantment implements ArrowEnch
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         return true;
     }
 
     @Override
-    public void onHit(@NotNull ProjectileHitEvent event, @NotNull LivingEntity shooter, @NotNull Arrow projectile, int level) {
+    public void onHit(ProjectileHitEvent event, LivingEntity shooter, Arrow projectile, int level) {
         Location location = projectile.getLocation();
         float power = (float) this.getPower(level);
 
-        this.plugin.getEnchantManager().createExplosion(shooter, location, power, this.fireSpread, this.damageBlocks, explosion -> {
-            if (!this.damageItems) explosion.setOnDamage(damageEvent -> {
-                if (damageEvent.getEntity() instanceof Item || damageEvent.getEntity() instanceof ItemFrame) {
-                    damageEvent.setCancelled(true);
-                }
+        this.plugin.getEnchantManager().createExplosion(shooter, location, power, this.fireSpread, this.damageBlocks,
+            explosion -> {
+                if (!this.damageItems) explosion.setOnDamage(damageEvent -> {
+                    if (damageEvent.getEntity() instanceof Item || damageEvent.getEntity() instanceof ItemFrame) {
+                        damageEvent.setCancelled(true);
+                    }
+                });
             });
-        });
     }
 
     @Override
-    public void onDamage(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity shooter, @NotNull LivingEntity victim, @NotNull Arrow arrow, int level) {
+    public void onDamage(EntityDamageByEntityEvent event, LivingEntity shooter, LivingEntity victim, Arrow arrow,
+                         int level) {
 
     }
 }

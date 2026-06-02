@@ -7,7 +7,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -24,11 +25,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@NullMarked
 public class TunnelEnchant extends GameEnchantment implements MiningEnchant {
 
     // X and Z offsets for each block AoE mined
-    private static final int[][] MINING_COORD_OFFSETS = new int[][]{{0, 0}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1},};
-    private static final Set<Material> INTERACTABLE_BLOCKS = new HashSet<>();
+    private static final int[][]       MINING_COORD_OFFSETS = new int[][]{{0, 0}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1},};
+    private static final Set<Material> INTERACTABLE_BLOCKS  = new HashSet<>();
 
     static {
         INTERACTABLE_BLOCKS.add(Material.REDSTONE_ORE);
@@ -37,25 +39,25 @@ public class TunnelEnchant extends GameEnchantment implements MiningEnchant {
 
     private boolean disableOnSneak;
 
-    public TunnelEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public TunnelEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.disableOnSneak = ConfigValue.create("Tunnel.Disable_On_Crouch",
             true,
             "Sets whether or not enchantment will have no effect when crouching.").read(config);
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getBreakPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onBreak(@NotNull BlockBreakEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onBreak(BlockBreakEvent event, LivingEntity entity, ItemStack item, int level) {
         if (!(entity instanceof Player player)) return false;
         if (EnchantsUtils.isBusy()) return false;
         if (this.disableOnSneak && player.isSneaking()) return false;
@@ -65,7 +67,8 @@ public class TunnelEnchant extends GameEnchantment implements MiningEnchant {
         if (block.getDrops(item).isEmpty()) return false;
 
 
-        final List<Block> lastTwoTargetBlocks = player.getLastTwoTargetBlocks(Lists.newSet(Material.AIR, Material.WATER, Material.LAVA), 10);
+        final List<Block> lastTwoTargetBlocks = player.getLastTwoTargetBlocks(Lists.newSet(Material.AIR, Material.WATER,
+            Material.LAVA), 10);
         if (lastTwoTargetBlocks.size() != 2 || !lastTwoTargetBlocks.get(1).getType().isOccluding()) {
             return false;
         }
@@ -89,7 +92,8 @@ public class TunnelEnchant extends GameEnchantment implements MiningEnchant {
             Block blockAdd;
             if (dir == BlockFace.UP || dir == BlockFace.DOWN) {
                 blockAdd = block.getLocation().clone().add(xAdd, 0, zAdd).getBlock();
-            } else {
+            }
+            else {
                 blockAdd = block.getLocation().clone().add(isZ ? 0 : xAdd, zAdd, isZ ? xAdd : 0).getBlock();
             }
 
@@ -102,7 +106,8 @@ public class TunnelEnchant extends GameEnchantment implements MiningEnchant {
 
             // Some extra block checks.
             if (addType.isInteractable() && !INTERACTABLE_BLOCKS.contains(addType)) continue;
-            if (addType == Material.BEDROCK || addType == Material.END_PORTAL || addType == Material.END_PORTAL_FRAME) continue;
+            if (addType == Material.BEDROCK || addType == Material.END_PORTAL || addType == Material.END_PORTAL_FRAME)
+                continue;
             if (addType == Material.OBSIDIAN && addType != block.getType()) continue;
 
             EnchantsUtils.safeBusyBreak(player, blockAdd);

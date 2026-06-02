@@ -12,7 +12,8 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BlockStateMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
+@NullMarked
 public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchant, BlockEnchant {
 
     private final NamespacedKey chestNameKey;
@@ -41,14 +43,15 @@ public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchan
     private String       chestName;
     private List<String> chestLore;
 
-    public SilkChestEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SilkChestEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.chestNameKey = new NamespacedKey(plugin, "silkchest.original_name");
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
-        this.chestName = ConfigValue.create("SilkChest.Name", EnchantsPlaceholders.GENERIC_NAME + " (" + EnchantsPlaceholders.GENERIC_AMOUNT + " items)",
+    protected void loadAdditional(FileConfig config) {
+        this.chestName = ConfigValue.create("SilkChest.Name", EnchantsPlaceholders.GENERIC_NAME + " (" +
+            EnchantsPlaceholders.GENERIC_AMOUNT + " items)",
             "Chest item display name.",
             "Use '" + EnchantsPlaceholders.GENERIC_AMOUNT + "' for items amount."
         ).read(config);
@@ -59,8 +62,8 @@ public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchan
         ).read(config);
     }
 
-    @NotNull
-    public ItemStack getSilkChest(@NotNull Chest originChest) {
+
+    public ItemStack getSilkChest(Chest originChest) {
         ItemStack chestStack = new ItemStack(originChest.getType());
 
         ItemUtil.editMeta(chestStack, BlockStateMeta.class, stateMeta -> {
@@ -74,7 +77,8 @@ public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchan
 
             PlaceholderContext placeholderContext = PlaceholderContext.builder()
                 .with(EnchantsPlaceholders.GENERIC_NAME, () -> EntityUtil.getNameSerialized(originChest))
-                .with(EnchantsPlaceholders.GENERIC_AMOUNT, () -> String.valueOf(Stream.of(chestItem.getBlockInventory().getContents()).filter(i -> i != null && !i.getType().isAir()).count()))
+                .with(EnchantsPlaceholders.GENERIC_AMOUNT, () -> String.valueOf(Stream.of(chestItem.getBlockInventory()
+                    .getContents()).filter(i -> i != null && !i.getType().isAir()).count()))
                 .build();
 
             PDCUtil.set(stateMeta, this.chestNameKey, originName);
@@ -89,7 +93,7 @@ public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchan
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getDropPriority() {
         return EnchantPriority.LOW;
     }
@@ -100,7 +104,7 @@ public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchan
     }
 
     @Override
-    public boolean onDrop(@NotNull BlockDropItemEvent event, @NotNull LivingEntity player, @NotNull ItemStack itemStack, int level) {
+    public boolean onDrop(BlockDropItemEvent event, LivingEntity player, ItemStack itemStack, int level) {
         BlockState state = event.getBlockState();
         if (!(state instanceof Chest chest)) return false;
 
@@ -108,7 +112,8 @@ public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchan
         List<Item> drops = event.getItems();
 
         // If no original chest block is being dropped, then ignore.
-        Item originalContainerItem = drops.stream().filter(drop -> drop.getItemStack().getType() == blockType && drop.getItemStack().getAmount() == 1).findFirst().orElse(null);
+        Item originalContainerItem = drops.stream().filter(drop -> drop.getItemStack().getType() == blockType && drop
+            .getItemStack().getAmount() == 1).findFirst().orElse(null);
 
         if (originalContainerItem == null) return false;
         if (drops.size() == 1) return false;
@@ -130,7 +135,7 @@ public class SilkChestEnchant extends GameEnchantment implements BlockDropEnchan
     }
 
     @Override
-    public void onPlace(@NotNull BlockPlaceEvent event, @NotNull Player player, @NotNull Block block, @NotNull ItemStack itemStack) {
+    public void onPlace(BlockPlaceEvent event, Player player, Block block, ItemStack itemStack) {
         BlockState state = block.getState();
         if (!(state instanceof Chest chest)) return;
 

@@ -1,6 +1,6 @@
 package su.nightexpress.excellentenchants.api;
 
-import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.excellentenchants.api.wrapper.TradeType;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
@@ -12,6 +12,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
 public class EnchantDistribution implements Writeable {
 
     private final boolean        treasure;
@@ -22,7 +25,7 @@ public class EnchantDistribution implements Writeable {
     private final boolean        onTradedEquipment;
     private final Set<TradeType> tradeTypes;
 
-    public EnchantDistribution(@NotNull Set<TradeType> tradeTypes,
+    public EnchantDistribution(Set<TradeType> tradeTypes,
                                boolean treasure,
                                boolean discoverable,
                                boolean tradable,
@@ -38,46 +41,28 @@ public class EnchantDistribution implements Writeable {
         this.onTradedEquipment = onTradedEquipment;
     }
 
-    @NotNull
+
     public static EnchantDistribution defaults() {
         return new EnchantDistribution(
-            new HashSet<>(Arrays.asList(TradeType.values())),
-            false,
-            true,
-            true,
-            true,
-            true,
-            true
+            new HashSet<>(Arrays.asList(TradeType.values())), false, true, true, true, true, true
         );
     }
 
-    @NotNull
-    public static EnchantDistribution regular(@NotNull TradeType... tradeTypes) {
+
+    public static EnchantDistribution regular(TradeType... tradeTypes) {
         return new EnchantDistribution(
-            Lists.newSet(tradeTypes),
-            false,
-            true,
-            true,
-            true,
-            true,
-            true
+            Lists.newSet(tradeTypes), false, true, true, true, true, true
         );
     }
 
-    @NotNull
-    public static EnchantDistribution treasure(@NotNull TradeType... tradeTypes) {
+
+    public static EnchantDistribution treasure(TradeType... tradeTypes) {
         return new EnchantDistribution(
-            Lists.newSet(tradeTypes),
-            true,
-            false,
-            true,
-            false,
-            true,
-            false
+            Lists.newSet(tradeTypes), true, false, true, false, true, false
         );
     }
 
-    public static EnchantDistribution read(@NotNull FileConfig config, @NotNull String path) {
+    public static EnchantDistribution read(FileConfig config, String path) {
         boolean treasure = ConfigValue.create(path + ".Treasure",
             false,
             "Sets whether this enchantment is a treasure enchantment.",
@@ -140,7 +125,7 @@ public class EnchantDistribution implements Writeable {
     }
 
     @Override
-    public void write(@NotNull FileConfig config, @NotNull String path) {
+    public void write(FileConfig config, String path) {
         config.set(path + ".Treasure", this.treasure);
         config.set(path + ".Tradeable", this.tradable);
         config.set(path + ".TradeTypes", Lists.modify(this.tradeTypes, Enum::name));
@@ -158,7 +143,7 @@ public class EnchantDistribution implements Writeable {
         return this.tradable;
     }
 
-    @NotNull
+
     public Set<TradeType> getTrades() {
         return this.tradeTypes;
     }

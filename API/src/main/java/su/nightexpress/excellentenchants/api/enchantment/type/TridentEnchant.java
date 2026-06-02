@@ -4,12 +4,14 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 
+@NullMarked
 public interface TridentEnchant extends ProjectileEnchant<Trident> {
 
-    boolean onLaunch(@NotNull ProjectileLaunchEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack trident, int level);
+    boolean onLaunch(ProjectileLaunchEvent event, LivingEntity shooter, ItemStack trident, int level);
 
-    @NotNull EnchantPriority getLaunchPriority();
+    EnchantPriority getLaunchPriority();
 }

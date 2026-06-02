@@ -3,7 +3,8 @@ package su.nightexpress.excellentenchants.enchantment.armor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -18,18 +19,19 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class SaturationEnchant extends GameEnchantment implements PassiveEnchant {
 
     private Modifier feedAmount;
     private Modifier maxFoodLevel;
 
-    public SaturationEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public SaturationEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(15));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.feedAmount = Modifier.load(config, "Saturation.Amount",
             Modifier.addictive(0).perLevel(1).capacity(5),
             "Amount of food points to restore.");
@@ -51,7 +53,7 @@ public class SaturationEnchant extends GameEnchantment implements PassiveEnchant
     }
 
     @Override
-    public boolean onTrigger(@NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onTrigger(LivingEntity entity, ItemStack item, int level) {
         if (!(entity instanceof Player player)) return false;
         if (player.getFoodLevel() >= this.getMaxFoodLevel(level)) return false;
 

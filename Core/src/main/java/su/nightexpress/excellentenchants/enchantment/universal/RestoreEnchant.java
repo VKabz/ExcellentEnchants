@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -22,17 +23,18 @@ import su.nightexpress.nightcore.util.sound.VanillaSound;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class RestoreEnchant extends GameEnchantment implements DurabilityEnchant {
 
     private Modifier amount;
 
-    public RestoreEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public RestoreEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(20, 5));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.amount = Modifier.load(config, "Restore.Amount",
             Modifier.addictive(15).perLevel(5).capacity(100),
             "Amount of durability (in percent of item max) to be restored.");
@@ -45,13 +47,13 @@ public class RestoreEnchant extends GameEnchantment implements DurabilityEnchant
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getItemDamagePriority() {
         return EnchantPriority.MONITOR;
     }
 
     @Override
-    public boolean onItemDamage(@NotNull PlayerItemDamageEvent event, @NotNull Player player, @NotNull ItemStack itemStack, int level) {
+    public boolean onItemDamage(PlayerItemDamageEvent event, Player player, ItemStack itemStack, int level) {
         if (!(itemStack.getItemMeta() instanceof Damageable damageable)) return false;
 
         int damage = event.getDamage();

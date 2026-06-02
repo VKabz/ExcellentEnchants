@@ -6,17 +6,19 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
 import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.nightcore.util.EntityUtil;
 
+@NullMarked
 public class SlotListener extends AbstractListener<EnchantsPlugin> {
 
     private final EnchantManager manager;
 
-    public SlotListener(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager) {
+    public SlotListener(EnchantsPlugin plugin, EnchantManager manager) {
         super(plugin);
         this.manager = manager;
     }

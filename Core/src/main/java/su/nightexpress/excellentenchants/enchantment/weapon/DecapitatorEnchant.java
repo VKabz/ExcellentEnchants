@@ -7,7 +7,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
@@ -34,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+@NullMarked
 public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
 
     private static final String PERMISSION_NO_DROP = Perms.PREFIX + "enchant.decapitator.bypass";
@@ -43,13 +45,13 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
     private String                  headName;
     private Map<EntityType, String> headTextures;
 
-    public DecapitatorEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public DecapitatorEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(1, 2));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.ignoreMythicMobs = ConfigValue.create("Decapitator.Ignore_Mythic_Mobs",
             true,
             "Sets whether or not MythicMobs should be ignored."
@@ -65,8 +67,8 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
         ).read(config);
 
         this.headName = ConfigValue.create("Decapitator.Head_Item.Name",
-                TagWrappers.YELLOW.wrap(EnchantsPlaceholders.GENERIC_TYPE + "'s Head"),
-                "Head item display name. Use '" + EnchantsPlaceholders.GENERIC_TYPE + "' for entity name.")
+            TagWrappers.YELLOW.wrap(EnchantsPlaceholders.GENERIC_TYPE + "'s Head"),
+            "Head item display name. Use '" + EnchantsPlaceholders.GENERIC_TYPE + "' for entity name.")
             .read(config);
 
         // TODO MobHead object
@@ -82,13 +84,13 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getKillPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onKill(@NotNull EntityDeathEvent event, @NotNull LivingEntity entity, @NotNull Player killer, @NotNull ItemStack weapon, int level) {
+    public boolean onKill(EntityDeathEvent event, LivingEntity entity, Player killer, ItemStack weapon, int level) {
         EntityType entityType = entity.getType();
         if (this.ignoredEntityTypes.contains(entityType)) return false;
         if (this.ignoreMythicMobs && EnchantsUtils.isMythicMob(entity)) return false;
@@ -98,7 +100,8 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
         NightItem item = NightItem.fromType(material);
 
         PlaceholderContext placeholderContext = PlaceholderContext.builder()
-            .with(EnchantsPlaceholders.GENERIC_TYPE, () -> entity instanceof Player player ? player.getName() : LangUtil.getSerializedName(entity.getType()))
+            .with(EnchantsPlaceholders.GENERIC_TYPE, () -> entity instanceof Player player ? player.getName() : LangUtil
+                .getSerializedName(entity.getType()))
             .with(EnchantsPlaceholders.GENERIC_KILLER, killer::getName)
             .build();
 
@@ -124,8 +127,8 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
         return true;
     }
 
-    @NotNull
-    private static Material getHeadMaterial(@NotNull EntityType entityType) {
+
+    private static Material getHeadMaterial(EntityType entityType) {
         if (entityType == EntityType.WITHER_SKELETON || entityType == EntityType.WITHER) {
             return Material.WITHER_SKELETON_SKULL;
         }
@@ -144,7 +147,7 @@ public class DecapitatorEnchant extends GameEnchantment implements KillEnchant {
         else return Material.PLAYER_HEAD;
     }
 
-    @NotNull
+
     private static Map<EntityType, String> getDefaultHeads() {
         Map<EntityType, String> map = new HashMap<>();
         map.put(EntityType.AXOLOTL, "5c167410409336acc58e6433ffa8b7f86a8786e35ec7300b9062340281d4691c");

@@ -1,5 +1,22 @@
 package su.nightexpress.excellentenchants.nms.mc_1_21_11;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.v1_21_R7.CraftEquipmentSlot;
+import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
+import org.bukkit.craftbukkit.v1_21_R7.enchantments.CraftEnchantment;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftChatMessage;
+import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
+import org.bukkit.inventory.EquipmentSlot;
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.MappedRegistry;
@@ -16,21 +33,12 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_21_R7.CraftEquipmentSlot;
-import org.bukkit.craftbukkit.v1_21_R7.CraftServer;
-import org.bukkit.craftbukkit.v1_21_R7.enchantments.CraftEnchantment;
-import org.bukkit.craftbukkit.v1_21_R7.util.CraftChatMessage;
-import org.bukkit.craftbukkit.v1_21_R7.util.CraftNamespacedKey;
-import org.bukkit.inventory.EquipmentSlot;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import su.nightexpress.excellentenchants.EnchantsKeys;
+import su.nightexpress.excellentenchants.api.EnchantDefinition;
+import su.nightexpress.excellentenchants.api.EnchantDistribution;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 import su.nightexpress.excellentenchants.api.item.ItemSet;
 import su.nightexpress.excellentenchants.api.wrapper.EnchantCost;
-import su.nightexpress.excellentenchants.api.EnchantDefinition;
-import su.nightexpress.excellentenchants.api.EnchantDistribution;
 import su.nightexpress.excellentenchants.api.wrapper.TradeType;
 import su.nightexpress.excellentenchants.bridge.DistributionSettings;
 import su.nightexpress.excellentenchants.bridge.EnchantCatalogEntry;
@@ -38,10 +46,6 @@ import su.nightexpress.excellentenchants.bridge.RegistryHack;
 import su.nightexpress.nightcore.NightPlugin;
 import su.nightexpress.nightcore.util.Reflex;
 import su.nightexpress.nightcore.util.text.night.NightMessage;
-
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.BiConsumer;
 
 public class RegistryHack_1_21_11 implements RegistryHack {
 
@@ -62,7 +66,7 @@ public class RegistryHack_1_21_11 implements RegistryHack {
 
     private final NightPlugin plugin;
 
-    public RegistryHack_1_21_11(@NotNull NightPlugin plugin) {
+    public RegistryHack_1_21_11(NightPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -167,11 +171,12 @@ public class RegistryHack_1_21_11 implements RegistryHack {
     }
 
     @Override
-    public void addExclusives(@NotNull CustomEnchantment customEnchantment) {
+    public void addExclusives(CustomEnchantment customEnchantment) {
         ResourceKey<Enchantment> enchantKey = customEnchantKey(customEnchantment.getId());
         Enchantment enchantment = ENCHANTS.getValue(enchantKey);
         if (enchantment == null) {
-            this.plugin.error(customEnchantment.getId() + ": Could not set exclusive item list. Enchantment is not registered.");
+            this.plugin.error(customEnchantment.getId() +
+                ": Could not set exclusive item list. Enchantment is not registered.");
             return;
         }
 
@@ -187,8 +192,8 @@ public class RegistryHack_1_21_11 implements RegistryHack {
     }
 
     @Override
-    @Nullable
-    public org.bukkit.enchantments.Enchantment registerEnchantment(@NotNull EnchantCatalogEntry entry, @NotNull DistributionSettings settings) {
+    public org.bukkit.enchantments.@Nullable Enchantment registerEnchantment(EnchantCatalogEntry entry,
+                                                                             DistributionSettings settings) {
         String id = entry.getId();
         EnchantDefinition definition = entry.getDefinition();
 
@@ -206,7 +211,8 @@ public class RegistryHack_1_21_11 implements RegistryHack {
         int anvilCost = definition.getAnvilCost();
         EquipmentSlotGroup[] slots = nmsSlots(definition.getSupportedItemSet().getSlots());
 
-        Enchantment.EnchantmentDefinition nmsDefinition = Enchantment.definition(supportedItems, primaryItems, weight, maxLevel, minCost, maxCost, anvilCost, slots);
+        Enchantment.EnchantmentDefinition nmsDefinition = Enchantment.definition(supportedItems, primaryItems, weight,
+            maxLevel, minCost, maxCost, anvilCost, slots);
         HolderSet<Enchantment> exclusiveSet = this.createExclusiveSet(id);
         DataComponentMap.Builder builder = DataComponentMap.builder();
 
@@ -224,7 +230,8 @@ public class RegistryHack_1_21_11 implements RegistryHack {
         return CraftEnchantment.minecraftToBukkit(enchantment);
     }
 
-    private void setupDistribution(EnchantCatalogEntry entry, DistributionSettings settings, Holder.Reference<Enchantment> reference) {
+    private void setupDistribution(EnchantCatalogEntry entry, DistributionSettings settings,
+                                   Holder.Reference<Enchantment> reference) {
         EnchantDistribution distribution = entry.getDistribution();
         boolean experimentalTrades = SERVER.getWorldData().enabledFeatures().contains(FeatureFlags.TRADE_REBALANCE);
 
@@ -306,7 +313,7 @@ public class RegistryHack_1_21_11 implements RegistryHack {
     }
 
     @Override
-    public void createItemsSet(@NotNull ItemSet itemSet) {
+    public void createItemsSet(ItemSet itemSet) {
         TagKey<Item> tag = customItemsTag(itemSet.getId());
         List<Holder<Item>> holders = new ArrayList<>();
 
@@ -333,8 +340,6 @@ public class RegistryHack_1_21_11 implements RegistryHack {
 
         return getFrozenTags(ENCHANTS).get(customKey);
     }
-
-
 
 
     private static TagKey<Enchantment> getTradeKey(TradeType tradeType) {

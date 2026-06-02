@@ -9,7 +9,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -25,17 +26,18 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class ReboundEnchant extends GameEnchantment implements ProtectionEnchant {
 
     private Modifier modifier;
     private Modifier capacity;
 
-    public ReboundEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public ReboundEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.modifier = Modifier.load(config, "Rebound.Modifier",
             Modifier.addictive(0.2).perLevel(0.1).capacity(0.5),
             "Sets bounce power modifier based on fall distance.",
@@ -50,19 +52,20 @@ public class ReboundEnchant extends GameEnchantment implements ProtectionEnchant
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getProtectionPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    @NotNull
+
     public DamageBonus getDamageBonus() {
         return new DamageBonus(DamageBonusType.NORMAL);
     }
 
     @Override
-    public boolean onProtection(@NotNull EntityDamageEvent event, @NotNull DamageBonus damageBonus, @NotNull LivingEntity entity, @NotNull ItemStack boots, int level) {
+    public boolean onProtection(EntityDamageEvent event, DamageBonus damageBonus, LivingEntity entity, ItemStack boots,
+                                int level) {
         if (event.getDamageSource().getDamageType() != DamageType.FALL) return false;
         if (entity instanceof Player player && player.isSneaking()) return false;
 
@@ -72,7 +75,7 @@ public class ReboundEnchant extends GameEnchantment implements ProtectionEnchant
         return true;
     }
 
-    private void bounceUp(@NotNull LivingEntity entity, double damage, int level) {
+    private void bounceUp(LivingEntity entity, double damage, int level) {
         double limit = this.capacity.getValue(level);
         double modifier = this.modifier.getValue(level);
         double power = Math.min(limit, damage * modifier);

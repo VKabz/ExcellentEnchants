@@ -12,7 +12,8 @@ import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.view.AnvilView;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 import su.nightexpress.excellentenchants.config.Config;
@@ -25,12 +26,13 @@ import su.nightexpress.nightcore.util.sound.VanillaSound;
 import java.util.HashMap;
 import java.util.Map;
 
+@NullMarked
 public class AnvilListener extends AbstractListener<EnchantsPlugin> {
 
     private final EnchantSettings settings;
-    private final NamespacedKey rechargedKey;
+    private final NamespacedKey   rechargedKey;
 
-    public AnvilListener(@NotNull EnchantsPlugin plugin, @NotNull EnchantSettings settings) {
+    public AnvilListener(EnchantsPlugin plugin, EnchantSettings settings) {
         super(plugin);
         this.settings = settings;
         this.rechargedKey = new NamespacedKey(plugin, "item.recharged");
@@ -52,7 +54,7 @@ public class AnvilListener extends AbstractListener<EnchantsPlugin> {
         this.anvilCombine(event, first, second, result);
     }
 
-    private boolean anvilCombine(@NotNull PrepareAnvilEvent event, @NotNull ItemStack first, @NotNull ItemStack second, @NotNull ItemStack result) {
+    private boolean anvilCombine(PrepareAnvilEvent event, ItemStack first, ItemStack second, ItemStack result) {
         ItemStack merged = new ItemStack(result.getType().isAir() ? first : result);
 
         int countResult = EnchantsUtils.countCustomEnchantments(result);
@@ -91,7 +93,7 @@ public class AnvilListener extends AbstractListener<EnchantsPlugin> {
         return false;
     }
 
-    private boolean handleRecharge(@NotNull PrepareAnvilEvent event, @NotNull ItemStack first, @NotNull ItemStack second) {
+    private boolean handleRecharge(PrepareAnvilEvent event, ItemStack first, ItemStack second) {
         if (!Config.isChargesEnabled()) return false;
         if (second.getType().isAir()) return false;
 
@@ -105,7 +107,8 @@ public class AnvilListener extends AbstractListener<EnchantsPlugin> {
 
         int count;
         ItemStack recharged = new ItemStack(first);
-        for (count = 0; count < second.getAmount() && !chargable.keySet().stream().allMatch(data -> data.isFullOfCharges(recharged)); ++count) {
+        for (count = 0; count < second.getAmount() && !chargable.keySet().stream().allMatch(data -> data
+            .isFullOfCharges(recharged)); ++count) {
             chargable.forEach((enchant, level) -> enchant.fuelCharges(recharged, level));
         }
 
@@ -115,7 +118,6 @@ public class AnvilListener extends AbstractListener<EnchantsPlugin> {
         this.plugin.runTask(() -> event.getView().setRepairCost(chargable.size()));
         return true;
     }
-
 
 
     @EventHandler(priority = EventPriority.NORMAL)

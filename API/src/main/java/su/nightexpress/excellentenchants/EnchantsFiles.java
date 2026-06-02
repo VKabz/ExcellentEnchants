@@ -2,6 +2,9 @@ package su.nightexpress.excellentenchants;
 
 public class EnchantsFiles {
 
+    private EnchantsFiles() {
+    }
+
     public static final String DIR_DISABLED = "_disabled_";
     public static final String DIR_ENCHANTS = "/enchants/";
     public static final String DIR_MENU     = "/menu/";

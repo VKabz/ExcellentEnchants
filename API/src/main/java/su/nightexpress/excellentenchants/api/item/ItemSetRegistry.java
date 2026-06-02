@@ -1,35 +1,37 @@
 package su.nightexpress.excellentenchants.api.item;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import su.nightexpress.excellentenchants.EnchantsFiles;
-import su.nightexpress.excellentenchants.bridge.ItemTagLookup;
-import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.util.LowerCase;
-
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import su.nightexpress.excellentenchants.EnchantsFiles;
+import su.nightexpress.excellentenchants.bridge.ItemTagLookup;
+import su.nightexpress.nightcore.config.FileConfig;
+import su.nightexpress.nightcore.util.LowerCase;
+
+@NullMarked
 public class ItemSetRegistry {
 
     private final Map<String, ItemSet> registryMap;
     private final ItemTagLookup        tagLookup;
     private final Path                 file;
 
-    public ItemSetRegistry(@NotNull Path dataDir, @NotNull ItemTagLookup tagLookup) {
+    public ItemSetRegistry(Path dataDir, ItemTagLookup tagLookup) {
         this.registryMap = new HashMap<>();
         this.tagLookup = tagLookup;
         this.file = Path.of(dataDir.toString(), EnchantsFiles.FILE_ITEM_TYPES);
     }
 
     @Nullable
-    public ItemSet getByKey(@NotNull String id) {
+    public ItemSet getByKey(String id) {
         return this.registryMap.get(LowerCase.INTERNAL.apply(id));
     }
 
-    @NotNull
+
     public Set<ItemSet> values() {
         return Set.copyOf(this.registryMap.values());
     }

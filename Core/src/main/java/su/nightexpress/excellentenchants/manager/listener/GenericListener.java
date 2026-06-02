@@ -13,18 +13,20 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.config.Config;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
 import su.nightexpress.nightcore.manager.AbstractListener;
 
+@NullMarked
 public class GenericListener extends AbstractListener<EnchantsPlugin> {
 
     private final EnchantManager manager;
 
-    public GenericListener(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager) {
+    public GenericListener(EnchantsPlugin plugin, EnchantManager manager) {
         super(plugin);
         this.manager = manager;
     }

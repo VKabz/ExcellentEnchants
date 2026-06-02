@@ -9,7 +9,8 @@ import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
@@ -32,22 +33,24 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class CutterEnchant extends GameEnchantment implements AttackEnchant {
 
-    private final ConfigProperty<Boolean> ignoreMythicMobs = ConfigProperty.of(ConfigTypes.BOOLEAN, "Cutter.Ignore-MythicMobs", false,
+    private final ConfigProperty<Boolean> ignoreMythicMobs = ConfigProperty.of(ConfigTypes.BOOLEAN,
+        "Cutter.Ignore-MythicMobs", false,
         "Whether enchantment has effect on mobs from the MythicMobs plugin.");
 
     private Modifier durabilityReduction;
     private boolean  allowPlayers;
     private boolean  allowMobs;
 
-    public CutterEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public CutterEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(2, 1));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.durabilityReduction = Modifier.load(config, "Cutter.Durability_Reduction",
             Modifier.addictive(0).perLevel(0.01).capacity(1D),
             "Amount (in percent) of how much item durability will be reduced.");
@@ -62,7 +65,8 @@ public class CutterEnchant extends GameEnchantment implements AttackEnchant {
 
         this.ignoreMythicMobs.loadWithDefaults(config);
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DAMAGE, level -> NumberUtil.format(this.getDurabilityReduction(level) * 100D));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_DAMAGE, level -> NumberUtil.format(this.getDurabilityReduction(
+            level) * 100D));
     }
 
     public final double getDurabilityReduction(int level) {
@@ -70,13 +74,14 @@ public class CutterEnchant extends GameEnchantment implements AttackEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         EntityEquipment equipment = victim.getEquipment();
         if (equipment == null) return false;
 

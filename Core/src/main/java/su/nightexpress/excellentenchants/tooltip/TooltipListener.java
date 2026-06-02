@@ -6,15 +6,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.nightcore.manager.AbstractListener;
 
+@NullMarked
 public class TooltipListener extends AbstractListener<EnchantsPlugin> {
 
     private final TooltipManager manager;
 
-    public TooltipListener(@NotNull EnchantsPlugin plugin, @NotNull TooltipManager manager) {
+    public TooltipListener(EnchantsPlugin plugin, TooltipManager manager) {
         super(plugin);
         this.manager = manager;
     }

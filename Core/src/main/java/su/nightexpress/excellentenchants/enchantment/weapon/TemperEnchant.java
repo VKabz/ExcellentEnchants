@@ -4,7 +4,8 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -19,17 +20,18 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class TemperEnchant extends GameEnchantment implements AttackEnchant {
 
     private Modifier damageAmount;
     private Modifier damageStep;
 
-    public TemperEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public TemperEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.damageAmount = Modifier.load(config, "Temper.Damage_Amount",
             Modifier.addictive(0).perLevel(5).capacity(100),
             "Extra damage (in %)"
@@ -41,7 +43,8 @@ public class TemperEnchant extends GameEnchantment implements AttackEnchant {
             "By default increases damage by 5% for every 0.5 HP missing."
         );
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getDamageAmount(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getDamageAmount(
+            level)));
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getDamageStep(level)));
     }
 
@@ -54,13 +57,14 @@ public class TemperEnchant extends GameEnchantment implements AttackEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         double health = damager.getHealth();
         double maxHealth = EntityUtil.getAttributeValue(damager, Attribute.MAX_HEALTH);
         if (health >= maxHealth) return false;

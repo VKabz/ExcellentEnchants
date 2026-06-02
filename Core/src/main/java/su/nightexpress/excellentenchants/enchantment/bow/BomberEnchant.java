@@ -6,7 +6,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -24,23 +25,26 @@ import su.nightexpress.nightcore.util.bukkit.NightItem;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class BomberEnchant extends GameEnchantment implements BowEnchant {
 
     private Modifier fuseTicks;
 
-    public BomberEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public BomberEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
-        this.addComponent(EnchantComponent.CHARGES, Charges.custom(Modifier.addictive(50).perLevel(10).build(), 1, 1, NightItem.fromType(Material.TNT)));
+        this.addComponent(EnchantComponent.CHARGES, Charges.custom(Modifier.addictive(50).perLevel(10).build(), 1, 1,
+            NightItem.fromType(Material.TNT)));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.fuseTicks = Modifier.load(config, "Bomber.Fuse_Ticks",
             Modifier.addictive(40).perLevel(10).capacity(200),
             "Sets TNT fuse ticks.");
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_TIME, level -> NumberUtil.format((double) this.getFuseTicks(level) / 20D));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_TIME, level -> NumberUtil.format((double) this.getFuseTicks(
+            level) / 20D));
     }
 
     public int getFuseTicks(int level) {
@@ -48,13 +52,13 @@ public class BomberEnchant extends GameEnchantment implements BowEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getShootPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onShoot(@NotNull EntityShootBowEvent event, @NotNull LivingEntity shooter, @NotNull ItemStack bow, int level) {
+    public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         if (!(event.getProjectile() instanceof Projectile projectile)) return false;
 
         int fuseTicks = Math.max(1, this.getFuseTicks(level));

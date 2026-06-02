@@ -1,10 +1,12 @@
 package su.nightexpress.excellentenchants.manager;
 
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 
+@NullMarked
 public interface EnchantUsage<T extends CustomEnchantment> {
 
-    boolean useEnchant(@NotNull ItemStack item, @NotNull T enchant, int level);
+    boolean useEnchant(ItemStack item, T enchant, int level);
 }

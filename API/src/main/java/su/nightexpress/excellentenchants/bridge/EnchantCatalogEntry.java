@@ -1,19 +1,21 @@
 package su.nightexpress.excellentenchants.bridge;
 
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.EnchantDefinition;
 import su.nightexpress.excellentenchants.api.EnchantDistribution;
 
+@NullMarked
 public interface EnchantCatalogEntry {
 
-    @NotNull String getId();
+    String getId();
 
-    @NotNull NamespacedKey getKey();
+    NamespacedKey getKey();
 
-    @NotNull EnchantDefinition getDefinition();
+    EnchantDefinition getDefinition();
 
-    @NotNull EnchantDistribution getDistribution();
+    EnchantDistribution getDistribution();
 
     boolean isCurse();
 }

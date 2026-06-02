@@ -4,7 +4,8 @@ import org.bukkit.Particle;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -20,28 +21,31 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 import java.nio.file.Path;
 import java.util.Set;
 
+@NullMarked
 public class CureEnchant extends GameEnchantment implements AttackEnchant {
 
-    private static final Set<EntityType> CUREABLE = Lists.newSet(EntityType.ZOMBIFIED_PIGLIN, EntityType.ZOMBIE_VILLAGER);
+    private static final Set<EntityType> CUREABLE = Lists.newSet(EntityType.ZOMBIFIED_PIGLIN,
+        EntityType.ZOMBIE_VILLAGER);
 
-    public CureEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public CureEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(10, 10));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.MONITOR;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         if (!CUREABLE.contains(victim.getType())) return false;
         if (!(damager instanceof Player player)) return false;
         if (event.getFinalDamage() < victim.getHealth()) return false;

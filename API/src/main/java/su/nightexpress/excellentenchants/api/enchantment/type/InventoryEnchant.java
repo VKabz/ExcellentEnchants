@@ -3,10 +3,12 @@ package su.nightexpress.excellentenchants.api.enchantment.type;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 
+@NullMarked
 public interface InventoryEnchant extends CustomEnchantment {
 
-    boolean onDeath(@NotNull PlayerDeathEvent event, @NotNull Player player, ItemStack itemStack, int level);
+    boolean onDeath(PlayerDeathEvent event, Player player, ItemStack itemStack, int level);
 }

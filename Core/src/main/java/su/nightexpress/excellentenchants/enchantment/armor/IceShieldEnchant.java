@@ -7,7 +7,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -24,27 +25,30 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class IceShieldEnchant extends GameEnchantment implements DefendEnchant {
 
-    public IceShieldEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public IceShieldEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(5, 5));
-        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.SLOWNESS, Modifier.addictive(3).perLevel(1).capacity(10)));
+        this.addComponent(EnchantComponent.POTION_EFFECT, PotionEffects.temporal(PotionEffectType.SLOWNESS, Modifier
+            .addictive(3).perLevel(1).capacity(10)));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getProtectPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onProtect(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onProtect(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                             ItemStack weapon, int level) {
         if (!this.addPotionEffect(damager, level)) return false;
 
         damager.setFreezeTicks(damager.getMaxFreezeTicks());

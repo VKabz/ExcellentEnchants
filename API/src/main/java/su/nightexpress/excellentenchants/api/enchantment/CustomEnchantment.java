@@ -5,7 +5,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.excellentenchants.api.enchantment.meta.Charges;
 import su.nightexpress.excellentenchants.api.item.ItemSet;
@@ -15,41 +16,42 @@ import su.nightexpress.excellentenchants.api.EnchantDistribution;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
+@NullMarked
 public interface CustomEnchantment {
 
     void load();
 
-    <T> boolean hasComponent(@NotNull EnchantComponent<T> type);
+    <T> boolean hasComponent(EnchantComponent<T> type);
 
-    @NotNull <T> T getComponent(@NotNull EnchantComponent<T> type);
+    <T> T getComponent(EnchantComponent<T> type);
 
-    @NotNull UnaryOperator<String> replacePlaceholders(int level);
+    UnaryOperator<String> replacePlaceholders(int level);
 
-    @NotNull Enchantment getBukkitEnchantment();
+    Enchantment getBukkitEnchantment();
 
-    @NotNull EnchantDefinition getDefinition();
+    EnchantDefinition getDefinition();
 
-    @NotNull EnchantDistribution getDistribution();
+    EnchantDistribution getDistribution();
 
-    @NotNull Charges getCharges();
+    Charges getCharges();
 
     boolean testTriggerChance(int level);
 
-    boolean isTriggerTime(@NotNull LivingEntity entity);
+    boolean isTriggerTime(LivingEntity entity);
 
-    @NotNull String getId();
+    String getId();
 
-    @NotNull NamespacedKey getKey();
+    NamespacedKey getKey();
 
-    @NotNull String getDisplayName();
+    String getDisplayName();
 
-    @NotNull List<String> getDescription();
+    List<String> getDescription();
 
-    @NotNull List<String> getDescription(int level);
+    List<String> getDescription(int level);
 
-    @NotNull ItemSet getPrimaryItems();
+    ItemSet getPrimaryItems();
 
-    @NotNull ItemSet getSupportedItems();
+    ItemSet getSupportedItems();
 
     boolean isCurse();
 
@@ -59,25 +61,25 @@ public interface CustomEnchantment {
 
     boolean isChargeable();
 
-    boolean isChargesFuel(@NotNull ItemStack item);
+    boolean isChargesFuel(ItemStack item);
 
-    @NotNull ItemStack getFuel();
+    ItemStack getFuel();
 
-    int getCharges(@NotNull ItemStack item);
+    int getCharges(ItemStack item);
 
-    int getCharges(@NotNull ItemMeta meta);
+    int getCharges(ItemMeta meta);
 
     int getMaxCharges(int level);
 
-    void setCharges(@NotNull ItemStack item, int level, int amount);
+    void setCharges(ItemStack item, int level, int amount);
 
-    boolean isFullOfCharges(@NotNull ItemStack item);
+    boolean isFullOfCharges(ItemStack item);
 
-    boolean isOutOfCharges(@NotNull ItemStack item);
+    boolean isOutOfCharges(ItemStack item);
 
-    void restoreCharges(@NotNull ItemStack item, int level);
+    void restoreCharges(ItemStack item, int level);
 
-    void fuelCharges(@NotNull ItemStack item, int level);
+    void fuelCharges(ItemStack item, int level);
 
-    void consumeCharges(@NotNull ItemStack item, int level);
+    void consumeCharges(ItemStack item, int level);
 }

@@ -1,10 +1,14 @@
 package su.nightexpress.excellentenchants.api.enchantment.component;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.enchantment.component.impl.*;
 import su.nightexpress.excellentenchants.api.enchantment.meta.*;
 import su.nightexpress.nightcore.config.FileConfig;
 
+@NullMarked
 public interface EnchantComponent<T> {
 
     EnchantComponent<Probability>   PROBABILITY   = new ProbabilityComponent();
@@ -13,7 +17,7 @@ public interface EnchantComponent<T> {
     EnchantComponent<Period>        PERIODIC      = new PeriodComponent();
     EnchantComponent<Charges>       CHARGES       = new ChargesComponent();
 
-    @NotNull String getName();
+    String getName();
 
-    @NotNull T read(@NotNull FileConfig config, @NotNull T defaultValue);
+    T read(FileConfig config, @NonNull T defaultValue);
 }

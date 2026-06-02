@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -21,32 +22,33 @@ import su.nightexpress.nightcore.util.ItemUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class CurseOfMediocrityEnchant extends GameEnchantment implements BlockDropEnchant, KillEnchant {
 
-    public CurseOfMediocrityEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public CurseOfMediocrityEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 15));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getDropPriority() {
         return EnchantPriority.HIGHEST;
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getKillPriority() {
         return EnchantPriority.HIGHEST;
     }
 
     @Override
-    public boolean onDrop(@NotNull BlockDropItemEvent event, @NotNull LivingEntity player, @NotNull ItemStack item, int level) {
+    public boolean onDrop(BlockDropItemEvent event, LivingEntity player, ItemStack item, int level) {
         event.getItems().forEach(drop -> {
             ItemStack stack = drop.getItemStack();
             EnchantsUtils.removeAll(stack);
@@ -57,7 +59,7 @@ public class CurseOfMediocrityEnchant extends GameEnchantment implements BlockDr
     }
 
     @Override
-    public boolean onKill(@NotNull EntityDeathEvent event, @NotNull LivingEntity entity, @NotNull Player killer, @NotNull ItemStack weapon, int level) {
+    public boolean onKill(EntityDeathEvent event, LivingEntity entity, Player killer, ItemStack weapon, int level) {
         event.getDrops().forEach(stack -> {
             ItemUtil.editMeta(stack, meta -> {
                 meta.getEnchants().keySet().forEach(meta::removeEnchant);

@@ -5,7 +5,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.EnchantsUtils;
@@ -24,18 +25,19 @@ import su.nightexpress.nightcore.util.NumberUtil;
 import java.nio.file.Path;
 import java.util.List;
 
+@NullMarked
 public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant {
 
     private Modifier explosionPower;
-    private double minBlockStrength;
+    private double   minBlockStrength;
 
-    public BlastMiningEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public BlastMiningEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(0, 10));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.explosionPower = Modifier.load(config, "BlastMining.Explosion_Power",
             Modifier.addictive(3).perLevel(0.75).capacity(8),
             "Explosion power. The more power = the more blocks (area) to explode.");
@@ -45,28 +47,29 @@ public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant
             "Minimal block strength value for the enchantment to have effect.",
             "Block strength value is how long it takes to break the block by a hand.",
             "For example, a Stone has 3.0 strength."
-            ).read(config);
+        ).read(config);
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getExplosionPower(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_RADIUS, level -> NumberUtil.format(this.getExplosionPower(
+            level)));
     }
 
     public double getExplosionPower(int level) {
         return this.explosionPower.getValue(level);
     }
 
-    private boolean isHardEnough(@NotNull Block block) {
+    private boolean isHardEnough(Block block) {
         float strength = block.getType().getHardness();
         return (strength >= this.minBlockStrength);
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getBreakPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onBreak(@NotNull BlockBreakEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onBreak(BlockBreakEvent event, LivingEntity entity, ItemStack item, int level) {
         if (!(entity instanceof Player player)) return false;
         if (EnchantsUtils.isBusy()) return false;
 
@@ -75,17 +78,18 @@ public class BlastMiningEnchant extends GameEnchantment implements MiningEnchant
 
         float power = (float) this.getExplosionPower(level);
 
-        return this.plugin.getEnchantManager().createExplosion(player, block.getLocation(), power, false, true, explosion -> {
-            explosion.setOnDamage(damageEvent -> damageEvent.setCancelled(true));
-            explosion.setOnExplode(explodeEvent -> {
-                List<Block> blockList = explodeEvent.blockList();
-                blockList.forEach(explodedBlock -> {
-                    if (explodedBlock.getLocation().equals(block.getLocation())) return;
+        return this.plugin.getEnchantManager().createExplosion(player, block.getLocation(), power, false, true,
+            explosion -> {
+                explosion.setOnDamage(damageEvent -> damageEvent.setCancelled(true));
+                explosion.setOnExplode(explodeEvent -> {
+                    List<Block> blockList = explodeEvent.blockList();
+                    blockList.forEach(explodedBlock -> {
+                        if (explodedBlock.getLocation().equals(block.getLocation())) return;
 
-                    EnchantsUtils.safeBusyBreak(player, explodedBlock);
+                        EnchantsUtils.safeBusyBreak(player, explodedBlock);
+                    });
+                    blockList.clear();
                 });
-                blockList.clear();
             });
-        });
     }
 }

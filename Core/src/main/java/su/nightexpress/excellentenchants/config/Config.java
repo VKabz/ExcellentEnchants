@@ -1,7 +1,7 @@
 package su.nightexpress.excellentenchants.config;
 
 import org.bukkit.Material;
-import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.configuration.AbstractConfig;
@@ -15,7 +15,7 @@ import static su.nightexpress.excellentenchants.EnchantsPlaceholders.WIKI_CHRAGE
 public class Config extends AbstractConfig {
 
     @Override
-    public void load(@NotNull FileConfig config) {
+    public void load(FileConfig config) {
         if (config.contains("Description.Enabled")) {
             config.set("Modules.EnchantTooltip", config.getBoolean("Description.Enabled"));
             config.remove("Description.Enabled");
@@ -24,7 +24,8 @@ public class Config extends AbstractConfig {
         super.load(config);
     }
 
-    private final ConfigProperty<Boolean> featuresEnchantTooltip = this.addProperty(ConfigTypes.BOOLEAN, "Modules.EnchantTooltip",
+    private final ConfigProperty<Boolean> featuresEnchantTooltip = this.addProperty(ConfigTypes.BOOLEAN,
+        "Modules.EnchantTooltip",
         true,
         "When 'true', adds the enchantment description to item lore under enchantment names."
     );

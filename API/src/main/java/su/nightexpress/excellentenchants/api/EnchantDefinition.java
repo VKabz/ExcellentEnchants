@@ -1,7 +1,8 @@
 package su.nightexpress.excellentenchants.api;
 
 import org.bukkit.NamespacedKey;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsKeys;
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.api.item.ItemSet;
@@ -18,6 +19,7 @@ import su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers;
 
 import java.util.*;
 
+@NullMarked
 public class EnchantDefinition implements Writeable {
 
     private static final int LEVEL_CAP  = 255;
@@ -34,16 +36,16 @@ public class EnchantDefinition implements Writeable {
     private final ItemSet      supportedItemSet;
     private final Set<String>  exclusiveSet;
 
-    public EnchantDefinition(@NotNull String displayName,
-                             @NotNull List<String> description,
+    public EnchantDefinition(String displayName,
+                             List<String> description,
                              int weight,
                              int maxLevel,
                              EnchantCost minCost,
                              EnchantCost maxCost,
                              int anvilCost,
-                             @NotNull ItemSet supportedItems,
-                             @NotNull ItemSet primaryItems,
-                             @NotNull Set<String> exclusiveSet) {
+                             ItemSet supportedItems,
+                             ItemSet primaryItems,
+                             Set<String> exclusiveSet) {
         this.displayName = displayName;
         this.description = description;
         this.weight = Math.clamp(weight, 1, WEIGHT_CAP);
@@ -56,13 +58,14 @@ public class EnchantDefinition implements Writeable {
         this.exclusiveSet = exclusiveSet;
     }
 
-    @NotNull
-    public static Builder builder(@NotNull String name, int maxLevel) {
+
+    public static Builder builder(String name, int maxLevel) {
         return new Builder(name, maxLevel);
     }
 
-    @NotNull
-    public static EnchantDefinition read(@NotNull FileConfig config, @NotNull String path, @NotNull ItemSetRegistry itemSetRegistry) throws IllegalStateException {
+
+    public static EnchantDefinition read(FileConfig config, String path,
+                                         ItemSetRegistry itemSetRegistry) throws IllegalStateException {
         String displayName = ConfigValue.create(path + ".DisplayName",
             "null",
             "Enchantment display name.",
@@ -146,7 +149,7 @@ public class EnchantDefinition implements Writeable {
     }
 
     @Override
-    public void write(@NotNull FileConfig config, @NotNull String path) {
+    public void write(FileConfig config, String path) {
         config.set(path + ".DisplayName", this.displayName);
         config.set(path + ".Description", this.description);
         config.set(path + ".Weight", this.weight);
@@ -159,12 +162,12 @@ public class EnchantDefinition implements Writeable {
         config.set(path + ".Exclusives", this.exclusiveSet);
     }
 
-    @NotNull
+
     public String getDisplayName() {
         return this.displayName;
     }
 
-    @NotNull
+
     public List<String> getDescription() {
         return this.description;
     }
@@ -177,12 +180,12 @@ public class EnchantDefinition implements Writeable {
         return this.maxLevel;
     }
 
-    @NotNull
+
     public EnchantCost getMinCost() {
         return this.minCost;
     }
 
-    @NotNull
+
     public EnchantCost getMaxCost() {
         return this.maxCost;
     }
@@ -191,12 +194,12 @@ public class EnchantDefinition implements Writeable {
         return this.anvilCost;
     }
 
-    @NotNull
+
     public ItemSet getSupportedItemSet() {
         return this.supportedItemSet;
     }
 
-    @NotNull
+
     public ItemSet getPrimaryItemSet() {
         return this.primaryItemSet;
     }
@@ -205,7 +208,7 @@ public class EnchantDefinition implements Writeable {
         return this.exclusiveSet != null && !this.exclusiveSet.isEmpty();
     }
 
-    @NotNull
+
     public Set<String> getExclusiveSet() {
         return this.exclusiveSet;
     }
@@ -223,7 +226,7 @@ public class EnchantDefinition implements Writeable {
         private ItemSet      supportedItemSet;
         private Set<String>  exclusives;
 
-        public Builder(@NotNull String displayName, int maxLevel) {
+        public Builder(String displayName, int maxLevel) {
             this.displayName(displayName);
             this.description = new ArrayList<>();
             this.weight = 5;
@@ -241,92 +244,83 @@ public class EnchantDefinition implements Writeable {
             this.maxCost = new EnchantCost(maxCost, costPerLevel);
         }
 
-        @NotNull
+
         public EnchantDefinition build() {
             Objects.requireNonNull(this.supportedItemSet, "Enchantments must have supported items set");
 
             return new EnchantDefinition(
-                this.displayName,
-                this.description,
-                this.weight,
-                this.maxLevel,
-                this.minCost,
-                this.maxCost,
-                this.anvilCost,
-                this.supportedItemSet,
-                this.primaryItemSet == null ? this.supportedItemSet : this.primaryItemSet,
-                this.exclusives
+                this.displayName, this.description, this.weight, this.maxLevel, this.minCost, this.maxCost, this.anvilCost, this.supportedItemSet, this.primaryItemSet == null ? this.supportedItemSet : this.primaryItemSet, this.exclusives
             );
         }
 
-        @NotNull
-        public Builder displayName(@NotNull String displayName) {
+
+        public Builder displayName(String displayName) {
             this.displayName = TagWrappers.COLOR.with("#279CF5").wrap(displayName);
             return this;
         }
 
-        @NotNull
-        public Builder description(@NotNull String... description) {
+
+        public Builder description(String... description) {
             return this.description(Lists.newList(description));
         }
 
-        @NotNull
-        public Builder description(@NotNull List<String> description) {
+
+        public Builder description(List<String> description) {
             this.description = Lists.modify(description, TagWrappers.GRAY::wrap);
             return this;
         }
 
-        @NotNull
+
         public Builder weight(int weight) {
             this.weight = weight;
             return this;
         }
 
-        @NotNull
+
         public Builder maxLevel(int maxLevel) {
             this.maxLevel = maxLevel;
             return this;
         }
 
-        @NotNull
-        public Builder cost(@NotNull EnchantCost minCost, @NotNull EnchantCost maxCost) {
+
+        public Builder cost(EnchantCost minCost, EnchantCost maxCost) {
             this.minCost = minCost;
             this.maxCost = maxCost;
             return this;
         }
 
-        @NotNull
+
         public Builder anvilCost(int anvilCost) {
             this.anvilCost = anvilCost;
             return this;
         }
 
-        @NotNull
-        public Builder items(@NotNull ItemSetDefaults defaults) {
+
+        public Builder items(ItemSetDefaults defaults) {
             this.primaryItemSet = defaults.getItemSet();
             this.supportedItemSet = defaults.getItemSet();
             return this;
         }
 
-        @NotNull
-        public Builder primaryItems(@NotNull ItemSetDefaults defaults) {
+
+        public Builder primaryItems(ItemSetDefaults defaults) {
             this.primaryItemSet = defaults.getItemSet();
             return this;
         }
 
-        @NotNull
-        public Builder supportedItems(@NotNull ItemSetDefaults defaults) {
+
+        public Builder supportedItems(ItemSetDefaults defaults) {
             this.supportedItemSet = defaults.getItemSet();
             return this;
         }
 
-        @NotNull
-        public Builder exclusives(@NotNull NamespacedKey... exclusives) {
+
+        public Builder exclusives(NamespacedKey... exclusives) {
             return this.exclusives(Lists.newSet(exclusives));
         }
 
-        @NotNull
-        public Builder exclusives(@NotNull Set<NamespacedKey> exclusives) {
+
+        public Builder exclusives(Set<NamespacedKey> exclusives) {
             this.exclusives = Lists.modify(exclusives, BukkitThing::getAsString);
             return this;
         }

@@ -2,21 +2,23 @@ package su.nightexpress.excellentenchants.api.tooltip;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+
+@NullMarked
 public interface TooltipController {
 
     boolean hasHandler();
 
-    @NotNull ItemStack addDescription(@NotNull ItemStack itemStack);
+    ItemStack addDescription(ItemStack itemStack);
 
-    boolean isReadyForTooltipUpdate(@NotNull Player player);
+    boolean isReadyForTooltipUpdate(Player player);
 
-    boolean isEnchantTooltipAllowed(@NotNull ItemStack item);
+    boolean isEnchantTooltipAllowed(ItemStack item);
 
-    void addToUpdateStopList(@NotNull Player player);
+    void addToUpdateStopList(Player player);
 
-    void removeFromUpdateStopList(@NotNull Player player);
+    void removeFromUpdateStopList(Player player);
 
-    void runInStopList(@NotNull Player player, @NotNull Runnable runnable);
+    void runInStopList(Player player, Runnable runnable);
 }

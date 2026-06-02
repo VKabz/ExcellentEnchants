@@ -5,7 +5,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MenuType;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.type.ContainerEnchant;
@@ -16,25 +17,26 @@ import su.nightexpress.nightcore.config.FileConfig;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class CurseOfFragilityEnchant extends GameEnchantment implements ContainerEnchant {
 
-    public CurseOfFragilityEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public CurseOfFragilityEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getClickPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onClick(@NotNull InventoryClickEvent event, @NotNull Player player, @NotNull ItemStack itemStack, int level) {
+    public boolean onClick(InventoryClickEvent event, Player player, ItemStack itemStack, int level) {
         InventoryView view = event.getView();
         if (view.getMenuType() == MenuType.ANVIL || view.getMenuType() == MenuType.GRINDSTONE) {
             event.setCancelled(true);

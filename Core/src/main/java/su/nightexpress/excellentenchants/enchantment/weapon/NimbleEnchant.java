@@ -4,7 +4,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
@@ -19,31 +20,32 @@ import su.nightexpress.nightcore.util.Players;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class NimbleEnchant extends GameEnchantment implements KillEnchant {
 
     private boolean ignorePlayers;
 
-    public NimbleEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public NimbleEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.ignorePlayers = ConfigValue.create("Nimble.Ignore_Players",
             false,
             "Sets whether or not to ignore drops from players."
         ).read(config);
     }
 
-    @NotNull
+
     @Override
     public EnchantPriority getKillPriority() {
         return EnchantPriority.MONITOR;
     }
 
     @Override
-    public boolean onKill(@NotNull EntityDeathEvent event, @NotNull LivingEntity entity, @NotNull Player killer, @NotNull ItemStack weapon, int level) {
+    public boolean onKill(EntityDeathEvent event, LivingEntity entity, Player killer, ItemStack weapon, int level) {
         if (this.ignorePlayers && entity instanceof Player) return false;
 
         event.getDrops().forEach(item -> Players.addItem(killer, item));

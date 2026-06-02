@@ -1,5 +1,12 @@
 package su.nightexpress.excellentenchants.tooltip.handler;
 
+import java.util.Optional;
+
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketListenerCommon;
@@ -7,17 +14,15 @@ import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
-import com.github.retrooper.packetevents.wrapper.play.server.*;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerMerchantOffers;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetCursorItem;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetPlayerInventory;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerSetSlot;
+import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerWindowItems;
+
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jspecify.annotations.NonNull;
 import su.nightexpress.excellentenchants.api.tooltip.TooltipController;
 import su.nightexpress.excellentenchants.api.tooltip.TooltipHandler;
-
-import java.util.Optional;
 
 public class PacketTooltipHandler implements TooltipHandler {
 
@@ -25,7 +30,7 @@ public class PacketTooltipHandler implements TooltipHandler {
 
     private Listener listener;
 
-    public PacketTooltipHandler(@NotNull TooltipController controller) {
+    public PacketTooltipHandler(TooltipController controller) {
         this.controller = controller;
     }
 
@@ -56,7 +61,8 @@ public class PacketTooltipHandler implements TooltipHandler {
         }
 
         public void register() {
-            this.backend = PacketEvents.getAPI().getEventManager().registerListener(this, PacketListenerPriority.NORMAL);
+            this.backend = PacketEvents.getAPI().getEventManager().registerListener(this,
+                PacketListenerPriority.NORMAL);
         }
 
         public void unregister() {
@@ -64,7 +70,7 @@ public class PacketTooltipHandler implements TooltipHandler {
         }
 
         @Override
-        public void onPacketSend(@NotNull PacketSendEvent event) {
+        public void onPacketSend(PacketSendEvent event) {
             PacketTypeCommon type = event.getPacketType();
             Player player = event.getPlayer();
             if (player == null) return;
@@ -74,22 +80,26 @@ public class PacketTooltipHandler implements TooltipHandler {
                 case PacketType.Play.Server.SET_SLOT -> {
                     WrapperPlayServerSetSlot setSlot = new WrapperPlayServerSetSlot(event);
 
-                    this.asBukkit(setSlot.getItem()).map(this.controller::addDescription).map(this::fromBukkit).ifPresent(setSlot::setItem);
+                    this.asBukkit(setSlot.getItem()).map(this.controller::addDescription).map(this::fromBukkit)
+                        .ifPresent(setSlot::setItem);
                 }
                 case PacketType.Play.Server.WINDOW_ITEMS -> {
                     WrapperPlayServerWindowItems windowItems = new WrapperPlayServerWindowItems(event);
 
-                    windowItems.getItems().replaceAll(original -> this.asBukkit(original).map(this.controller::addDescription).map(this::fromBukkit).orElse(original));
+                    windowItems.getItems().replaceAll(original -> this.asBukkit(original).map(
+                        this.controller::addDescription).map(this::fromBukkit).orElse(original));
                 }
                 case PacketType.Play.Server.SET_PLAYER_INVENTORY -> {
                     WrapperPlayServerSetPlayerInventory setPlayerInventory = new WrapperPlayServerSetPlayerInventory(event);
 
-                    this.asBukkit(setPlayerInventory.getStack()).map(this.controller::addDescription).map(this::fromBukkit).ifPresent(setPlayerInventory::setStack);
+                    this.asBukkit(setPlayerInventory.getStack()).map(this.controller::addDescription).map(
+                        this::fromBukkit).ifPresent(setPlayerInventory::setStack);
                 }
                 case PacketType.Play.Server.SET_CURSOR_ITEM -> {
                     WrapperPlayServerSetCursorItem setCursorItem = new WrapperPlayServerSetCursorItem(event);
 
-                    this.asBukkit(setCursorItem.getStack()).map(this.controller::addDescription).map(this::fromBukkit).ifPresent(setCursorItem::setStack);
+                    this.asBukkit(setCursorItem.getStack()).map(this.controller::addDescription).map(this::fromBukkit)
+                        .ifPresent(setCursorItem::setStack);
                 }
                 case PacketType.Play.Server.MERCHANT_OFFERS -> {
                     WrapperPlayServerMerchantOffers offers = new WrapperPlayServerMerchantOffers(event);
@@ -107,18 +117,18 @@ public class PacketTooltipHandler implements TooltipHandler {
             event.markForReEncode(true);
         }
 
-        @NotNull
-        private Optional<ItemStack> asBukkit(@Nullable com.github.retrooper.packetevents.protocol.item.ItemStack pooperStack) {
+
+        private Optional<ItemStack> asBukkit(com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack pooperStack) {
             return Optional.ofNullable(pooperStack).map(SpigotConversionUtil::toBukkitItemStack);
         }
 
-        @NotNull
-        private ItemStack toBukkit(@NotNull com.github.retrooper.packetevents.protocol.item.ItemStack pooperStack) {
+
+        private ItemStack toBukkit(com.github.retrooper.packetevents.protocol.item.ItemStack pooperStack) {
             return SpigotConversionUtil.toBukkitItemStack(pooperStack);
         }
 
-        @NotNull
-        private com.github.retrooper.packetevents.protocol.item.ItemStack fromBukkit(@NotNull ItemStack itemStack) {
+
+        private com.github.retrooper.packetevents.protocol.item.ItemStack fromBukkit(ItemStack itemStack) {
             return SpigotConversionUtil.fromBukkitItemStack(itemStack);
         }
     }

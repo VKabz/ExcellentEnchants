@@ -17,7 +17,8 @@ import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+@NullMarked
 public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, ProtectionEnchant {
 
     private static final BlockFace[] FACES = {BlockFace.SOUTH, BlockFace.NORTH, BlockFace.EAST, BlockFace.WEST};
@@ -45,12 +47,12 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
     private Modifier radius;
     private Modifier decayTime;
 
-    public FlameWalkerEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public FlameWalkerEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.radius = Modifier.load(config, "FlameWalker.Radius",
             Modifier.addictive(1).perLevel(1).capacity(16),
             "Square radius around the block to transform into magma block."
@@ -62,7 +64,7 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
         );
     }
 
-    @NotNull
+
     public Modifier getRadius() {
         return this.radius;
     }
@@ -72,25 +74,25 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getMovePriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getProtectionPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    @NotNull
+
     public DamageBonus getDamageBonus() {
         return new DamageBonus(DamageBonusType.NORMAL);
     }
 
     @Override
-    public boolean onMove(@NotNull PlayerMoveEvent event, @NotNull Player player, @NotNull ItemStack itemStack, int level) {
+    public boolean onMove(PlayerMoveEvent event, Player player, ItemStack itemStack, int level) {
         Location to = event.getTo();
 
         Block nextBlock = to.getBlock().getRelative(BlockFace.DOWN);
@@ -109,7 +111,8 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
     }
 
     @Override
-    public boolean onProtection(@NotNull EntityDamageEvent event, @NotNull DamageBonus damageBonus, @NotNull LivingEntity entity, @NotNull ItemStack itemStack, int level) {
+    public boolean onProtection(EntityDamageEvent event, DamageBonus damageBonus, LivingEntity entity,
+                                ItemStack itemStack, int level) {
         DamageSource source = event.getDamageSource();
         DamageType type = source.getDamageType();
         if (type != DamageType.HOT_FLOOR) return false;
@@ -118,8 +121,8 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
         return true;
     }
 
-    @NotNull
-    public Set<Block> handleFlameWalker(@NotNull LivingEntity bukkitEntity, int level, int radius) {
+
+    public Set<Block> handleFlameWalker(LivingEntity bukkitEntity, int level, int radius) {
         Set<Block> blocks = new HashSet<>();
 
         for (Block block : this.getCircleBlocks(bukkitEntity, radius)) {
@@ -143,8 +146,8 @@ public class FlameWalkerEnchant extends GameEnchantment implements MoveEnchant, 
         return blocks;
     }
 
-    @NotNull
-    protected List<Block> getCircleBlocks(@NotNull LivingEntity entity, int radius) {
+
+    protected List<Block> getCircleBlocks(LivingEntity entity, int radius) {
         World world = entity.getWorld();
         int fixedY = entity.getLocation().getBlockY() - 1;
 

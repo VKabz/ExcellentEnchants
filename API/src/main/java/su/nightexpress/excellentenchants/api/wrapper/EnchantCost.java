@@ -1,10 +1,13 @@
 package su.nightexpress.excellentenchants.api.wrapper;
 
-import org.jetbrains.annotations.NotNull;
+
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.config.Writeable;
 
+@NullMarked
 public class EnchantCost implements Writeable {
 
     private final int base;
@@ -15,8 +18,8 @@ public class EnchantCost implements Writeable {
         this.perLevel = perLevel;
     }
 
-    @NotNull
-    public static EnchantCost read(@NotNull FileConfig config, @NotNull String path) {
+
+    public static EnchantCost read(FileConfig config, String path) {
         int base = ConfigValue.create(path + ".Base",
             0,
             "The cost for a level I enchantment."
@@ -31,7 +34,7 @@ public class EnchantCost implements Writeable {
     }
 
     @Override
-    public void write(@NotNull FileConfig config, @NotNull String path) {
+    public void write(FileConfig config, String path) {
         config.set(path + ".Base", this.base);
         config.set(path + ".Per_Level", this.perLevel);
     }

@@ -4,8 +4,8 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 import su.nightexpress.excellentenchants.enchantment.EnchantRegistry;
@@ -13,11 +13,12 @@ import su.nightexpress.nightcore.util.Enums;
 import su.nightexpress.nightcore.util.LowerCase;
 import su.nightexpress.nightcore.util.Numbers;
 
+@NullMarked
 public class PlaceholderHook {
 
     private static EnchantsExpansion expansion;
 
-    public static void setup(@NotNull EnchantsPlugin plugin) {
+    public static void setup(EnchantsPlugin plugin) {
         if (expansion == null) {
             expansion = new EnchantsExpansion(plugin);
             expansion.register();
@@ -35,24 +36,24 @@ public class PlaceholderHook {
 
         private final EnchantsPlugin plugin;
 
-        public EnchantsExpansion(@NotNull EnchantsPlugin plugin) {
+        public EnchantsExpansion(EnchantsPlugin plugin) {
             this.plugin = plugin;
         }
 
         @Override
-        @NotNull
+
         public String getIdentifier() {
             return LowerCase.INTERNAL.apply(this.plugin.getName());
         }
 
         @Override
-        @NotNull
+
         public String getAuthor() {
             return this.plugin.getDescription().getAuthors().getFirst();
         }
 
         @Override
-        @NotNull
+
         public String getVersion() {
             return this.plugin.getDescription().getVersion();
         }
@@ -64,7 +65,7 @@ public class PlaceholderHook {
 
         @Override
         @Nullable
-        public String onPlaceholderRequest(Player player, @NotNull String params) {
+        public String onPlaceholderRequest(Player player, String params) {
             if (params.startsWith("charges_remaining_")) {
                 String[] chargesSplit = params.substring("charges_remaining_".length()).split(":");
                 if (chargesSplit.length < 2) return null;

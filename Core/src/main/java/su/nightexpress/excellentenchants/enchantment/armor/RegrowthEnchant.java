@@ -4,7 +4,8 @@ import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.Modifier;
@@ -22,20 +23,21 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
 
     private Modifier minHealth;
     private Modifier maxHealth;
     private Modifier healAmount;
 
-    public RegrowthEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public RegrowthEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.oneHundred());
         this.addComponent(EnchantComponent.PERIODIC, Period.ofSeconds(15));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.minHealth = Modifier.load(config, "Regrowth.Min_Health",
             Modifier.addictive(0.5),
             "Min. health required for the regrowth effect."
@@ -52,8 +54,10 @@ public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
         );
 
         this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getHealAmount(level)));
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_MIN, level -> NumberUtil.format(this.getMinHealthToHeal(level)));
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_MAX, level -> NumberUtil.format(this.getMaxHealthToHeal(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_MIN, level -> NumberUtil.format(this.getMinHealthToHeal(
+            level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_MAX, level -> NumberUtil.format(this.getMaxHealthToHeal(
+            level)));
     }
 
     public double getHealAmount(int level) {
@@ -69,7 +73,7 @@ public class RegrowthEnchant extends GameEnchantment implements PassiveEnchant {
     }
 
     @Override
-    public boolean onTrigger(@NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onTrigger(LivingEntity entity, ItemStack item, int level) {
         double maxHealth = EntityUtil.getAttributeValue(entity, Attribute.MAX_HEALTH);
         double health = entity.getHealth();
         if (health < this.getMinHealthToHeal(level) || health > this.getMaxHealthToHeal(level)) return false;

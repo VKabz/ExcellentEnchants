@@ -10,7 +10,8 @@ import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.type.InteractEnchant;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 
+@NullMarked
 public class GlassbreakerEnchant extends GameEnchantment implements InteractEnchant {
 
     private static final Set<Material> GLASS = new HashSet<>();
@@ -35,7 +37,7 @@ public class GlassbreakerEnchant extends GameEnchantment implements InteractEnch
         BukkitThing.getMaterials().stream().filter(GlassbreakerEnchant::isGlass).forEach(GLASS::add);
     }
 
-    private static boolean isGlass(@NotNull Material material) {
+    private static boolean isGlass(Material material) {
         if (!material.isBlock()) return false;
 
         String name = BukkitThing.getValue(material);
@@ -43,23 +45,23 @@ public class GlassbreakerEnchant extends GameEnchantment implements InteractEnch
         return name.endsWith("glass") || name.endsWith("glass_pane") || name.endsWith("stained_glass");
     }
 
-    public GlassbreakerEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public GlassbreakerEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
 
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getInteractPriority() {
         return EnchantPriority.LOWEST;
     }
 
     @Override
-    public boolean onInteract(@NotNull PlayerInteractEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level) {
+    public boolean onInteract(PlayerInteractEvent event, LivingEntity entity, ItemStack item, int level) {
         if (event.useItemInHand() == Event.Result.DENY) return false;
         if (event.useInteractedBlock() == Event.Result.DENY) return false;
         if (event.getAction() != Action.LEFT_CLICK_BLOCK) return false;

@@ -5,7 +5,8 @@ import org.bukkit.entity.Illager;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -21,17 +22,18 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class VillageDefenderEnchant extends GameEnchantment implements AttackEnchant {
 
     private boolean  damageMultiplier;
     private Modifier damageAmount;
 
-    public VillageDefenderEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public VillageDefenderEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.damageAmount = Modifier.load(config, "VillageDefender.Damage",
             Modifier.addictive(0.5).perLevel(0.5).capacity(1000D),
             "Amount of additional damage.");
@@ -41,7 +43,8 @@ public class VillageDefenderEnchant extends GameEnchantment implements AttackEnc
             "When 'true' the 'Damage.Formula' will work as a multiplier to the original damage."
         ).read(config);
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getDamageAddict(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getDamageAddict(
+            level)));
     }
 
     public double getDamageAddict(int level) {
@@ -53,13 +56,14 @@ public class VillageDefenderEnchant extends GameEnchantment implements AttackEnc
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.LOW;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         if (!(victim instanceof Illager)) return false;
 
         double damageAdd = this.getDamageAddict(level);

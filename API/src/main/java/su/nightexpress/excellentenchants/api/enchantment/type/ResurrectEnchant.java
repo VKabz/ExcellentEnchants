@@ -3,13 +3,15 @@ package su.nightexpress.excellentenchants.api.enchantment.type;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 
+@NullMarked
 public interface ResurrectEnchant extends CustomEnchantment {
 
-    boolean onResurrect(@NotNull EntityResurrectEvent event, @NotNull LivingEntity entity, @NotNull ItemStack item, int level);
+    boolean onResurrect(EntityResurrectEvent event, LivingEntity entity, ItemStack item, int level);
 
-    @NotNull EnchantPriority getResurrectPriority();
+    EnchantPriority getResurrectPriority();
 }

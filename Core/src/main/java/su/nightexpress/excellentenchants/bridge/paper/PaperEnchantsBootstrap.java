@@ -9,11 +9,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemType;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.RegistryAccess;
 import io.papermc.paper.registry.RegistryKey;
@@ -42,17 +43,17 @@ import su.nightexpress.excellentenchants.enchantment.EnchantCatalog;
 import su.nightexpress.nightcore.bridge.common.NightKey;
 import su.nightexpress.nightcore.util.Lists;
 
+@NullMarked
 public class PaperEnchantsBootstrap implements PluginBootstrap {
 
     private static final boolean HAS_SPECIAL_TRADE_TAGS = hasSpecialTradeTags();
 
-    @NotNull
-    private TagKey<ItemType> customItemTag(@NotNull String name) {
+    private TagKey<ItemType> customItemTag(String name) {
         return TagKey.create(RegistryKey.ITEM, Key.key(EnchantsKeys.NAMESPACE, name));
     }
 
     @Override
-    public void bootstrap(@NotNull BootstrapContext context) {
+    public void bootstrap(BootstrapContext context) {
         Path dataDirectory = context.getDataDirectory();
 
         DistributionConfig distributionConfig = DistributionConfig.load(dataDirectory);
@@ -60,11 +61,11 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
             EnchantsKeys.setVanillaNamespace();
         }
 
-        var lifeCycle = context.getLifecycleManager();
+        LifecycleEventManager<BootstrapContext> lifecycle = context.getLifecycleManager();
 
         // Create custom tags with custom items for enchantment's 'primary' and 'supported' items sets.
         // Use 'postFlatten' instead of 'preFlatten' to access vanilla item tags to create default item sets more effectively.
-        lifeCycle.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.ITEM).newHandler(event -> {
+        lifecycle.registerEventHandler(LifecycleEvents.TAGS.postFlatten(RegistryKey.ITEM).newHandler(event -> {
             PostFlattenTagRegistrar<ItemType> registrar = event.registrar();
             PaperItemTagLookup tagLookup = new PaperItemTagLookup(registrar);
             ItemSetRegistry itemSetRegistry = new ItemSetRegistry(dataDirectory, tagLookup);
@@ -88,10 +89,10 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
         }));
 
         // Register a new handler for the freeze lifecycle event on the enchantment registry
-        lifeCycle.registerEventHandler(RegistryEvents.ENCHANTMENT.compose().newHandler(event -> {
+        lifecycle.registerEventHandler(RegistryEvents.ENCHANTMENT.compose().newHandler(event -> {
             var registry = RegistryAccess.registryAccess().getRegistry(RegistryKey.ENCHANTMENT);
 
-            EnchantCatalog.enabled().forEach((data) -> {
+            EnchantCatalog.enabled().forEach(data -> {
                 EnchantDefinition definition = data.getDefinition();
                 ItemSet primarySet = definition.getPrimaryItemSet();
                 ItemSet supportedSet = definition.getSupportedItemSet();
@@ -144,7 +145,7 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
             });
         }));
 
-        lifeCycle.registerEventHandler(LifecycleEvents.TAGS.preFlatten(RegistryKey.ENCHANTMENT).newHandler(event -> {
+        lifecycle.registerEventHandler(LifecycleEvents.TAGS.preFlatten(RegistryKey.ENCHANTMENT).newHandler(event -> {
             var registrar = event.registrar();
 
             EnchantCatalog.enabled().forEach(data -> {
@@ -209,13 +210,13 @@ public class PaperEnchantsBootstrap implements PluginBootstrap {
         }));
     }
 
-    @NotNull
-    private static TagKey<Enchantment> getTradeKey(@NotNull TradeType tradeType) {
+
+    private static TagKey<Enchantment> getTradeKey(TradeType tradeType) {
         return EnchantmentTagKeys.create(Key.key(Key.MINECRAFT_NAMESPACE, "trades/" + getTradePath(tradeType)));
     }
 
-    @NotNull
-    private static String getTradePath(@NotNull TradeType tradeType) {
+
+    private static String getTradePath(TradeType tradeType) {
         return switch (tradeType) {
             case DESERT_COMMON -> "desert_common";
             case DESERT_SPECIAL -> HAS_SPECIAL_TRADE_TAGS ? "desert_special" : "desert_common";

@@ -1,11 +1,15 @@
 package su.nightexpress.excellentenchants.tooltip;
 
-import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.excellentenchants.api.tooltip.TooltipHandler;
+
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.tooltip.TooltipController;
 
 @FunctionalInterface
+@NullMarked
 public interface TooltipFactory {
 
-    @NotNull TooltipHandler create(@NotNull TooltipController provider);
+    TooltipHandler create(TooltipController provider);
 }

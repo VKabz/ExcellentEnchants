@@ -3,43 +3,47 @@ package su.nightexpress.excellentenchants.manager.damage;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Consumer;
 
+@NullMarked
 public class Explosion {
 
     private final LivingEntity owner;
 
-    private Consumer<EntityExplodeEvent> onExplode;
+    @Nullable
+    private Consumer<EntityExplodeEvent>        onExplode;
+    @Nullable
     private Consumer<EntityDamageByEntityEvent> onDamage;
 
-    public Explosion(@NotNull LivingEntity owner) {
+    public Explosion(LivingEntity owner) {
         this.owner = owner;
     }
 
-    public void handleExplosion(@NotNull EntityExplodeEvent event) {
+    public void handleExplosion(EntityExplodeEvent event) {
         if (this.onExplode != null) {
             this.onExplode.accept(event);
         }
     }
 
-    public void handleDamage(@NotNull EntityDamageByEntityEvent event) {
+    public void handleDamage(EntityDamageByEntityEvent event) {
         if (this.onDamage != null) {
             this.onDamage.accept(event);
         }
     }
 
-    @NotNull
+
     public LivingEntity getOwner() {
         return this.owner;
     }
 
-    public void setOnExplode(@NotNull Consumer<EntityExplodeEvent> onExplode) {
+    public void setOnExplode(Consumer<EntityExplodeEvent> onExplode) {
         this.onExplode = onExplode;
     }
 
-    public void setOnDamage(@NotNull Consumer<EntityDamageByEntityEvent> onDamage) {
+    public void setOnDamage(Consumer<EntityDamageByEntityEvent> onDamage) {
         this.onDamage = onDamage;
     }
 }

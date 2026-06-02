@@ -1,6 +1,6 @@
 package su.nightexpress.excellentenchants;
 
-import org.jetbrains.annotations.NotNull;
+
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
 import su.nightexpress.nightcore.util.ItemUtil;
@@ -40,21 +40,21 @@ public class EnchantsPlaceholders extends Placeholders {
     public static final String EFFECT_DURATION  = "%enchantment_potion_duration%";
     public static final String EFFECT_TYPE      = "%enchantment_potion_type%";
 
-    public static final String ENCHANTMENT_ID                            = "%enchantment_id%";
-    public static final String ENCHANTMENT_NAME                          = "%enchantment_name%";
-    public static final String ENCHANTMENT_DESCRIPTION                   = "%enchantment_description%";
-    public static final String ENCHANTMENT_DESCRIPTION_REPLACED          = "%enchantment_description_replaced%";
-    public static final String ENCHANTMENT_LEVEL                         = "%enchantment_level%";
-    public static final String ENCHANTMENT_LEVEL_MIN                     = "%enchantment_level_min%";
-    public static final String ENCHANTMENT_LEVEL_MAX                     = "%enchantment_level_max%";
-    public static final String ENCHANTMENT_FIT_ITEM_TYPES                = "%enchantment_fit_item_types%";
-    public static final String ENCHANTMENT_CHARGES_MAX_AMOUNT            = "%enchantment_charges_max_amount%";
-    public static final String ENCHANTMENT_CHARGES_CONSUME_AMOUNT        = "%enchantment_charges_consume_amount%";
-    public static final String ENCHANTMENT_CHARGES_RECHARGE_AMOUNT       = "%enchantment_charges_recharge_amount%";
-    public static final String ENCHANTMENT_CHARGES_FUEL_ITEM             = "%enchantment_charges_fuel_item%";
+    public static final String ENCHANTMENT_ID                      = "%enchantment_id%";
+    public static final String ENCHANTMENT_NAME                    = "%enchantment_name%";
+    public static final String ENCHANTMENT_DESCRIPTION             = "%enchantment_description%";
+    public static final String ENCHANTMENT_DESCRIPTION_REPLACED    = "%enchantment_description_replaced%";
+    public static final String ENCHANTMENT_LEVEL                   = "%enchantment_level%";
+    public static final String ENCHANTMENT_LEVEL_MIN               = "%enchantment_level_min%";
+    public static final String ENCHANTMENT_LEVEL_MAX               = "%enchantment_level_max%";
+    public static final String ENCHANTMENT_FIT_ITEM_TYPES          = "%enchantment_fit_item_types%";
+    public static final String ENCHANTMENT_CHARGES_MAX_AMOUNT      = "%enchantment_charges_max_amount%";
+    public static final String ENCHANTMENT_CHARGES_CONSUME_AMOUNT  = "%enchantment_charges_consume_amount%";
+    public static final String ENCHANTMENT_CHARGES_RECHARGE_AMOUNT = "%enchantment_charges_recharge_amount%";
+    public static final String ENCHANTMENT_CHARGES_FUEL_ITEM       = "%enchantment_charges_fuel_item%";
 
-    @NotNull
-    public static PlaceholderList<Integer> forEnchant(@NotNull CustomEnchantment enchantment) {
+
+    public static PlaceholderList<Integer> forEnchant(CustomEnchantment enchantment) {
         return PlaceholderList.create(list -> list
             .add(ENCHANTMENT_ID, level -> enchantment.getId())
             .add(ENCHANTMENT_NAME, level -> enchantment.getDisplayName())
@@ -64,15 +64,23 @@ public class EnchantsPlaceholders extends Placeholders {
             .add(ENCHANTMENT_LEVEL_MIN, level -> String.valueOf(1))
             .add(ENCHANTMENT_LEVEL_MAX, level -> String.valueOf(enchantment.getDefinition().getMaxLevel()))
             .add(ENCHANTMENT_FIT_ITEM_TYPES, level -> enchantment.getSupportedItems().getDisplayName())
-            .add(ENCHANTMENT_CHARGES_MAX_AMOUNT, level -> NumberUtil.format(enchantment.getCharges().getMaxAmount(level)))
-            .add(ENCHANTMENT_CHARGES_CONSUME_AMOUNT, level -> NumberUtil.format(enchantment.getCharges().getConsumeAmount()))
-            .add(ENCHANTMENT_CHARGES_RECHARGE_AMOUNT, level -> NumberUtil.format(enchantment.getCharges().getRechargeAmount()))
+            .add(ENCHANTMENT_CHARGES_MAX_AMOUNT, level -> NumberUtil.format(enchantment.getCharges().getMaxAmount(
+                level)))
+            .add(ENCHANTMENT_CHARGES_CONSUME_AMOUNT, level -> NumberUtil.format(enchantment.getCharges()
+                .getConsumeAmount()))
+            .add(ENCHANTMENT_CHARGES_RECHARGE_AMOUNT, level -> NumberUtil.format(enchantment.getCharges()
+                .getRechargeAmount()))
             .add(ENCHANTMENT_CHARGES_FUEL_ITEM, level -> ItemUtil.getItemNameSerialized(enchantment.getFuel()))
-            .add(TRIGGER_CHANCE, level -> NumberUtil.format(enchantment.getComponent(EnchantComponent.PROBABILITY).getTriggerChance(level)))
-            .add(TIRGGER_INTERVAL, () -> NumberUtil.format(enchantment.getComponent(EnchantComponent.PERIODIC).getInterval()))
-            .add(EFFECT_AMPLIFIER, level -> NumberUtil.toRoman(enchantment.getComponent(EnchantComponent.POTION_EFFECT).getAmplifier(level)))
-            .add(EFFECT_DURATION, level -> NumberUtil.format(enchantment.getComponent(EnchantComponent.POTION_EFFECT).getDuration(level) / 20D))
-            .add(EFFECT_TYPE, () -> LangUtil.getSerializedName(enchantment.getComponent(EnchantComponent.POTION_EFFECT).getType()))
+            .add(TRIGGER_CHANCE, level -> NumberUtil.format(enchantment.getComponent(EnchantComponent.PROBABILITY)
+                .getTriggerChance(level)))
+            .add(TIRGGER_INTERVAL, () -> NumberUtil.format(enchantment.getComponent(EnchantComponent.PERIODIC)
+                .getInterval()))
+            .add(EFFECT_AMPLIFIER, level -> NumberUtil.toRoman(enchantment.getComponent(EnchantComponent.POTION_EFFECT)
+                .getAmplifier(level)))
+            .add(EFFECT_DURATION, level -> NumberUtil.format(enchantment.getComponent(EnchantComponent.POTION_EFFECT)
+                .getDuration(level) / 20D))
+            .add(EFFECT_TYPE, () -> LangUtil.getSerializedName(enchantment.getComponent(EnchantComponent.POTION_EFFECT)
+                .getType()))
         );
     }
 }

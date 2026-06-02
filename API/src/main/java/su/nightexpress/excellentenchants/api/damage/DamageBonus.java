@@ -1,14 +1,15 @@
 package su.nightexpress.excellentenchants.api.damage;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class DamageBonus {
 
     private final DamageBonusType type;
 
     private double bonusAmount;
 
-    public DamageBonus(@NotNull DamageBonusType type) {
+    public DamageBonus(DamageBonusType type) {
         this.type = type;
     }
 
@@ -38,7 +39,7 @@ public class DamageBonus {
         this.setBonusAmount(this.bonusAmount - Math.abs(amount));
     }
 
-    @NotNull
+
     public DamageBonusType getType() {
         return this.type;
     }

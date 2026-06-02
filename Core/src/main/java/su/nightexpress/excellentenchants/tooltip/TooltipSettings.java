@@ -1,7 +1,8 @@
 package su.nightexpress.excellentenchants.tooltip;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.tooltip.format.ChargesFormat;
 import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.configuration.AbstractConfig;
@@ -16,6 +17,7 @@ import java.util.Map;
 import static su.nightexpress.excellentenchants.EnchantsPlaceholders.*;
 import static su.nightexpress.nightcore.util.text.night.wrapper.TagWrappers.*;
 
+@NullMarked
 public class TooltipSettings extends AbstractConfig {
 
     private static final ConfigType<ChargesFormat> CHARGES_FORMAT_CONFIG_TYPE = ConfigType.of(
@@ -24,7 +26,7 @@ public class TooltipSettings extends AbstractConfig {
     );
 
     @Override
-    public void load(@NotNull FileConfig config) {
+    public void load(FileConfig config) {
         if (config.contains("Description")) {
             config.set("EnchantTooltip.Books_Only", config.getBoolean("Description.Books_Only"));
             config.set("EnchantTooltip.Format.Default", config.getString("Description.Format.Default"));
@@ -40,17 +42,20 @@ public class TooltipSettings extends AbstractConfig {
         "Sets whether or not only enchanted books will have enchantment descriptions."
     );
 
-    private final ConfigProperty<String> formatDefault = this.addProperty(ConfigTypes.STRING, "EnchantTooltip.Format.Default",
+    private final ConfigProperty<String> formatDefault = this.addProperty(ConfigTypes.STRING,
+        "EnchantTooltip.Format.Default",
         GRAY.wrap("• " + GENERIC_DESCRIPTION),
         "Sets description format for enchantments without charges."
     );
 
-    private final ConfigProperty<String> formatWithCharges = this.addProperty(ConfigTypes.STRING, "EnchantTooltip.Format.WithCharges",
+    private final ConfigProperty<String> formatWithCharges = this.addProperty(ConfigTypes.STRING,
+        "EnchantTooltip.Format.WithCharges",
         GRAY.wrap("• " + GENERIC_DESCRIPTION + " " + GENERIC_CHARGES),
         "Sets description format for enchantments with charges enabled."
     );
 
-    private final ConfigProperty<Map<String, ChargesFormat>> chargesByAmountFormat = this.addProperty(ConfigTypes.forMapWithLowerKeys(CHARGES_FORMAT_CONFIG_TYPE),
+    private final ConfigProperty<Map<String, ChargesFormat>> chargesByAmountFormat = this.addProperty(ConfigTypes
+        .forMapWithLowerKeys(CHARGES_FORMAT_CONFIG_TYPE),
         "EnchantTooltip.Format.Charges-By-Percent",
         getDefaultChargesFormat(),
         "Sets charges format based on percent of max. charges amount."
@@ -60,12 +65,12 @@ public class TooltipSettings extends AbstractConfig {
         return this.booksOnly.get();
     }
 
-    @NotNull
+
     public String getTooltipFormat() {
         return this.formatDefault.get();
     }
 
-    @NotNull
+
     public String getTooltipFormatWithCharges() {
         return this.formatWithCharges.get();
     }
@@ -77,7 +82,7 @@ public class TooltipSettings extends AbstractConfig {
             .max(Comparator.comparingInt(ChargesFormat::getThreshold)).orElse(null);
     }
 
-    @NotNull
+
     private static Map<String, ChargesFormat> getDefaultChargesFormat() {
         Map<String, ChargesFormat> map = new LinkedHashMap<>();
 

@@ -4,12 +4,14 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
 
+@NullMarked
 public interface BlockEnchant extends CustomEnchantment {
 
-    void onPlace(@NotNull BlockPlaceEvent event, @NotNull Player player, @NotNull Block block, @NotNull ItemStack itemStack);
+    void onPlace(BlockPlaceEvent event, Player player, Block block, ItemStack itemStack);
 
     boolean canPlaceInContainers();
 }

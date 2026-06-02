@@ -6,7 +6,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -25,18 +26,19 @@ import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class VampireEnchant extends GameEnchantment implements AttackEnchant {
 
     private Modifier healAmount;
     private boolean  healMultiplier;
 
-    public VampireEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public VampireEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
         this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(8, 4));
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.healAmount = Modifier.load(config, "Vampire.Amount",
             Modifier.addictive(0.25).perLevel(0.25).capacity(10),
             "Amount of health to be restored for attacker.");
@@ -46,7 +48,8 @@ public class VampireEnchant extends GameEnchantment implements AttackEnchant {
             "When 'true', the option above will work as a multiplier of the inflicted damage."
         ).read(config);
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.isHealMultiplier() ? getHealAmount(level) * 100D : getHealAmount(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this
+            .isHealMultiplier() ? getHealAmount(level) * 100D : getHealAmount(level)));
     }
 
     public double getHealAmount(int level) {
@@ -58,13 +61,14 @@ public class VampireEnchant extends GameEnchantment implements AttackEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getAttackPriority() {
         return EnchantPriority.MONITOR;
     }
 
     @Override
-    public boolean onAttack(@NotNull EntityDamageByEntityEvent event, @NotNull LivingEntity damager, @NotNull LivingEntity victim, @NotNull ItemStack weapon, int level) {
+    public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
+                            ItemStack weapon, int level) {
         double healthMax = EntityUtil.getAttributeValue(damager, Attribute.MAX_HEALTH);
         double healthHas = damager.getHealth();
         if (healthHas == healthMax) return false;

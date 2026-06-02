@@ -4,7 +4,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
@@ -18,22 +19,25 @@ import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
 
+@NullMarked
 public class WisdomEnchant extends GameEnchantment implements KillEnchant {
 
     private Modifier xpModifier;
 
-    public WisdomEnchant(@NotNull EnchantsPlugin plugin, @NotNull EnchantManager manager, @NotNull Path file, @NotNull EnchantContext context) {
+    public WisdomEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
     }
 
     @Override
-    protected void loadAdditional(@NotNull FileConfig config) {
+    protected void loadAdditional(FileConfig config) {
         this.xpModifier = Modifier.load(config, "Wisdom.XP_Modifier",
             Modifier.addictive(1).perLevel(0.5).capacity(3D),
             "Exp modifier value. The original exp amount will be multiplied on this value.");
 
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getXPModifier(level) * 100D - 100D));
-        this.addPlaceholder(EnchantsPlaceholders.GENERIC_MODIFIER, level -> NumberUtil.format(this.getXPModifier(level)));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_AMOUNT, level -> NumberUtil.format(this.getXPModifier(
+            level) * 100D - 100D));
+        this.addPlaceholder(EnchantsPlaceholders.GENERIC_MODIFIER, level -> NumberUtil.format(this.getXPModifier(
+            level)));
     }
 
     public final double getXPModifier(int level) {
@@ -41,13 +45,13 @@ public class WisdomEnchant extends GameEnchantment implements KillEnchant {
     }
 
     @Override
-    @NotNull
+
     public EnchantPriority getKillPriority() {
         return EnchantPriority.NORMAL;
     }
 
     @Override
-    public boolean onKill(@NotNull EntityDeathEvent event, @NotNull LivingEntity entity, @NotNull Player killer, @NotNull ItemStack weapon, int level) {
+    public boolean onKill(EntityDeathEvent event, LivingEntity entity, Player killer, ItemStack weapon, int level) {
         double xpModifier = this.getXPModifier(level);
         double xpFinal = Math.ceil((double) event.getDroppedExp() * xpModifier);
 
