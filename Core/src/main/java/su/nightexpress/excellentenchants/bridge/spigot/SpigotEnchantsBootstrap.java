@@ -11,21 +11,18 @@ import su.nightexpress.excellentenchants.bridge.RegistryHack;
 import su.nightexpress.excellentenchants.enchantment.DistributionConfig;
 import su.nightexpress.excellentenchants.enchantment.EnchantCatalog;
 import su.nightexpress.excellentenchants.enchantment.EnchantRegistry;
-import su.nightexpress.excellentenchants.nms.mc_1_21_10.RegistryHack_1_21_10;
 import su.nightexpress.excellentenchants.nms.mc_1_21_11.RegistryHack_1_21_11;
-import su.nightexpress.excellentenchants.nms.mc_1_21_8.RegistryHack_1_21_8;
-import su.nightexpress.excellentenchants.nms.mc_26_1_2.RegistryHack_26_1_2;
 import su.nightexpress.nightcore.util.Version;
 
 @NullMarked
 public class SpigotEnchantsBootstrap {
 
     public void bootstrap(EnchantsPlugin plugin) {
+        // Downstream build (gamai.ru): trimmed to Leaf/Paper 1.21.11 only.
+        // Other version adapters (1.21.8, 1.21.10, 26.1.2) dropped so the plugin
+        // builds reproducibly from source without their BuildTools NMS artifacts.
         RegistryHack registryHack = switch (Version.getCurrent()) {
-            case MC_1_21_8 -> new RegistryHack_1_21_8(plugin);
-            case MC_1_21_10 -> new RegistryHack_1_21_10(plugin);
             case MC_1_21_11 -> new RegistryHack_1_21_11(plugin);
-            case MC_26_1_2 -> new RegistryHack_26_1_2(plugin);
             default -> null;
         };
 
