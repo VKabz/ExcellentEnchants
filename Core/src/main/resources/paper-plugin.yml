@@ -6,14 +6,13 @@ description: A lot of new enchantments properly integrated into the server!
 api-version: '1.21'
 #loader: io.papermc.testplugin.TestPluginLoader
 dependencies:
+  # gamai.ru downstream: nightcore is shaded into this jar, so it is no longer a
+  # required external plugin dependency (prod runs standalone nightcore 2.13.2 for CoinsEngine).
   bootstrap:
-    nightcore:
+    ProtocolLib:
       load: BEFORE
-      required: true
+      required: false
   server:
-    nightcore:
-      load: BEFORE
-      required: true
     ProtocolLib:
       load: BEFORE
       required: false

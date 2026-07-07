@@ -54,6 +54,15 @@
         <!-- gamai.ru downstream: 1.21.8 / 1.21.10 / 26.1.2 NMS adapters dropped
              (see SpigotEnchantsBootstrap) so we build 1.21.11-only from source. -->
 
+        <!-- gamai.ru downstream: override inherited 'provided' scope so nightcore
+             gets shaded into the final jar (EE becomes self-contained). -->
+        <dependency>
+            <groupId>su.nightexpress.nightcore</groupId>
+            <artifactId>main</artifactId>
+            <version>2.16.1</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>su.nightexpress.excellentenchants</groupId>
             <artifactId>tooltip-packetevents</artifactId>
@@ -135,8 +144,26 @@
                             <artifactSet>
                                 <includes>
                                     <include>su.nightexpress.excellentenchants*</include>
+                                    <!-- gamai.ru downstream: bundle nightcore so EE is self-contained
+                                         and does NOT require the standalone nightcore plugin on the
+                                         server (keeps prod nightcore 2.13.2 untouched for CoinsEngine). -->
+                                    <include>su.nightexpress.nightcore:main</include>
                                 </includes>
                             </artifactSet>
+                            <filters>
+                                <!-- Drop nightcore's own plugin descriptors so they don't
+                                     clobber ExcellentEnchants' plugin.yml / paper-plugin.yml. -->
+                                <filter>
+                                    <artifact>su.nightexpress.nightcore:main</artifact>
+                                    <excludes>
+                                        <exclude>plugin.yml</exclude>
+                                        <exclude>paper-plugin.yml</exclude>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
