@@ -1,0 +1,330 @@
+name: " <black>Эпические зачарования (2/2)"
+size: 45
+items:
+  btn-0:
+    slot: 0
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-1:
+    slot: 1
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-2:
+    slot: 2
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-3:
+    slot: 3
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-4:
+    slot: 4
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-5:
+    slot: 5
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-6:
+    slot: 6
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-7:
+    slot: 7
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-8:
+    slot: 8
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-9:
+    slot: 9
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-10:
+    slot: 10
+    item:
+      id: "minecraft:enchanted_book"
+      material: "ENCHANTED_BOOK"
+      count: 1
+      name: "<gradient:#A382BF:#D6BAEE>Киллаура"
+      lore:
+        - ""
+        - "<#555555>┌─ %civemoji_writable_book%<#FFE18C>О зачаровании"
+        - "<#555555>│ <#D4D4D4>Редкость: <#A382BF>⭐⭐⭐⭐<#555555>⭐"
+        - "<#555555>│ <#D4D4D4>Предмет: <white>Мечи"
+        - "<#555555>│ <#D4D4D4>Макс. уровень: <white>V"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_iron_sword%<#FFE18C>Эффект"
+        - "<#555555>│ <#D4D4D4>Шанс <white>убить <#D4D4D4>несколько монстров вблизи"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_experience_bottle%<#FFE18C>Шансы по уровням"
+        - "<#555555>│ <#FFAA00>I <#555555>— <#D4D4D4>шанс <white>3% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>II <#555555>— <#D4D4D4>шанс <white>4% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>III <#555555>— <#D4D4D4>шанс <white>5% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>IV <#555555>— <#D4D4D4>шанс <white>6% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>V <#555555>— <#D4D4D4>шанс <white>7% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>└───"
+  btn-11:
+    slot: 11
+    item:
+      id: "minecraft:enchanted_book"
+      material: "ENCHANTED_BOOK"
+      count: 1
+      name: "<gradient:#D6BAEE:#A382BF>Кузнец"
+      lore:
+        - ""
+        - "<#555555>┌─ %civemoji_writable_book%<#FFE18C>О зачаровании"
+        - "<#555555>│ <#D4D4D4>Редкость: <#A382BF>⭐⭐⭐⭐<#555555>⭐"
+        - "<#555555>│ <#D4D4D4>Предмет: <white>Топоры"
+        - "<#555555>│ <#D4D4D4>Макс. уровень: <white>V"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_iron_axe%<#FFE18C>Эффект"
+        - "<#555555>│ <#D4D4D4>Шанс <white>восстановить прочность<#D4D4D4>, но урон вдвое меньше"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_experience_bottle%<#FFE18C>Шансы по уровням"
+        - "<#555555>│ <#FFAA00>I <#555555>— <#D4D4D4>шанс <white>9% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>│ <#FFAA00>II <#555555>— <#D4D4D4>шанс <white>15% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>│ <#FFAA00>III <#555555>— <#D4D4D4>шанс <white>23% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>│ <#FFAA00>IV <#555555>— <#D4D4D4>шанс <white>31% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>│ <#FFAA00>V <#555555>— <#D4D4D4>шанс <white>39% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>└───"
+  btn-12:
+    slot: 12
+    item:
+      id: "minecraft:enchanted_book"
+      material: "ENCHANTED_BOOK"
+      count: 1
+      name: "<gradient:#8E6FB0:#D6BAEE>Ударник"
+      lore:
+        - ""
+        - "<#555555>┌─ %civemoji_writable_book%<#FFE18C>О зачаровании"
+        - "<#555555>│ <#D4D4D4>Редкость: <#A382BF>⭐⭐⭐⭐<#555555>⭐"
+        - "<#555555>│ <#D4D4D4>Предмет: <white>Луки"
+        - "<#555555>│ <#D4D4D4>Макс. уровень: <white>III"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_bow%<#FFE18C>Эффект"
+        - "<#555555>│ <#D4D4D4>Шанс обрушить <white>шквал стрел <#D4D4D4>на врага"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_experience_bottle%<#FFE18C>Шансы по уровням"
+        - "<#555555>│ <#FFAA00>I <#555555>— <#D4D4D4>шанс <white>15% <#555555>· <#D4D4D4>задержка <white>6 сек"
+        - "<#555555>│ <#FFAA00>II <#555555>— <#D4D4D4>шанс <white>20% <#555555>· <#D4D4D4>задержка <white>6 сек"
+        - "<#555555>│ <#FFAA00>III <#555555>— <#D4D4D4>шанс <white>25% <#555555>· <#D4D4D4>задержка <white>6 сек"
+        - "<#555555>└───"
+  btn-13:
+    slot: 13
+    item:
+      id: "minecraft:enchanted_book"
+      material: "ENCHANTED_BOOK"
+      count: 1
+      name: "<gradient:#A382BF:#E6CCF5>Смертельный выстрел"
+      lore:
+        - ""
+        - "<#555555>┌─ %civemoji_writable_book%<#FFE18C>О зачаровании"
+        - "<#555555>│ <#D4D4D4>Редкость: <#A382BF>⭐⭐⭐⭐<#555555>⭐"
+        - "<#555555>│ <#D4D4D4>Предмет: <white>Луки, арбалеты, трезубцы"
+        - "<#555555>│ <#D4D4D4>Макс. уровень: <white>V"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_bow%<#FFE18C>Эффект"
+        - "<#555555>│ <#D4D4D4>Шанс нанести <white>двойной урон <#D4D4D4>выстрелом в голову"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_experience_bottle%<#FFE18C>Шансы по уровням"
+        - "<#555555>│ <#FFAA00>I <#555555>— <#D4D4D4>шанс <white>30% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>II <#555555>— <#D4D4D4>шанс <white>40% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>III <#555555>— <#D4D4D4>шанс <white>50% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>IV <#555555>— <#D4D4D4>шанс <white>60% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>│ <#FFAA00>V <#555555>— <#D4D4D4>шанс <white>75% <#555555>· <#D4D4D4>задержка <white>5 сек"
+        - "<#555555>└───"
+  btn-14:
+    slot: 14
+    item:
+      id: "minecraft:enchanted_book"
+      material: "ENCHANTED_BOOK"
+      count: 1
+      name: "<gradient:#A382BF:#D6BAEE>Автокатушка"
+      lore:
+        - ""
+        - "<#555555>┌─ %civemoji_writable_book%<#FFE18C>О зачаровании"
+        - "<#555555>│ <#D4D4D4>Редкость: <#A382BF>⭐⭐⭐⭐<#555555>⭐"
+        - "<#555555>│ <#D4D4D4>Предмет: <white>Удочка"
+        - "<#555555>│ <#D4D4D4>Макс. уровень: <white>IV"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_fishing_rod%<#FFE18C>Эффект"
+        - "<#555555>│ <#D4D4D4>Шанс <white>автоматически <#D4D4D4>забрать рыбу при поклёвке"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_experience_bottle%<#FFE18C>Шансы по уровням"
+        - "<#555555>│ <#FFAA00>I <#555555>— <#D4D4D4>шанс <white>25% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>│ <#FFAA00>II <#555555>— <#D4D4D4>шанс <white>50% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>│ <#FFAA00>III <#555555>— <#D4D4D4>шанс <white>75% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>│ <#FFAA00>IV <#555555>— <#D4D4D4>шанс <white>100% <#555555>· <#D4D4D4>задержка <white>3 сек"
+        - "<#555555>└───"
+  btn-15:
+    slot: 15
+    item:
+      id: "minecraft:enchanted_book"
+      material: "ENCHANTED_BOOK"
+      count: 1
+      name: "<gradient:#D6BAEE:#A382BF>Возвышение"
+      lore:
+        - ""
+        - "<#555555>┌─ %civemoji_writable_book%<#FFE18C>О зачаровании"
+        - "<#555555>│ <#D4D4D4>Редкость: <#A382BF>⭐⭐⭐⭐<#555555>⭐"
+        - "<#555555>│ <#D4D4D4>Предмет: <white>Мечи"
+        - "<#555555>│ <#D4D4D4>Макс. уровень: <white>IV"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_milk_bucket%<#FFE18C>Эффект"
+        - "<#555555>│ <#D4D4D4>Шанс <white>снять негативные эффекты <#D4D4D4>при атаке игрока"
+        - "<#555555>└───"
+        - ""
+        - "<#555555>┌─ %civemoji_experience_bottle%<#FFE18C>Шансы по уровням"
+        - "<#555555>│ <#FFAA00>I <#555555>— <#D4D4D4>шанс <white>15% <#555555>· <#D4D4D4>задержка <white>8 сек"
+        - "<#555555>│ <#FFAA00>II <#555555>— <#D4D4D4>шанс <white>20% <#555555>· <#D4D4D4>задержка <white>8 сек"
+        - "<#555555>│ <#FFAA00>III <#555555>— <#D4D4D4>шанс <white>25% <#555555>· <#D4D4D4>задержка <white>8 сек"
+        - "<#555555>│ <#FFAA00>IV <#555555>— <#D4D4D4>шанс <white>32% <#555555>· <#D4D4D4>задержка <white>8 сек"
+        - "<#555555>└───"
+  btn-17:
+    slot: 17
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-18:
+    slot: 18
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-26:
+    slot: 26
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-27:
+    slot: 27
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-35:
+    slot: 35
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-36:
+    slot: 36
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-37:
+    slot: 37
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-38:
+    slot: 38
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-39:
+    slot: 39
+    item:
+      id: "minecraft:player_head"
+      material: "PLAYER_HEAD"
+      count: 1
+      name: "<gradient:#00FF7F:#55FF99>◀ Назад"
+      lore:
+        - ""
+        - "<#8D8D8D>[Нажмите <#58EC8A>ЛКМ<#8D8D8D> — предыдущая страница]"
+      url: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjllYTFkODYyNDdmNGFmMzUxZWQxODY2YmNhNmEzMDQwYTA2YzY4MTc3Yzc4ZTQyMzE2YTEwOThlNjBmYjdkMyJ9fX0="
+  btn-40:
+    slot: 40
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-41:
+    slot: 41
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-42:
+    slot: 42
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-43:
+    slot: 43
+    item:
+      id: "minecraft:black_stained_glass_pane"
+      material: "BLACK_STAINED_GLASS_PANE"
+      count: 1
+      name: "<dark_gray>ɢᴀᴍᴀɪ.ʀᴜ"
+  btn-44:
+    slot: 44
+    item:
+      id: "minecraft:waxed_oxidized_copper_door"
+      material: "WAXED_OXIDIZED_COPPER_DOOR"
+      count: 1
+      name: "<gradient:#00FF7F:#55FF99>◀ Назад"
+      lore:
+        - ""
+        - "<#8D8D8D>[Нажмите <#58EC8A>ЛКМ<#8D8D8D> — вернуться]"
