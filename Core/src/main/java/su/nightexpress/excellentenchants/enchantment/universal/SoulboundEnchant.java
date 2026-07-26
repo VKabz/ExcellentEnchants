@@ -6,6 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.excellentenchants.EnchantsPlugin;
+import su.nightexpress.excellentenchants.api.enchantment.component.EnchantComponent;
+import su.nightexpress.excellentenchants.api.enchantment.meta.Probability;
 import su.nightexpress.excellentenchants.api.enchantment.type.InventoryEnchant;
 import su.nightexpress.excellentenchants.enchantment.EnchantContext;
 import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
@@ -19,6 +21,7 @@ public class SoulboundEnchant extends GameEnchantment implements InventoryEnchan
 
     public SoulboundEnchant(EnchantsPlugin plugin, EnchantManager manager, Path file, EnchantContext context) {
         super(plugin, manager, file, context);
+        this.addComponent(EnchantComponent.PROBABILITY, Probability.addictive(20, 0));
     }
 
     @Override
@@ -29,6 +32,7 @@ public class SoulboundEnchant extends GameEnchantment implements InventoryEnchan
     @Override
     public boolean onDeath(PlayerDeathEvent event, Player player, ItemStack itemStack, int level) {
         if (event.getKeepInventory()) return false;
+        if (!this.testTriggerChance(level)) return false;
 
         event.getDrops().remove(itemStack);
         event.getItemsToKeep().add(itemStack);
