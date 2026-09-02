@@ -4,10 +4,11 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.MultipleFacing;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -72,20 +73,22 @@ public class FlareEnchant extends GameEnchantment implements ArrowEnchant {
 
         if (projectile.getShooter() instanceof Player player) {
             BlockPlaceEvent placeEvent = new BlockPlaceEvent(relative, relative
-                .getState(), block, new ItemStack(Material.TORCH), player, true, EquipmentSlot.HAND);
+                .getState(), block, new ItemStack(Material.FLINT_AND_STEEL), player, true, EquipmentSlot.HAND);
             plugin.getPluginManager().callEvent(placeEvent);
             if (placeEvent.isCancelled() || !placeEvent.canBuild()) return;
         }
 
-        if (face == BlockFace.UP) {
-            relative.setType(Material.TORCH);
-        }
-        else {
-            relative.setType(Material.WALL_TORCH);
+        BlockIgniteEvent igniteEvent = new BlockIgniteEvent(relative, BlockIgniteEvent.IgniteCause.ARROW, projectile);
+        plugin.getPluginManager().callEvent(igniteEvent);
+        if (igniteEvent.isCancelled()) return;
 
-            Directional directional = (Directional) relative.getBlockData();
-            directional.setFacing(face);
-            relative.setBlockData(directional, true);
+        relative.setType(Material.FIRE, false);
+
+        // Attach the fire to the hit block side, so it doesn't vanish on the next block update.
+        if (face != BlockFace.UP && relative.getBlockData() instanceof MultipleFacing facing
+            && facing.getAllowedFaces().contains(face.getOppositeFace())) {
+            facing.setFace(face.getOppositeFace(), true);
+            relative.setBlockData(facing, true);
         }
     }
 

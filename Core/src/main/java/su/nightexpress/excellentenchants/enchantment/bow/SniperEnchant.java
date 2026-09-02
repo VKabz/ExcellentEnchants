@@ -55,10 +55,21 @@ public class SniperEnchant extends GameEnchantment implements BowEnchant {
     @Override
     public boolean onShoot(EntityShootBowEvent event, LivingEntity shooter, ItemStack bow, int level) {
         double modifier = this.getSpeedModifier(level);
+        if (modifier == 1D) return false;
 
         Entity entity = event.getProjectile();
-        Vector vector = entity.getVelocity();
-        entity.setVelocity(vector.multiply(modifier));
+
+        // Разгон вешаем следующим тиком, уже после ProjectileLaunchEvent. Античиты (Vulcan
+        // Fast Bow) сверяют скорость стрелы в момент запуска с силой натяжения и ОТМЕНЯЮТ
+        // выстрел, если стрела быстрее ванильной: при полном натяжении Снайпер II давал
+        // 3.0 x 1.4 против потолка 3.0, и стрела не вылетала вовсе. С задержкой в тик
+        // проверка видит ванильную скорость, а игрок получает ускоренную стрелу.
+        entity.getScheduler().run(this.plugin, task -> {
+            if (!entity.isValid()) return;
+
+            Vector vector = entity.getVelocity();
+            entity.setVelocity(vector.multiply(modifier));
+        }, null);
 
         return true;
     }

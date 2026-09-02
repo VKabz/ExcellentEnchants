@@ -145,7 +145,11 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         this.plugin.runTask(() -> this.manager.removeArrowEffects(abstractArrow));
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    // HIGHEST, а не HIGH: PremiumVanish гасит урон в GeneralListener.onDamage тоже на HIGH,
+    // и при равном приоритете порядок решает порядок регистрации плагинов. EE успевал
+    // отработать первым — урона нет, а эффекты зачарований на жертве уже висят (карточка 968).
+    // На HIGHEST мы гарантированно позади всех, кто отменяет удар (ваниш, запрет PvP в регионе).
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamageGeneric(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof LivingEntity victim)) return;
 
@@ -185,7 +189,8 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         event.setDamage(Math.max(0, damageFinal));
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    // HIGHEST по той же причине, что и onDamageGeneric — см. комментарий выше (карточка 968).
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamageByEntity(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof LivingEntity victim)) return;
 

@@ -1,7 +1,6 @@
 package su.nightexpress.excellentenchants.enchantment.weapon;
 
 import org.bukkit.Particle;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -63,16 +62,21 @@ public class InfernusEnchant extends GameEnchantment implements TridentEnchant {
 
     @Override
     public void onHit(ProjectileHitEvent event, LivingEntity shooter, Trident projectile, int level) {
-        Entity entity = event.getHitEntity();
-        if (entity == null) return;
-
-        int ticks = this.getFireTicks(level);
-        entity.setFireTicks(ticks);
+        // Поджиг перенесён в onDamage: ProjectileHitEvent прилетает до того, как защита региона
+        // отменит урон, и цель загоралась даже там, где бить нельзя.
+        // Заодно гасим сам трезубец при попадании по сущности: ванильный AbstractArrow поджигает
+        // цель на 5 секунд просто за то, что снаряд горит, не спрашивая, прошёл ли урон.
+        if (event.getHitEntity() != null) {
+            projectile.setFireTicks(0);
+        }
     }
 
     @Override
     public void onDamage(EntityDamageByEntityEvent event, LivingEntity shooter, LivingEntity victim, Trident projectile,
                          int level) {
-
+        int ticks = this.getFireTicks(level);
+        if (victim.getFireTicks() < ticks) {
+            victim.setFireTicks(ticks);
+        }
     }
 }

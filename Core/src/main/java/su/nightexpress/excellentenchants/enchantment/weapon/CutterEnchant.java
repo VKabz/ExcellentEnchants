@@ -1,5 +1,6 @@
 package su.nightexpress.excellentenchants.enchantment.weapon;
 
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import su.nightexpress.excellentenchants.EnchantsPlaceholders;
 import su.nightexpress.excellentenchants.EnchantsPlugin;
@@ -32,6 +34,8 @@ import su.nightexpress.nightcore.util.sound.VanillaSound;
 import su.nightexpress.nightcore.util.wrapper.UniParticle;
 
 import java.nio.file.Path;
+import java.util.Map;
+import java.util.UUID;
 
 @NullMarked
 public class CutterEnchant extends GameEnchantment implements AttackEnchant {
@@ -100,21 +104,59 @@ public class CutterEnchant extends GameEnchantment implements AttackEnchant {
         ItemMeta meta = itemCut.getItemMeta();
         if (!(meta instanceof Damageable damageable)) return false;
 
-        damageable.setDamage((int) (itemCut.getType().getMaxDurability() * this.getDurabilityReduction(level)));
-        itemCut.setItemMeta(damageable);
+        // Неразрушаемые вещи не портим: сеты вроде «Зари» помечены isUnbreakable, а прямой
+        // setDamage() этот флаг не соблюдает — из-за этого Расчленитель ломал броню Зари.
+        if (!damageable.isUnbreakable()) {
+            // Урон добавляем к уже накопленному, а не выставляем абсолютом: иначе удар по
+            // сильно потрёпанной броне её чинил.
+            int extra = (int) (itemCut.getType().getMaxDurability() * this.getDurabilityReduction(level));
+            int capped = Math.min(damageable.getDamage() + extra, itemCut.getType().getMaxDurability() - 1);
+            damageable.setDamage(capped);
+            itemCut.setItemMeta(damageable);
+        }
 
         armor[index] = null;
         equipment.setArmorContents(armor);
-
-        Item drop = victim.getWorld().dropItemNaturally(victim.getLocation(), itemCut);
-        drop.setPickupDelay(50);
-        drop.getVelocity().multiply(3D);
 
         if (this.hasVisualEffects()) {
             UniParticle.itemCrack(itemCut).play(victim.getEyeLocation(), 0.25, 0.15, 30);
             VanillaSound.of(Sound.ENTITY_ITEM_BREAK).play(victim.getLocation());
         }
 
+        this.giveCutItem(victim, itemCut);
+
         return true;
+    }
+
+    /**
+     * Срезанная броня остаётся у своего хозяина: смысл зачарования в том, чтобы снять с
+     * противника защиту, а не отобрать вещь. Поэтому предмет кладём в инвентарь ЖЕРТВЫ, а не
+     * того, кто ударил. Изначально броня просто выбрасывалась под ноги, и в свалке её
+     * подбирал атакующий — это и было воровством из карточки 987.
+     *
+     * Если инвентарь жертвы полон, вещь падает у её ног и привязана к ней: подобрать сможет
+     * только хозяин, отбить добивающим ударом не выйдет.
+     */
+    private void giveCutItem(LivingEntity victim, ItemStack itemCut) {
+        if (!(victim instanceof Player owner)) {
+            // С моба броня просто падает рядом — инвентаря у него нет.
+            this.dropCutItem(victim, itemCut, null);
+            return;
+        }
+
+        Map<Integer, ItemStack> leftovers = owner.getInventory().addItem(itemCut.clone());
+        for (ItemStack leftover : leftovers.values()) {
+            this.dropCutItem(owner, leftover, owner.getUniqueId());
+        }
+    }
+
+    private void dropCutItem(LivingEntity at, ItemStack itemCut, @Nullable UUID owner) {
+        Location location = at.getLocation();
+        Item drop = at.getWorld().dropItemNaturally(location, itemCut);
+        drop.setPickupDelay(owner == null ? 50 : 0);
+        if (owner != null) {
+            // Ограничение ванильного Item: подобрать сможет только этот игрок.
+            drop.setOwner(owner);
+        }
     }
 }
