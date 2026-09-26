@@ -1,7 +1,7 @@
 package su.nightexpress.excellentenchants.enchantment.weapon;
 
 import org.bukkit.Particle;
-import org.bukkit.entity.Illager;
+import org.bukkit.entity.Raider;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
@@ -64,7 +64,9 @@ public class VillageDefenderEnchant extends GameEnchantment implements AttackEnc
     @Override
     public boolean onAttack(EntityDamageByEntityEvent event, LivingEntity damager, LivingEntity victim,
                             ItemStack weapon, int level) {
-        if (!(victim instanceof Illager)) return false;
+        // Raider, а не Illager: рейдер и ведьма тоже разбойники, но под Illager не подпадают,
+        // а описание обещает повышенный урон ВСЕМ разбойникам.
+        if (!(victim instanceof Raider)) return false;
 
         double damageAdd = this.getDamageAddict(level);
         double damageHas = event.getDamage();

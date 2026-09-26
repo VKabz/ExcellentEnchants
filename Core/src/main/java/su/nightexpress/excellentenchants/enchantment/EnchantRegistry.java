@@ -63,6 +63,11 @@ public class EnchantRegistry {
         e -> EnchantPriority.NORMAL);
     public static final EnchantHolder<PassiveEnchant>   PASSIVE   = registerCachedHolder("passive",
         PassiveEnchant.class, e -> EnchantPriority.NORMAL);
+    // gamai.ru: полёт на элитрах и прыжок — новые точки входа для наших зачарований.
+    public static final EnchantHolder<GlideEnchant>     GLIDE     = registerCachedHolder("glide", GlideEnchant.class,
+        GlideEnchant::getGlidePriority);
+    public static final EnchantHolder<JumpEnchant>      JUMP      = registerCachedHolder("jump", JumpEnchant.class,
+        JumpEnchant::getJumpPriority);
 
     public static void registerEnchant(CustomEnchantment enchantment) {
         getHolders().forEach(holder -> holder.accept(enchantment));

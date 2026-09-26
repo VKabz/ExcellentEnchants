@@ -16,6 +16,7 @@ import su.nightexpress.excellentenchants.bridge.EnchantCatalogEntry;
 import su.nightexpress.excellentenchants.enchantment.armor.*;
 import su.nightexpress.excellentenchants.enchantment.bow.*;
 import su.nightexpress.excellentenchants.enchantment.fishing.*;
+import su.nightexpress.excellentenchants.enchantment.gamai.*;
 import su.nightexpress.excellentenchants.enchantment.tool.*;
 import su.nightexpress.excellentenchants.enchantment.universal.*;
 import su.nightexpress.excellentenchants.enchantment.weapon.*;
@@ -606,6 +607,187 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .supportedItems(ItemSetDefaults.SWORDS_AXES)
         .primaryItems(ItemSetDefaults.SWORD)
         .build(), () -> EnchantDistribution.regular(TradeType.SNOW_COMMON), WitherEnchant::new
+    ),
+    // ===================== gamai.ru: наши зачарования =====================
+    // --- щит
+    REFLECTION(() -> EnchantDefinition.builder("Reflection", 3)
+        .description("Returns " + GENERIC_AMOUNT + "% of blocked damage to the attacker (" + GENERIC_TIME + "s. cooldown).")
+        .weight(RARE)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_SPECIAL), ReflectionEnchant::new
+    ),
+    STEADFAST(() -> EnchantDefinition.builder("Steadfast", 3)
+        .description("Reduces incoming damage by " + GENERIC_AMOUNT + "% while the shield is raised.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_COMMON), SteadfastEnchant::new
+    ),
+    SHOCK_SHIELD(() -> EnchantDefinition.builder("Shock Shield", 3)
+        .description(TRIGGER_CHANCE + "% chance to strike the attacker with lightning (" + GENERIC_DAMAGE + " dmg) on block.")
+        .weight(RARE)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.regular(TradeType.SWAMP_SPECIAL), ShockShieldEnchant::new
+    ),
+    BLAZING_SHIELD(() -> EnchantDefinition.builder("Blazing Shield", 3)
+        .description(TRIGGER_CHANCE + "% chance to ignite the attacker for " + GENERIC_DURATION + "s. on block.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.regular(TradeType.DESERT_COMMON), BlazingShieldEnchant::new
+    ),
+    REPULSE(() -> EnchantDefinition.builder("Repulse", 3)
+        .description("Knocks the attacker away on block (" + GENERIC_TIME + "s. cooldown).")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_COMMON), RepulseEnchant::new
+    ),
+    UPDRAFT(() -> EnchantDefinition.builder("Updraft", 3)
+        .description("Launches the attacker into the air on block (" + GENERIC_TIME + "s. cooldown).")
+        .weight(RARE)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.regular(TradeType.DESERT_SPECIAL), UpdraftEnchant::new
+    ),
+    ADRENALINE(() -> EnchantDefinition.builder("Adrenaline", 3)
+        .description("Grants Strength I for " + GENERIC_DURATION + "s. on block (" + GENERIC_TIME + "s. cooldown).")
+        .weight(RARE)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_SPECIAL), AdrenalineEnchant::new
+    ),
+    // --- элитры
+    KINETIC_ARMOR(() -> EnchantDefinition.builder("Kinetic Armor", 3)
+        .description("Reduces fly-into-wall damage by " + GENERIC_AMOUNT + "%.")
+        .weight(RARE)
+        .items(ItemSetDefaults.ELYTRA)
+        .build(), () -> EnchantDistribution.regular(TradeType.JUNGLE_SPECIAL), KineticArmorEnchant::new
+    ),
+    TAKEOFF(() -> EnchantDefinition.builder("Takeoff", 3)
+        .description("Boosts you forward when you start gliding (" + GENERIC_TIME + "s. cooldown).")
+        .weight(RARE)
+        .items(ItemSetDefaults.ELYTRA)
+        .build(), () -> EnchantDistribution.regular(TradeType.JUNGLE_SPECIAL), TakeoffEnchant::new
+    ),
+    ARMORED_WINGS(() -> EnchantDefinition.builder("Armored Wings", 3)
+        .description("Reduces damage from mobs and players by " + GENERIC_AMOUNT + "%.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.ELYTRA)
+        .build(), () -> EnchantDistribution.regular(TradeType.JUNGLE_COMMON), ArmoredWingsEnchant::new
+    ),
+    // --- ферма
+    GARDENER(() -> EnchantDefinition.builder("Gardener", 1)
+        .description("Prevents breaking unripe crops. Crouch to bypass.")
+        .weight(COMMON)
+        .items(ItemSetDefaults.HOE)
+        .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_COMMON), GardenerEnchant::new
+    ),
+    GREENHOUSE(() -> EnchantDefinition.builder("Greenhouse", 3)
+        .description("Crops within " + GENERIC_RADIUS + " blocks grow faster while you are around.")
+        .weight(RARE)
+        .items(ItemSetDefaults.HELMET)
+        .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_SPECIAL), GreenhouseEnchant::new
+    ),
+    RAKE(() -> EnchantDefinition.builder("Rake", 3)
+        .description("Tills a " + GENERIC_RADIUS + " area at once.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.HOE)
+        .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_COMMON), RakeEnchant::new
+    ),
+    SOWER(() -> EnchantDefinition.builder("Sower", 3)
+        .description("Plants seeds in a " + GENERIC_RADIUS + " area at once.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.HOE)
+        .build(), () -> EnchantDistribution.regular(TradeType.PLAINS_COMMON), SowerEnchant::new
+    ),
+    EXCAVATION(() -> EnchantDefinition.builder("Excavation", 3)
+        .description(TRIGGER_CHANCE + "% chance to find bone meal when harvesting ripe crops.")
+        .weight(COMMON)
+        .items(ItemSetDefaults.HOE)
+        .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_COMMON), ExcavationEnchant::new
+    ),
+    // --- мобильность и удобства
+    GRAPPLE(() -> EnchantDefinition.builder("Grapple", 3)
+        .description("Reel in with the hook stuck in a block to pull yourself towards it.")
+        .weight(RARE)
+        .items(ItemSetDefaults.FISHING_ROD)
+        .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_SPECIAL), GrappleEnchant::new
+    ),
+    DASH(() -> EnchantDefinition.builder("Dash", 3)
+        .description("Jump while sneaking to dash forward (" + GENERIC_TIME + "s. cooldown).")
+        .weight(RARE)
+        .items(ItemSetDefaults.BOOTS)
+        .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_SPECIAL), DashEnchant::new
+    ),
+    RECOIL(() -> EnchantDefinition.builder("Recoil", 3)
+        .description("Shooting pushes you backwards.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.BOW_CROSSBOW)
+        .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_COMMON), RecoilEnchant::new
+    ),
+    SHOCK_ABSORBER(() -> EnchantDefinition.builder("Shock Absorber", 3)
+        .description("Converts " + GENERIC_AMOUNT + "% of fall damage into healing.")
+        .weight(RARE)
+        .items(ItemSetDefaults.BOOTS)
+        .build(), () -> EnchantDistribution.regular(TradeType.SNOW_SPECIAL), ShockAbsorberEnchant::new
+    ),
+    HEAT_RESISTANCE(() -> EnchantDefinition.builder("Heat Resistance", 1)
+        .description("Grants Fire Resistance while holding the pickaxe.")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.PICKAXE)
+        .build(), () -> EnchantDistribution.treasure(TradeType.DESERT_SPECIAL), HeatResistanceEnchant::new
+    ),
+    CALM(() -> EnchantDefinition.builder("Calm", 3)
+        .description("Creepers near you explode " + GENERIC_AMOUNT + "% slower.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.HELMET)
+        .build(), () -> EnchantDistribution.regular(TradeType.SWAMP_COMMON), CalmEnchant::new
+    ),
+    OBSIDIAN_BREAKER(() -> EnchantDefinition.builder("Obsidian Breaker", 3)
+        .description(TRIGGER_CHANCE + "% chance to break obsidian instantly.")
+        .weight(RARE)
+        .items(ItemSetDefaults.PICKAXE)
+        .build(), () -> EnchantDistribution.regular(TradeType.SNOW_SPECIAL), ObsidianBreakerEnchant::new
+    ),
+    LEAF_CUTTER(() -> EnchantDefinition.builder("Leaf Cutter", 1)
+        .description("Breaks leaves instantly.")
+        .weight(COMMON)
+        .items(ItemSetDefaults.AXE)
+        .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_COMMON), LeafCutterEnchant::new
+    ),
+    PROSPECTOR(() -> EnchantDefinition.builder("Prospector", 3)
+        .description(TRIGGER_CHANCE + "% chance to find iron or gold nuggets when digging.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.SHOVEL)
+        .build(), () -> EnchantDistribution.regular(TradeType.DESERT_COMMON), ProspectorEnchant::new
+    ),
+    MARKSMAN(() -> EnchantDefinition.builder("Marksman", 1)
+        .description("Arrows fly straight, ignoring gravity.")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.BOW_CROSSBOW)
+        .build(), () -> EnchantDistribution.treasure(TradeType.SNOW_SPECIAL), MarksmanEnchant::new
+    ),
+    // --- скилловое PvP
+    HEADSHOT(() -> EnchantDefinition.builder("Headshot", 3)
+        .description("Headshots deal " + GENERIC_AMOUNT + "% more damage.")
+        .weight(RARE)
+        .items(ItemSetDefaults.BOW_CROSSBOW)
+        .build(), () -> EnchantDistribution.regular(TradeType.TAIGA_SPECIAL), HeadshotEnchant::new
+    ),
+    NINJA(() -> EnchantDefinition.builder("Ninja", 3)
+        .description("Deals " + GENERIC_AMOUNT + "% more damage while sneaking.")
+        .weight(UNCOMMON)
+        .items(ItemSetDefaults.SWORD)
+        .build(), () -> EnchantDistribution.regular(TradeType.JUNGLE_COMMON), NinjaEnchant::new
+    ),
+    BACKSTAB(() -> EnchantDefinition.builder("Backstab", 3)
+        .description("Deals " + GENERIC_AMOUNT + "% more damage when hitting from behind.")
+        .weight(RARE)
+        .supportedItems(ItemSetDefaults.SWORDS_AXES)
+        .primaryItems(ItemSetDefaults.SWORD)
+        .build(), () -> EnchantDistribution.regular(TradeType.SWAMP_SPECIAL), BackstabEnchant::new
+    ),
+    HITSTREAK(() -> EnchantDefinition.builder("Hitstreak", 3)
+        .description("Each consecutive hit on the same target deals +" + GENERIC_AMOUNT + "% damage (up to " + GENERIC_MAX + " stacks).")
+        .weight(RARE)
+        .items(ItemSetDefaults.SWORD)
+        .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_SPECIAL), HitstreakEnchant::new
     ),
     ;
 

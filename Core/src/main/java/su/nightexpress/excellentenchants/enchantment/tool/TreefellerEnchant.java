@@ -20,19 +20,23 @@ import su.nightexpress.excellentenchants.enchantment.GameEnchantment;
 import su.nightexpress.excellentenchants.manager.EnchantManager;
 import su.nightexpress.nightcore.config.ConfigValue;
 import su.nightexpress.nightcore.config.FileConfig;
-import su.nightexpress.nightcore.util.Lists;
 
 import java.nio.file.Path;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @NullMarked
 public class TreefellerEnchant extends GameEnchantment implements MiningEnchant {
 
     private static final BlockFace[] BLOCK_SIDES = {BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST
     };
+
+    // Потолок посещённых блоков за один удар — страховка тика на гигантских джунглевых деревьях.
+    private static final int LOOKUP_LIMIT = 2048;
 
     private Modifier blocksLimit;
     private boolean  disableOnCrouch;
@@ -49,43 +53,45 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
         ).read(config);
 
         this.blocksLimit = Modifier.load(config, "Treefeller.Block_Limit",
-            Modifier.addictive(16).perLevel(8).capacity(180),
-            "Max. blocks to lookup for tree logs (including leaves).");
+            Modifier.addictive(96).perLevel(16).capacity(256),
+            "Max. amount of LOGS to cut down. Leaves are NOT counted against this limit.");
     }
 
 
-    private Set<Block> getRelatives(Block block) {
-        return Stream.of(BLOCK_SIDES).map(block::getRelative).filter(b -> isLogOrLeaves(b.getType())).collect(Collectors
-            .toSet());
-    }
+    /**
+     * Обход дерева. Лимит считается ТОЛЬКО по брёвнам: раньше в него шли и листья, из-за чего
+     * бюджет выедался кроной, а на тёмном дубе — самим стволом 2x2, и половина дерева оставалась
+     * висеть в воздухе.
+     *
+     * Листья по-прежнему обходим (через них связаны ветки), но вглубь листвы не уходим и в счёт
+     * их не берём. Отдельный потолок посещённых блоков держит стоимость одного удара конечной.
+     */
+    private List<Block> collectLogs(Block source, int logLimit) {
+        Set<Block> visited = new HashSet<>();
+        List<Block> logs = new ArrayList<>();
+        Deque<Block> queue = new ArrayDeque<>();
 
+        visited.add(source);
+        queue.add(source);
 
-    private Set<Block> getLogsAndLeaves(Block source, int limit) {
-        Set<Block> full = new HashSet<>();
-        Set<Block> lookupBlocks = Lists.newSet(source);
+        while (!queue.isEmpty() && logs.size() < logLimit && visited.size() < LOOKUP_LIMIT) {
+            Block block = queue.poll();
+            boolean fromLeaves = isLeaves(block.getType());
 
-        this.addConnections(full, lookupBlocks, limit);
-        return full;
-    }
+            if (!fromLeaves) logs.add(block);
 
-    private boolean addConnections(Set<Block> full, Set<Block> lookupBlocks, int limit) {
-        if (full.size() >= limit) return false;
-        if (!full.addAll(lookupBlocks)) return false;
+            for (BlockFace face : BLOCK_SIDES) {
+                if (visited.size() >= LOOKUP_LIMIT) break;
 
-        Set<Block> connected = new HashSet<>();
+                Block relative = block.getRelative(face);
+                if (!isLogOrLeaves(relative.getType())) continue;
+                // Из листвы шагаем только на брёвна, иначе обход расползается по всей кроне.
+                if (fromLeaves && isLeaves(relative.getType())) continue;
 
-        lookupBlocks.forEach(lookup -> {
-            Set<Block> connections = this.getRelatives(lookup);
-
-            // Do not lookup leaves too depth.
-            if (isLeaves(lookup.getType())) {
-                connections.removeIf(connect -> isLeaves(connect.getType()));
+                if (visited.add(relative)) queue.add(relative);
             }
-
-            connected.addAll(connections);
-        });
-
-        return this.addConnections(full, connected, limit);
+        }
+        return logs;
     }
 
     private static boolean isLogOrLeaves(Material material) {
@@ -101,13 +107,11 @@ public class TreefellerEnchant extends GameEnchantment implements MiningEnchant 
     }
 
     private void chopTree(Player player, Block source, ItemStack tool, int level) {
-        Set<Block> logsToBreak = this.getLogsAndLeaves(source, this.blocksLimit.getIntValue(level));
-
-        logsToBreak.remove(source);
+        List<Block> logsToBreak = this.collectLogs(source, this.blocksLimit.getIntValue(level));
 
         for (Block log : logsToBreak) {
             if (tool.getAmount() <= 0) break; // Item broke.
-            if (!isLog(log.getType())) continue;
+            if (log.equals(source)) continue; // Этот блок ломает сам игрок.
 
             EnchantsUtils.safeBusyBreak(player, log);
         }

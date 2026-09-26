@@ -1,5 +1,6 @@
 package su.nightexpress.excellentenchants.manager.listener;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -37,6 +38,8 @@ import su.nightexpress.nightcore.manager.AbstractListener;
 import su.nightexpress.nightcore.util.EntityUtil;
 
 import java.util.HashMap;
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 import java.util.Map;
 
 @NullMarked
@@ -55,8 +58,13 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
 
-        this.manager.handleInSlot(player, EquipmentSlot.HAND, EnchantRegistry.MINING, (item, enchant, level) -> enchant
-            .onBreak(event, player, item, level));
+        // Если одно зачарование уже отменило ломание (Садовник бережёт невыросшую грядку),
+        // остальным (Земледелец с пересадкой) делать нечего.
+        this.manager.handleInSlot(player, EquipmentSlot.HAND, EnchantRegistry.MINING, (item, enchant, level) -> {
+            if (event.isCancelled()) return false;
+
+            return enchant.onBreak(event, player, item, level);
+        });
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -201,25 +209,26 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
             if (!(abstractArrow.getShooter() instanceof LivingEntity shooter)) return;
 
             if (abstractArrow instanceof Arrow arrow) {
-                this.manager.handleArrowEnchants(arrow, EnchantRegistry.ARROW, (item, enchant, level) -> {
-                    enchant.onDamage(event, shooter, victim, arrow, level);
-                    return false;
-                });
+                this.accumulateDamage(event, accumulator -> this.manager.handleArrowEnchants(arrow,
+                    EnchantRegistry.ARROW, (item, enchant, level) -> {
+                        accumulator.aroundVoid(() -> enchant.onDamage(event, shooter, victim, arrow, level));
+                        return false;
+                    }));
             }
             else if (abstractArrow instanceof Trident trident) {
-                this.manager.handleArrowEnchants(trident, EnchantRegistry.TRIDENT, (item, enchant, level) -> {
-                    enchant.onDamage(event, shooter, victim, trident, level);
-                    return false;
-                });
+                this.accumulateDamage(event, accumulator -> this.manager.handleArrowEnchants(trident,
+                    EnchantRegistry.TRIDENT, (item, enchant, level) -> {
+                        accumulator.aroundVoid(() -> enchant.onDamage(event, shooter, victim, trident, level));
+                        return false;
+                    }));
             }
         }
         else if (directDamager instanceof LivingEntity damager) {
             if (source.getDamageType() == DamageType.THORNS) return;
 
-            this.manager.handleInSlot(damager, EquipmentSlot.HAND, EnchantRegistry.ATTACK, (item, enchant,
-                                                                                            level) -> enchant.onAttack(
-                                                                                                event, damager, victim,
-                                                                                                item, level));
+            this.accumulateDamage(event, accumulator -> this.manager.handleInSlot(damager, EquipmentSlot.HAND,
+                EnchantRegistry.ATTACK, (item, enchant, level) -> accumulator.around(() -> enchant.onAttack(event,
+                    damager, victim, item, level))));
         }
 
         if (source.getCausingEntity() instanceof LivingEntity damager) {
@@ -228,6 +237,66 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
 
             this.manager.handleInSlots(victim, ARMOR_SLOTS, EnchantRegistry.DEFEND, (item, enchant, level) -> enchant
                 .onProtect(event, damager, victim, item, level));
+        }
+    }
+
+
+    /**
+     * Прибавки к урону от зачарований должны СКЛАДЫВАТЬСЯ, а не перемножаться.
+     *
+     * Каждое зачарование пишет урон через event.setDamage(), и раньше они вызывались одно за
+     * другим по уже изменённому значению: меч с Запалом, Двойным ударом, Ниндзя, Теневым ударом
+     * и Хитстриком давал x10.6 вместо честных x4.15, то есть ваншотил фулку.
+     *
+     * Здесь каждому зачарованию подсовывается один и тот же исходный урон, его прибавка
+     * замеряется относительно этого исходника и складывается с остальными. Так ведёт себя и
+     * защитная ветка через DamageBonus, и новые зачарования получают правильное поведение
+     * автоматически — ничего не нужно помнить при их написании.
+     */
+    private void accumulateDamage(EntityDamageEvent event, Consumer<DamageAccumulator> action) {
+        DamageAccumulator accumulator = new DamageAccumulator(event);
+        action.accept(accumulator);
+        accumulator.apply();
+    }
+
+    private static final class DamageAccumulator {
+
+        private final EntityDamageEvent event;
+        private final double            base;
+
+        private double bonus;
+
+        private DamageAccumulator(EntityDamageEvent event) {
+            this.event = event;
+            this.base = event.getDamage();
+        }
+
+        /** Прогоняет зачарование по исходному урону и забирает его прибавку себе. */
+        private boolean around(BooleanSupplier call) {
+            this.event.setDamage(this.base);
+
+            boolean used = call.getAsBoolean();
+
+            this.collect();
+            return used;
+        }
+
+        /** То же самое для обработчиков без возвращаемого значения (стрелы и трезубцы). */
+        private void aroundVoid(Runnable call) {
+            this.event.setDamage(this.base);
+
+            call.run();
+
+            this.collect();
+        }
+
+        private void collect() {
+            this.bonus += this.event.getDamage() - this.base;
+            this.apply(); // Событие остаётся в согласованном виде для всех, кто прочитает урон дальше.
+        }
+
+        private void apply() {
+            this.event.setDamage(Math.max(0D, this.base + this.bonus));
         }
     }
 
@@ -299,6 +368,22 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
 
         this.manager.handleInSlot(player, slot, EnchantRegistry.INTERACT, (item, enchant, level) -> enchant.onInteract(
             event, player, item, level));
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onToggleGlide(EntityToggleGlideEvent event) {
+        if (!(event.getEntity() instanceof Player player)) return;
+
+        this.manager.handleInSlot(player, EquipmentSlot.CHEST, EnchantRegistry.GLIDE, (item, enchant, level) -> enchant
+            .onGlide(event, player, item, level));
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onJump(PlayerJumpEvent event) {
+        Player player = event.getPlayer();
+
+        this.manager.handleInSlot(player, EquipmentSlot.FEET, EnchantRegistry.JUMP, (item, enchant, level) -> enchant
+            .onJump(event, player, item, level));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
