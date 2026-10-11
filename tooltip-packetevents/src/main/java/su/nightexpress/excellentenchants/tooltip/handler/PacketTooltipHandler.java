@@ -1,7 +1,5 @@
 package su.nightexpress.excellentenchants.tooltip.handler;
 
-import java.util.Optional;
-
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
@@ -12,6 +10,8 @@ import com.github.retrooper.packetevents.event.PacketListener;
 import com.github.retrooper.packetevents.event.PacketListenerCommon;
 import com.github.retrooper.packetevents.event.PacketListenerPriority;
 import com.github.retrooper.packetevents.event.PacketSendEvent;
+import com.github.retrooper.packetevents.protocol.component.ComponentTypes;
+import com.github.retrooper.packetevents.protocol.component.builtin.item.ItemEnchantments;
 import com.github.retrooper.packetevents.protocol.packettype.PacketType;
 import com.github.retrooper.packetevents.protocol.packettype.PacketTypeCommon;
 import com.github.retrooper.packetevents.wrapper.play.server.WrapperPlayServerMerchantOffers;
@@ -76,60 +76,90 @@ public class PacketTooltipHandler implements TooltipHandler {
             if (player == null) return;
             if (!this.controller.isReadyForTooltipUpdate(player)) return;
 
+            // Раньше каждый предмет каждого пакета инвентаря гонялся в Bukkit и обратно (полное кодирование
+            // через NMS со всем вложенным содержимым), а пакет всегда перекодировался. Шалкеры и мешки
+            // с тяжёлыми предметами забивали так сетевой поток на 100 %, и сидевших на нём игроков кикало
+            // по keepalive (прод, 11.10.2026). Теперь в Bukkit идут только предметы с зачарованиями,
+            // а пакет перекодируется, только если описание реально добавилось.
+            boolean changed = false;
             switch (type) {
                 case PacketType.Play.Server.SET_SLOT -> {
                     WrapperPlayServerSetSlot setSlot = new WrapperPlayServerSetSlot(event);
 
-                    this.asBukkit(setSlot.getItem()).map(this.controller::addDescription).map(this::fromBukkit)
-                        .ifPresent(setSlot::setItem);
+                    var decorated = this.decorate(setSlot.getItem());
+                    if (decorated != null) {
+                        setSlot.setItem(decorated);
+                        changed = true;
+                    }
                 }
                 case PacketType.Play.Server.WINDOW_ITEMS -> {
                     WrapperPlayServerWindowItems windowItems = new WrapperPlayServerWindowItems(event);
 
-                    windowItems.getItems().replaceAll(original -> this.asBukkit(original).map(
-                        this.controller::addDescription).map(this::fromBukkit).orElse(original));
+                    var items = windowItems.getItems();
+                    for (int i = 0; i < items.size(); i++) {
+                        var decorated = this.decorate(items.get(i));
+                        if (decorated != null) {
+                            items.set(i, decorated);
+                            changed = true;
+                        }
+                    }
                 }
                 case PacketType.Play.Server.SET_PLAYER_INVENTORY -> {
                     WrapperPlayServerSetPlayerInventory setPlayerInventory = new WrapperPlayServerSetPlayerInventory(event);
 
-                    this.asBukkit(setPlayerInventory.getStack()).map(this.controller::addDescription).map(
-                        this::fromBukkit).ifPresent(setPlayerInventory::setStack);
+                    var decorated = this.decorate(setPlayerInventory.getStack());
+                    if (decorated != null) {
+                        setPlayerInventory.setStack(decorated);
+                        changed = true;
+                    }
                 }
                 case PacketType.Play.Server.SET_CURSOR_ITEM -> {
                     WrapperPlayServerSetCursorItem setCursorItem = new WrapperPlayServerSetCursorItem(event);
 
-                    this.asBukkit(setCursorItem.getStack()).map(this.controller::addDescription).map(this::fromBukkit)
-                        .ifPresent(setCursorItem::setStack);
+                    var decorated = this.decorate(setCursorItem.getStack());
+                    if (decorated != null) {
+                        setCursorItem.setStack(decorated);
+                        changed = true;
+                    }
                 }
                 case PacketType.Play.Server.MERCHANT_OFFERS -> {
                     WrapperPlayServerMerchantOffers offers = new WrapperPlayServerMerchantOffers(event);
 
-                    offers.getMerchantOffers().forEach(offer -> {
-                        ItemStack result = this.toBukkit(offer.getOutputItem());
-                        offer.setOutputItem(this.fromBukkit(this.controller.addDescription(result)));
-                    });
+                    for (var offer : offers.getMerchantOffers()) {
+                        var decorated = this.decorate(offer.getOutputItem());
+                        if (decorated != null) {
+                            offer.setOutputItem(decorated);
+                            changed = true;
+                        }
+                    }
                 }
                 default -> {
                     return;
                 }
             }
 
-            event.markForReEncode(true);
+            if (changed) event.markForReEncode(true);
         }
 
+        /** Предмет с добавленным описанием зачарований или null, если менять нечего. */
+        private com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack decorate(
+            com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack pooperStack) {
+            if (pooperStack == null || pooperStack.isEmpty() || !hasEnchantments(pooperStack)) return null;
 
-        private Optional<ItemStack> asBukkit(com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack pooperStack) {
-            return Optional.ofNullable(pooperStack).map(SpigotConversionUtil::toBukkitItemStack);
+            ItemStack bukkit = SpigotConversionUtil.toBukkitItemStack(pooperStack);
+            ItemStack described = this.controller.addDescription(bukkit);
+            if (described == bukkit) return null; // addDescription вернул исходник — описание не нужно
+
+            return SpigotConversionUtil.fromBukkitItemStack(described);
         }
 
-
-        private ItemStack toBukkit(com.github.retrooper.packetevents.protocol.item.ItemStack pooperStack) {
-            return SpigotConversionUtil.toBukkitItemStack(pooperStack);
+        private static boolean hasEnchantments(com.github.retrooper.packetevents.protocol.item.ItemStack stack) {
+            return notEmpty(stack.getComponentOr(ComponentTypes.ENCHANTMENTS, null))
+                || notEmpty(stack.getComponentOr(ComponentTypes.STORED_ENCHANTMENTS, null));
         }
 
-
-        private com.github.retrooper.packetevents.protocol.item.ItemStack fromBukkit(ItemStack itemStack) {
-            return SpigotConversionUtil.fromBukkitItemStack(itemStack);
+        private static boolean notEmpty(@Nullable ItemEnchantments enchantments) {
+            return enchantments != null && !enchantments.isEmpty();
         }
     }
 }
