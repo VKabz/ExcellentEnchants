@@ -1,9 +1,12 @@
 package su.nightexpress.excellentenchants.enchantment.weapon;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.excellentenchants.EnchantsPlugin;
@@ -19,9 +22,12 @@ import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.util.Players;
 
 import java.nio.file.Path;
+import java.util.Iterator;
 
 @NullMarked
 public class NimbleEnchant extends GameEnchantment implements KillEnchant {
+
+    private static final NamespacedKey BOUND_ID_KEY = new NamespacedKey("civilizationbounditems", "bound_id");
 
     private boolean ignorePlayers;
 
@@ -48,8 +54,20 @@ public class NimbleEnchant extends GameEnchantment implements KillEnchant {
     public boolean onKill(EntityDeathEvent event, LivingEntity entity, Player killer, ItemStack weapon, int level) {
         if (this.ignorePlayers && entity instanceof Player) return false;
 
-        event.getDrops().forEach(item -> Players.addItem(killer, item));
-        event.getDrops().clear();
+        Iterator<ItemStack> it = event.getDrops().iterator();
+        while (it.hasNext()) {
+            ItemStack item = it.next();
+            if (item == null) continue;
+            if (isBound(item)) continue;
+            Players.addItem(killer, item);
+            it.remove();
+        }
         return true;
+    }
+
+    private static boolean isBound(ItemStack item) {
+        if (!item.hasItemMeta()) return false;
+        ItemMeta meta = item.getItemMeta();
+        return meta != null && meta.getPersistentDataContainer().has(BOUND_ID_KEY, PersistentDataType.STRING);
     }
 }
