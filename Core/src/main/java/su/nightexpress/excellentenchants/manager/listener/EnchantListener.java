@@ -54,7 +54,7 @@ public class EnchantListener extends AbstractListener<EnchantsPlugin> {
         this.manager = manager;
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
 

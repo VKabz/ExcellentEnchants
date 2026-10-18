@@ -87,18 +87,35 @@ public class SilkSpawnerEnchant extends GameEnchantment implements MiningEnchant
 
     @Override
     public boolean onBreak(BlockBreakEvent event, LivingEntity player, ItemStack item, int level) {
+        if (!event.isDropItems()) return false;
+
         Block block = event.getBlock();
         if (!(block.getState() instanceof CreatureSpawner spawner)) return false;
+        if (isCreativePlaced(block)) return false;
 
         event.setExpToDrop(0);
-        event.setDropItems(true);
+        event.setDropItems(false);
 
         Location location = LocationUtil.setCenter3D(block.getLocation());
         World world = block.getWorld();
 
-        // Drop it directly in the world, bcuz BlockDropItemEvent won't fire for spawners unless setDropItems is set on true in BlockBreakEvent.
         world.dropItemNaturally(location, this.getSpawner(spawner));
         return true;
+    }
+
+    private static boolean isCreativePlaced(Block block) {
+        try {
+            org.bukkit.plugin.Plugin guard = org.bukkit.Bukkit.getPluginManager().getPlugin("WaffCreativeGuard");
+            if (guard != null && guard.isEnabled()) {
+                Object marks = guard.getClass().getMethod("getCreativePlacedBlocks").invoke(guard);
+                if (marks != null) {
+                    Object res = marks.getClass().getMethod("contains", Block.class).invoke(marks, block);
+                    if (Boolean.TRUE.equals(res)) return true;
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return false;
     }
 
     @Override
