@@ -45,10 +45,12 @@ import su.nightexpress.excellentenchants.enchantment.EnchantHolder;
 import su.nightexpress.excellentenchants.enchantment.EnchantRegistry;
 import su.nightexpress.excellentenchants.enchantment.EnchantSettings;
 import su.nightexpress.excellentenchants.enchantment.EnchantedItem;
+import su.nightexpress.excellentenchants.enchantment.gamai.GamaiGlow;
 import su.nightexpress.excellentenchants.manager.block.TickedBlock;
 import su.nightexpress.excellentenchants.manager.damage.Explosion;
 import su.nightexpress.excellentenchants.manager.listener.AnvilListener;
 import su.nightexpress.excellentenchants.manager.listener.EnchantListener;
+import su.nightexpress.excellentenchants.manager.listener.GamaiListener;
 import su.nightexpress.excellentenchants.manager.listener.GenericListener;
 import su.nightexpress.excellentenchants.manager.listener.SlotListener;
 import su.nightexpress.excellentenchants.manager.menu.EnchantsMenu;
@@ -97,6 +99,8 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
         this.addListener(new GenericListener(this.plugin, this));
         this.addListener(new AnvilListener(this.plugin, this.settings));
         this.addListener(new EnchantListener(this.plugin, this));
+        this.addListener(new GamaiListener(this.plugin, this)); // После EnchantListener: порядок на HIGHEST важен.
+        GamaiGlow.setup(this.plugin);
 
         if (Version.isPaper()) {
             this.addListener(new SlotListener(this.plugin, this));
@@ -114,6 +118,9 @@ public class EnchantManager extends AbstractManager<EnchantsPlugin> {
     @Override
     protected void onShutdown() {
         this.restoreBlocks();
+        // Временные модификаторы (Сокрушение) и подсветка (Чутьё) не должны пережить выгрузку.
+        Players.getOnline().forEach(player -> EnchantRegistry.GAMAI.getEnchants().forEach(enchant -> enchant.forget(player)));
+        GamaiGlow.shutdown();
 
         if (this.enchantsMenu != null) this.enchantsMenu.clear();
 

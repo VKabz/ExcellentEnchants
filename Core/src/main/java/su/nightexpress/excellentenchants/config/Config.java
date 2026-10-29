@@ -7,7 +7,10 @@ import su.nightexpress.nightcore.config.FileConfig;
 import su.nightexpress.nightcore.configuration.AbstractConfig;
 import su.nightexpress.nightcore.configuration.ConfigProperty;
 import su.nightexpress.nightcore.configuration.ConfigTypes;
+import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.bukkit.NightItem;
+
+import java.util.Set;
 
 import static su.nightexpress.excellentenchants.EnchantsPlaceholders.URL_WIKI_ITEMS;
 import static su.nightexpress.excellentenchants.EnchantsPlaceholders.WIKI_CHRAGES;
@@ -46,6 +49,18 @@ public class Config extends AbstractConfig {
         "Default item used to fuel enchantments on anvils.",
         "Enchantments can have their own custom fuel items.",
         URL_WIKI_ITEMS
+    );
+
+    // gamai.ru: «случайная книга редкости X» — награды вместо Осколков Зари (вайп 2026-11).
+    public static final ConfigValue<Set<String>> RANDOM_BOOK_EXCLUDE = ConfigValue.create("Random_Book.Exclude",
+        Lists.newSet("dawn_strike", "second_wind", "daybreak", "crushing"),
+        "Enchantment ids that '/eenchants randombook <player> <rarity>' never gives.",
+        "Default: books that only come from the books case and events."
+    );
+
+    public static final ConfigValue<Boolean> RANDOM_BOOK_MAX_LEVEL = ConfigValue.create("Random_Book.Max_Level",
+        true,
+        "When 'true', a book given by rarity has the enchantment's max level, otherwise a random level."
     );
 
     public boolean isEnchantTooltipEnabled() {

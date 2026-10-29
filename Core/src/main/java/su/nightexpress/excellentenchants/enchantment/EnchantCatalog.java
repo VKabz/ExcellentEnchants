@@ -789,6 +789,72 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .items(ItemSetDefaults.SWORD)
         .build(), () -> EnchantDistribution.regular(TradeType.SAVANNA_SPECIAL), HitstreakEnchant::new
     ),
+
+    // ===================== gamai.ru: книги вместо Зари и уникальных предметов (вайп 2026-11) =====================
+    // Распределение здесь — только значения по умолчанию; на сервере все эти книги не продаются жителями
+    // и не падают в луте (Distribution в enchants/<id>.yml), источники — кейс книг и награды.
+
+    DAWN_STRIKE(() -> EnchantDefinition.builder("Dawn Strike", 3)
+        .description("Once per " + GENERIC_TIME + "s. a hit pierces " + GENERIC_AMOUNT + "% of the target's armor.")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.SWORDS_AXES)
+        .primaryItems(ItemSetDefaults.SWORD)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), DawnStrikeEnchant::new
+    ),
+    SECOND_WIND(() -> EnchantDefinition.builder("Second Wind", 1)
+        .description("A lethal hit is cancelled: you keep " + GENERIC_AMOUNT + "% health. Once per " + GENERIC_TIME + " min.")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.CHESTPLATE)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), SecondWindEnchant::new
+    ),
+    DAYBREAK(() -> EnchantDefinition.builder("Daybreak", 3)
+        .description("Players within " + GENERIC_RADIUS + " blocks and all mobs deal " + GENERIC_AMOUNT + "% less damage to you.")
+        .weight(RARE)
+        .items(ItemSetDefaults.CHESTPLATE)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), DaybreakEnchant::new
+    ),
+    UNBENDING(() -> EnchantDefinition.builder("Unbending", 3)
+        .description("Slowness, Weakness, Blindness, Nausea and Hunger are " + GENERIC_AMOUNT + "% shorter.")
+        .weight(RARE)
+        .items(ItemSetDefaults.HELMET)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), UnbendingEnchant::new
+    ),
+    CRUSHING(() -> EnchantDefinition.builder("Crushing", 3)
+        .description("Stone, ores, deepslate and netherrack break " + GENERIC_AMOUNT + "% faster, instantly at level III.")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.PICKAXE)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), CrushingEnchant::new
+    ),
+    ASCENSION(() -> EnchantDefinition.builder("Ascension", 3)
+        .description("Right click launches you " + GENERIC_AMOUNT + " blocks up, no fall damage after (" + GENERIC_TIME + "s. cooldown).")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.MACE)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), AscensionEnchant::new
+    ),
+    FROST_ARROWS(() -> EnchantDefinition.builder("Frost Arrows", 3)
+        .description(GENERIC_AMOUNT + "% chance to freeze a player for " + GENERIC_DURATION + "s.")
+        .weight(RARE)
+        .items(ItemSetDefaults.BOW_CROSSBOW)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), FrostArrowsEnchant::new
+    ),
+    INSTINCT(() -> EnchantDefinition.builder("Instinct", 2)
+        .description("Hold sneak: players and mobs within " + GENERIC_RADIUS + " blocks glow for you for " + GENERIC_DURATION + "s.")
+        .weight(RARE)
+        .items(ItemSetDefaults.HELMET)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), InstinctEnchant::new
+    ),
+    BARRIER(() -> EnchantDefinition.builder("Barrier", 2)
+        .description("Mobs within " + GENERIC_RADIUS + " blocks are pushed away, their projectiles destroyed.")
+        .weight(RARE)
+        .items(ItemSetDefaults.SHIELD)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), BarrierEnchant::new
+    ),
+    FIREPROOF(() -> EnchantDefinition.builder("Fireproof", 1)
+        .description("Permanent Fire Resistance.")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.LEGGINGS)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), FireproofEnchant::new
+    ),
     ;
 
     public static void loadAll(Path dataDir, ItemSetRegistry itemSetRegistry,

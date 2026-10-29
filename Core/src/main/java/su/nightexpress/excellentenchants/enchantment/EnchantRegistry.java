@@ -6,6 +6,7 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import su.nightexpress.excellentenchants.api.EnchantPriority;
 import su.nightexpress.excellentenchants.api.enchantment.CustomEnchantment;
+import su.nightexpress.excellentenchants.enchantment.gamai.GamaiHooks;
 import su.nightexpress.excellentenchants.api.enchantment.type.*;
 import su.nightexpress.nightcore.util.LowerCase;
 
@@ -68,6 +69,9 @@ public class EnchantRegistry {
         GlideEnchant::getGlidePriority);
     public static final EnchantHolder<JumpEnchant>      JUMP      = registerCachedHolder("jump", JumpEnchant.class,
         JumpEnchant::getJumpPriority);
+    // gamai.ru: присед, ПКМ по воздуху, зелья, смертельный удар, снаряды (книги вместо Зари).
+    public static final EnchantHolder<GamaiHooks>       GAMAI     = registerCachedHolder("gamai", GamaiHooks.class,
+        e -> EnchantPriority.NORMAL);
 
     public static void registerEnchant(CustomEnchantment enchantment) {
         getHolders().forEach(holder -> holder.accept(enchantment));

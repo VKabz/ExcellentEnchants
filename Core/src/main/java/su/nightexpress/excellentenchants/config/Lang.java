@@ -17,7 +17,8 @@ public class Lang implements LangContainer {
     public static final TextLocale COMMAND_ENCHANT_DESC     = LangEntry.builder("Command.Enchant.Desc").text("Enchant item in specific slot.");
     public static final TextLocale COMMAND_DISENCHANT_DESC  = LangEntry.builder("Command.Disenchant.Desc").text("Disenchant item in specific slot.");
     public static final TextLocale COMMAND_BOOK_DESC        = LangEntry.builder("Command.Book.Desc").text("Give a book with specific enchantment.");
-    public static final TextLocale COMMAND_RANDOM_BOOK_DESC = LangEntry.builder("Command.RandomBook.Desc").text("Give a book with random enchantment.");
+    public static final TextLocale COMMAND_RANDOM_BOOK_DESC = LangEntry.builder("Command.RandomBook.Desc").text("Give a book with random enchantment (optionally of a rarity).");
+    public static final TextLocale COMMAND_ARGUMENT_NAME_RARITY = LangEntry.builder("Command.Argument.Name.Rarity").text("rarity");
     public static final TextLocale COMMAND_GIVE_FUEL_DESC   = LangEntry.builder("Command.GiveFuel.Desc").text("Give enchantment fuel item.");
 
     public static final MessageLocale COMMAND_LIST_DONE_OTHERS = LangEntry.builder("Command.List.DoneOthers").chatMessage(
@@ -46,6 +47,10 @@ public class Lang implements LangContainer {
     );
 
 
+    public static final MessageLocale COMMAND_RANDOM_BOOK_ERROR_EMPTY = LangEntry.builder("Command.RandomBook.Error.Empty").chatMessage(
+        SOFT_RED.wrap("No enchantments of this rarity to give!")
+    );
+
     public static final MessageLocale ENCHANTED_BOOK_GAVE = LangEntry.builder("Command.Book.Done").chatMessage(
         GRAY.wrap("You gave " + SOFT_YELLOW.wrap(GENERIC_ENCHANT + " " + GENERIC_LEVEL) + " book to " + SOFT_YELLOW.wrap(PLAYER_DISPLAY_NAME) + ".")
     );
@@ -61,5 +66,9 @@ public class Lang implements LangContainer {
 
     public static final MessageLocale COMMAND_SYNTAX_INVALID_SLOT = LangEntry.builder("Command.Syntax.InvalidSlot").chatMessage(
         GRAY.wrap(SOFT_RED.wrap(GENERIC_INPUT) + " is not a valid slot!")
+    );
+
+    public static final MessageLocale COMMAND_SYNTAX_INVALID_RARITY = LangEntry.builder("Command.Syntax.InvalidRarity").chatMessage(
+        GRAY.wrap(SOFT_RED.wrap(GENERIC_INPUT) + " is not a valid rarity! Use common, uncommon, rare or legendary.")
     );
 }

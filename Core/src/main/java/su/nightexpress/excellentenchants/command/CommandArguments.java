@@ -26,6 +26,7 @@ public class CommandArguments {
     public static final String LEVEL   = "level";
     public static final String ENCHANT = "enchant";
     public static final String SLOT    = "slot";
+    public static final String RARITY  = "rarity";
 
     public static final String FLAG_CUSTOM  = "custom";
     public static final String FLAG_CHARGED = "charged";
@@ -50,6 +51,15 @@ public class CommandArguments {
         return Arguments.integer(CommandArguments.LEVEL)
             .localized(Lang.COMMAND_ARGUMENT_NAME_LEVEL)
             .suggestions((reader, context) -> Lists.newList("-1", "1", "3", "5", "10"));
+    }
+
+
+    public static ArgumentNodeBuilder<BookRarity> rarityArgument(String name) {
+        return Commands.argument(name, (context, string) -> BookRarity.parse(string)
+            .orElseThrow(() -> CommandSyntaxException.custom(Lang.COMMAND_SYNTAX_INVALID_RARITY))
+        )
+            .localized(Lang.COMMAND_ARGUMENT_NAME_RARITY)
+            .suggestions((reader, context) -> Arrays.stream(BookRarity.values()).map(BookRarity::getId).toList());
     }
 
 

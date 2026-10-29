@@ -25,6 +25,8 @@ import su.nightexpress.nightcore.core.config.CoreLang;
 import su.nightexpress.nightcore.util.*;
 import su.nightexpress.nightcore.util.bridge.RegistryType;
 
+import java.util.List;
+
 @NullMarked
 public class BaseCommands {
 
@@ -59,7 +61,10 @@ public class BaseCommands {
         builder.branch(Commands.literal("randombook")
             .description(Lang.COMMAND_RANDOM_BOOK_DESC)
             .permission(Perms.COMMAND_RANDOM_BOOK)
-            .withArguments(Arguments.player(CommandArguments.PLAYER).optional())
+            .withArguments(
+                Arguments.player(CommandArguments.PLAYER).optional(),
+                CommandArguments.rarityArgument(CommandArguments.RARITY).optional()
+            )
             .withFlags(CommandArguments.FLAG_CUSTOM, CommandArguments.FLAG_CHARGED)
             .executes(this::giveRandomBook)
         );
@@ -149,6 +154,26 @@ public class BaseCommands {
 
         boolean custom = context.hasFlag(CommandArguments.FLAG_CUSTOM);
         boolean charged = context.hasFlag(CommandArguments.FLAG_CHARGED);
+
+        // gamai.ru: с редкостью — только наши книги этой редкости (по весу из enchants/<id>.yml),
+        // без проклятий, скрытых и списка Random_Book.Exclude. Так выдаются награды вместо Осколков Зари.
+        if (arguments.contains(CommandArguments.RARITY)) {
+            BookRarity rarity = arguments.get(CommandArguments.RARITY, BookRarity.class);
+            List<CustomEnchantment> pool = EnchantRegistry.getRegistered().stream()
+                .filter(enchant -> !enchant.isCurse() && !enchant.isHiddenFromList())
+                .filter(enchant -> !Config.RANDOM_BOOK_EXCLUDE.get().contains(enchant.getId()))
+                .filter(enchant -> BookRarity.ofWeight(enchant.getDefinition().getWeight()) == rarity)
+                .toList();
+            if (pool.isEmpty()) {
+                context.send(Lang.COMMAND_RANDOM_BOOK_ERROR_EMPTY);
+                return false;
+            }
+
+            Enchantment picked = Randomizer.pick(pool).getBukkitEnchantment();
+            int pickedLevel = Config.RANDOM_BOOK_MAX_LEVEL.get() ? picked.getMaxLevel() : EnchantsUtils.randomLevel(picked);
+            return this.giveBook(context.getSender(), player, picked, pickedLevel, charged);
+        }
+
         Enchantment enchantment = Randomizer.pick(custom ? EnchantRegistry.getRegisteredBukkit() : BukkitThing.getAll(
             RegistryType.ENCHANTMENT));
         int level = EnchantsUtils.randomLevel(enchantment);

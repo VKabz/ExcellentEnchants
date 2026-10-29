@@ -46,6 +46,8 @@ public enum ItemSetDefaults {
         EquipmentSlot.OFF_HAND).name("Fishing Rod").build()),
     SHIELD(tagLookup -> ItemSet.buildByType("shield", Material.SHIELD).slots(EquipmentSlot.OFF_HAND).name("Shield")
         .build()),
+    // gamai.ru: булава — для «Вознесения». На старом сервере категорию надо дописать в item_types.yml руками.
+    MACE(tagLookup -> ItemSet.buildByType("mace", Material.MACE).slots(EquipmentSlot.HAND).name("Mace").build()),
     BREAKABLE(tagLookup -> ItemSet.buildByName("breakable", tagLookup.getBreakable()).slots(EquipmentSlot.values())
         .name("Brekable").build()),
     ARMOR(tagLookup -> ItemSet.buildByName("armor", getArmors(tagLookup)).slots(EquipmentSlot.HEAD, EquipmentSlot.CHEST,
