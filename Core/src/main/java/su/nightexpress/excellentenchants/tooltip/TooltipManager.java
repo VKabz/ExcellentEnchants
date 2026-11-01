@@ -1,6 +1,7 @@
 package su.nightexpress.excellentenchants.tooltip;
 
 import org.bukkit.GameMode;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -150,7 +151,18 @@ public class TooltipManager extends AbstractManager<EnchantsPlugin> implements T
         Map<CustomEnchantment, Integer> enchants = EnchantsUtils.getCustomEnchantments(meta);
         if (enchants.isEmpty()) return itemStack;
 
+        if (BookTooltip.shouldTitle(EnchantsUtils.isEnchantedBook(copy), false,
+            meta instanceof EnchantmentStorageMeta stored ? stored.getStoredEnchants().size() : 0, enchants.size())) {
+            var entry = enchants.entrySet().iterator().next();
+            if (!meta.hasDisplayName()) {
+                meta.itemName(BookTooltip.title(entry.getKey().getDefinition().getTooltipNameComponent(), entry.getValue()));
+            }
+            meta.addItemFlags(ItemFlag.HIDE_STORED_ENCHANTS);
+        }
+
         List<String> lore = ItemUtil.getLoreSerialized(meta);
+        // Old issued copies may still carry the retired exchange hint. Packet-only cleanup.
+        lore.removeIf(line -> su.nightexpress.nightcore.util.text.night.NightMessage.stripTags(line).trim().equals("⇄ Можно обменять"));
 
         enchants.forEach((enchant, level) -> {
             int chargesAmount = enchant.getCharges(meta);

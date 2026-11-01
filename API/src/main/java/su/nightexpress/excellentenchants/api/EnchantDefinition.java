@@ -1,6 +1,9 @@
 package su.nightexpress.excellentenchants.api;
 
 import org.bukkit.NamespacedKey;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.jspecify.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 import su.nightexpress.excellentenchants.EnchantsKeys;
@@ -26,6 +29,8 @@ public class EnchantDefinition implements Writeable {
     private static final int WEIGHT_CAP = 1024;
 
     private final String       displayName;
+    private final @Nullable String tooltipName;
+    private final Component tooltipNameComponent;
     private final List<String> description;
     private final int          weight;
     private final int          maxLevel;
@@ -46,7 +51,16 @@ public class EnchantDefinition implements Writeable {
                              ItemSet supportedItems,
                              ItemSet primaryItems,
                              Set<String> exclusiveSet) {
+        this(displayName, null, description, weight, maxLevel, minCost, maxCost, anvilCost, supportedItems, primaryItems, exclusiveSet);
+    }
+
+    public EnchantDefinition(String displayName, @Nullable String tooltipName, List<String> description,
+                             int weight, int maxLevel, EnchantCost minCost, EnchantCost maxCost, int anvilCost,
+                             ItemSet supportedItems, ItemSet primaryItems, Set<String> exclusiveSet) {
         this.displayName = displayName;
+        this.tooltipName = tooltipName;
+        // Parsed once at load, never on the Netty thread.
+        this.tooltipNameComponent = MiniMessage.miniMessage().deserialize(tooltipName == null ? displayName : tooltipName);
         this.description = description;
         this.weight = Math.clamp(weight, 1, WEIGHT_CAP);
         this.maxLevel = Math.clamp(maxLevel, 1, LEVEL_CAP);
@@ -145,12 +159,13 @@ public class EnchantDefinition implements Writeable {
             "[*] Reboot required when changed."
         ).read(config);
 
-        return new EnchantDefinition(displayName, description, weight, maxLevel, minCost, maxCost, anvilCost, supportedItems, primaryItems, conflicts);
+        return new EnchantDefinition(displayName, config.getString(path + ".TooltipName"), description, weight, maxLevel, minCost, maxCost, anvilCost, supportedItems, primaryItems, conflicts);
     }
 
     @Override
     public void write(FileConfig config, String path) {
         config.set(path + ".DisplayName", this.displayName);
+        if (this.tooltipName != null) config.set(path + ".TooltipName", this.tooltipName);
         config.set(path + ".Description", this.description);
         config.set(path + ".Weight", this.weight);
         config.set(path + ".MaxLevel", this.maxLevel);
@@ -167,6 +182,10 @@ public class EnchantDefinition implements Writeable {
         return this.displayName;
     }
 
+
+    public Component getTooltipNameComponent() {
+        return this.tooltipNameComponent;
+    }
 
     public List<String> getDescription() {
         return this.description;

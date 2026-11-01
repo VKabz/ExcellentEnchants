@@ -26,6 +26,8 @@ import su.nightexpress.excellentenchants.api.tooltip.TooltipHandler;
 
 public class PacketTooltipHandler implements TooltipHandler {
 
+    private static final java.util.regex.Pattern EMOJI_TOKEN = java.util.regex.Pattern.compile("%civemoji_[^%]+%");
+
     private final TooltipController controller;
 
     private Listener listener;
@@ -62,7 +64,7 @@ public class PacketTooltipHandler implements TooltipHandler {
 
         public void register() {
             this.backend = PacketEvents.getAPI().getEventManager().registerListener(this,
-                PacketListenerPriority.NORMAL);
+                PacketListenerPriority.LOWEST);
         }
 
         public void unregister() {
@@ -103,6 +105,12 @@ public class PacketTooltipHandler implements TooltipHandler {
                             changed = true;
                         }
                     }
+                    var carried = windowItems.getCarriedItem().orElse(null);
+                    var decoratedCarried = this.decorate(carried);
+                    if (decoratedCarried != null) {
+                        windowItems.setCarriedItem(decoratedCarried);
+                        changed = true;
+                    }
                 }
                 case PacketType.Play.Server.SET_PLAYER_INVENTORY -> {
                     WrapperPlayServerSetPlayerInventory setPlayerInventory = new WrapperPlayServerSetPlayerInventory(event);
@@ -126,7 +134,7 @@ public class PacketTooltipHandler implements TooltipHandler {
                     WrapperPlayServerMerchantOffers offers = new WrapperPlayServerMerchantOffers(event);
 
                     for (var offer : offers.getMerchantOffers()) {
-                        var decorated = this.decorate(offer.getOutputItem());
+                        var decorated = this.decorate(offer.getOutputItem(), true);
                         if (decorated != null) {
                             offer.setOutputItem(decorated);
                             changed = true;
@@ -144,12 +152,23 @@ public class PacketTooltipHandler implements TooltipHandler {
         /** Предмет с добавленным описанием зачарований или null, если менять нечего. */
         private com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack decorate(
             com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack pooperStack) {
+            return this.decorate(pooperStack, false);
+        }
+
+        private com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack decorate(
+            com.github.retrooper.packetevents.protocol.item.@Nullable ItemStack pooperStack, boolean merchant) {
             if (pooperStack == null || pooperStack.isEmpty() || !hasEnchantments(pooperStack)) return null;
 
             ItemStack bukkit = SpigotConversionUtil.toBukkitItemStack(pooperStack);
             ItemStack described = this.controller.addDescription(bukkit);
             if (described == bukkit) return null; // addDescription вернул исходник — описание не нужно
 
+            // ItemEmojiListener has no MERCHANT_OFFERS branch. Never expose raw tokens there.
+            if (merchant) described.editMeta(meta -> {
+                var lore = meta.lore();
+                if (lore != null) meta.lore(lore.stream().map(line -> line.replaceText(builder -> builder
+                    .match(EMOJI_TOKEN).replacement(""))).toList());
+            });
             return SpigotConversionUtil.fromBukkitItemStack(described);
         }
 
