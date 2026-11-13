@@ -2,6 +2,7 @@ package su.nightexpress.excellentenchants.enchantment.gamai;
 
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
@@ -25,11 +26,14 @@ import su.nightexpress.nightcore.util.Lists;
 import su.nightexpress.nightcore.util.NumberUtil;
 
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Сокрушение (кирка): камень, руда, сланец и незерак ломаются быстрее, на III — мгновенно.
- * С «Тоннелем» это Кирка Бога.
+ * Сокрушение (кирка): камень, руда, сланец, незерак, земля, песок, гравий, дерево, обсидиан
+ * и древние обломки ломаются быстрее, на III — мгновенно. С «Тоннелем» это Кирка Бога.
+ * Мгновенно ломается только то, что с этой киркой даёт дроп: обсидиан каменной киркой
+ * копается как обычно и не пропадает впустую.
  *
  * Мгновенное ломание — общий приём {@link InstantBreakEnchant}. На I–II уровне игроку на время
  * копания нужного блока вешается временный модификатор скорости копания (атрибут, его видит
@@ -81,6 +85,8 @@ public class CrushingEnchant extends InstantBreakEnchant implements GamaiHooks {
 
         if (level >= this.instantLevel) {
             this.removeBoost(player);
+            Block clicked = event.getClickedBlock();
+            if (clicked == null || clicked.getDrops(item, player).isEmpty()) return false;
             return super.onInteract(event, entity, item, level);
         }
 
@@ -122,6 +128,19 @@ public class CrushingEnchant extends InstantBreakEnchant implements GamaiHooks {
     }
 
     private static Set<Material> defaultBlocks() {
+        Set<Material> blocks = new HashSet<>(Lists.newSet(
+            Material.DIRT, Material.COARSE_DIRT, Material.ROOTED_DIRT, Material.GRASS_BLOCK, Material.PODZOL,
+            Material.MYCELIUM,
+            Material.SAND, Material.RED_SAND, Material.SOUL_SAND, Material.SOUL_SOIL,
+            Material.GRAVEL,
+            Material.OBSIDIAN, Material.CRYING_OBSIDIAN, Material.ANCIENT_DEBRIS
+        ));
+        blocks.addAll(Tag.LOGS.getValues());
+        blocks.addAll(stoneAndOres());
+        return blocks;
+    }
+
+    private static Set<Material> stoneAndOres() {
         return Lists.newSet(
             Material.STONE, Material.COBBLESTONE, Material.MOSSY_COBBLESTONE, Material.GRANITE, Material.DIORITE,
             Material.ANDESITE, Material.TUFF, Material.CALCITE, Material.DRIPSTONE_BLOCK,

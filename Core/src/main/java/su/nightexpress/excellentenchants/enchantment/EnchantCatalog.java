@@ -820,7 +820,7 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), UnbendingEnchant::new
     ),
     CRUSHING(() -> EnchantDefinition.builder("Crushing", 3)
-        .description("Stone, ores, deepslate and netherrack break " + GENERIC_AMOUNT + "% faster, instantly at level III.")
+        .description("Stone, ores, deepslate, netherrack, dirt, sand, gravel, logs, obsidian and ancient debris break " + GENERIC_AMOUNT + "% faster, instantly at level III.")
         .weight(VERY_RARE)
         .items(ItemSetDefaults.PICKAXE)
         .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), CrushingEnchant::new
@@ -854,6 +854,12 @@ public enum EnchantCatalog implements EnchantCatalogEntry {
         .weight(VERY_RARE)
         .items(ItemSetDefaults.LEGGINGS)
         .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), FireproofEnchant::new
+    ),
+    INDESTRUCTIBLE(() -> EnchantDefinition.builder("Indestructible", 1)
+        .description("The item never loses durability.")
+        .weight(VERY_RARE)
+        .items(ItemSetDefaults.BREAKABLE)
+        .build(), () -> EnchantDistribution.treasure(TradeType.PLAINS_SPECIAL), IndestructibleEnchant::new
     ),
     ;
 
